@@ -1,2 +1,6 @@
 # godzilla
-Codename GODZILLA: project for course SOEN-390
+
+Project codename: ***GODZILLA***
+
+***GODZILLA*** is the Spring WebFlux backend app that services the React client
+app (codenamed ***MUTO***)
