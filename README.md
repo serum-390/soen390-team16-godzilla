@@ -16,5 +16,5 @@ app (codenamed ***MUTO***)
 
 To run the server:
 
-1. Execute the command: `./mvnw spring-boot:run` in the root directory of the project.
-2. Browse to <http://localhost:8080/hello> in your web browser.
+1. Execute the command: `./mvnw package spring-boot:run` in the root directory of the project.
+2. Browse to <http://localhost:8080/> in your web browser.
