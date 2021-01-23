@@ -1,4 +1,4 @@
-# godzilla
+# godzilla <a href="https://github.com/Serum-390/godzilla/actions?query=workflow%3A%22Maven+build%22"><img src="https://github.com/Serum-390/godzilla/workflows/Maven%20build/badge.svg" alt="Maven Build"></a>
 
 Project codename: ***GODZILLA***
 
