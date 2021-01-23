@@ -8,7 +8,6 @@ import React, { useState } from 'react';
 function NavBar() {
 
     const [open, setOpen] = useState(false)
-    const [anchor, setAnchor] = useState('left')
 
     const handleDrawer = () => {
         setOpen(true)
