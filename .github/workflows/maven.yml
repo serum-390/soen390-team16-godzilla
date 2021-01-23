@@ -1,6 +1,16 @@
-name: Maven build
+name: Maven Build
 
-on: [push, pull_request]
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        required: false
+        description: 'Test scenario tags'
 
 jobs:
   build:
