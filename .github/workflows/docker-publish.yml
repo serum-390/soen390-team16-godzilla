@@ -115,7 +115,7 @@ jobs:
       with:
         task-definition: .aws/godzilla-main-task.json
         container-name: Godzilla
-        image: "$IMAGE_ID:latest"
+        image: ghcr.io/serum-390/godzilla:latest
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
