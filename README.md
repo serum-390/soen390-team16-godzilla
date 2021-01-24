@@ -2,8 +2,7 @@
 
 Project codename: ***GODZILLA***
 
-***GODZILLA*** is the Spring WebFlux backend app that services the React client
-app (codenamed ***MUTO***).
+Visit the live demo environment here: <https://godzilla.serum-390.app/>
 
 ## Getting Started
 

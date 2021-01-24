@@ -1,0 +1,84 @@
+name: Docker
+
+on:
+  push:
+
+    # Publish `main` as Docker `latest` image.
+    branches:
+      - main
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+  # Run tests for any PRs.
+  pull_request:
+
+env:
+  IMAGE_ID: ghcr.io/serum-390/godzilla
+  DOCKER_FILE: docker/godzilla.dockerfile
+
+jobs:
+
+  # Run tests.
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Run tests
+        run: |
+          ./mvnw clean package
+          if [ -f docker-compose.test.yml ]; then
+            docker-compose --file docker-compose.test.yml build
+            docker-compose --file docker-compose.test.yml run sut
+          else
+            docker build . --file $DOCKER_FILE
+          fi
+
+  # Push image to GitHub Packages.
+  push:
+
+    # Ensure test job passes before pushing image.
+    needs: test
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build image
+        run: |
+          ./mvnw clean package
+          docker build . --file $DOCKER_FILE --tag $IMAGE_ID
+
+      - name: Log into registry
+        run: echo "${{ secrets.GODZILLA_OPS_PAT }}" | docker login ghcr.io -u ${{ secrets.GODZILLA_OPS_USERNAME }} --password-stdin
+
+      - name: Push image
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+
+          echo "Pushing image: $IMAGE_ID:$VERSION"
+
+          docker tag $IMAGE_ID $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
