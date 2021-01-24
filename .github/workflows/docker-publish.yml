@@ -20,6 +20,8 @@ env:
 
 jobs:
 
+#----------------------------------- TEST --------------------------------------
+
   # Run tests.
   test:
     runs-on: ubuntu-latest
@@ -41,6 +43,8 @@ jobs:
           else
             docker build . --file $DOCKER_FILE
           fi
+
+#----------------------------------- PUSH --------------------------------------
 
   # Push image to GitHub Packages.
   push:
@@ -82,3 +86,41 @@ jobs:
 
           docker tag $IMAGE_ID $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+
+#----------------------------------- DEPLOY ------------------------------------
+
+  deploy:
+
+    # After pushing to ghcr.io, the ECS cluster gets updated: https://godzilla.serum-390.app/
+    needs: push
+
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: .aws/godzilla-main-task.json
+        container-name: Godzilla
+        image: "$IMAGE_ID:latest"
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: Godzilla-service
+        cluster: godzilla
+        wait-for-service-stability: true
