@@ -21,7 +21,7 @@ function NavBar() {
                     <MenuIcon />
                 </IconButton>
                 <Typography style = {{flexGrow : 1}}>
-                    MUTO FrontEnd
+                    MUTO FrontEnd Application
                 </Typography>
                 <IconButton>
                     <ExitToAppIcon />
