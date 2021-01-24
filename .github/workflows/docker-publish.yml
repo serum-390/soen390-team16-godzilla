@@ -24,6 +24,8 @@ jobs:
 
   # Run tests.
   test:
+
+    name: Docker Build
     runs-on: ubuntu-latest
 
     steps:
@@ -52,6 +54,7 @@ jobs:
     # Ensure test job passes before pushing image.
     needs: test
 
+    name: Docker GitHub Packages Update
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
@@ -94,7 +97,7 @@ jobs:
     # After pushing to ghcr.io, the ECS cluster gets updated: https://godzilla.serum-390.app/
     needs: push
 
-    name: Deploy
+    name: ECS Deployment
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
