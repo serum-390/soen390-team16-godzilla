@@ -1,4 +1,3 @@
-// import NavBar from '../components/NavBar'
 
 function Planning() {
     return(
