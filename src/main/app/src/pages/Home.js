@@ -1,8 +1,10 @@
-import { Button } from '@material-ui/core';
+import NavBar from '../components/NavBar'
 
 function Home() {
     return(
-     <Button color="primary">Test Button</Button>
+        <div>
+           <NavBar/>
+        </div>
     );
     
 }
