@@ -36,7 +36,7 @@ function NavBar() {
                     <MenuIcon />
                 </IconButton>
                 <Typography style = {{flexGrow : 1}}>
-                    MUTO FrontEnd Application
+                                    MUTO FrontEnd Application
                 </Typography>
                 <IconButton>
                     <AccountCircleIcon />
