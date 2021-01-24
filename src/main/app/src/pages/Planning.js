@@ -1,9 +1,12 @@
+// import NavBar from '../components/NavBar'
 
 function Planning() {
     return(
         <div>
-            <p>This is the plannning page</p>
+            <h1>This is the Planning page</h1>
         </div>
     );
     
 }
+
+export default Planning;
