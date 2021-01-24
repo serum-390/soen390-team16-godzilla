@@ -28,6 +28,7 @@ import Sales from '../pages/Sales';
 import Purchase from '../pages/Purchase';
 import Help from '../pages/Help';
 import About from '../pages/About';
+import UserAccount from '../pages/UserAccount';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -59,9 +60,11 @@ function NavBar() {
                 <Typography style = {{flexGrow : 1}}>
                 MUTO FrontEnd Application
                 </Typography>
+                <Link to="/UserAccount" className={classes.link}>
                 <IconButton>
                     <AccountCircleIcon />
                 </IconButton>
+                </Link>
                 <IconButton>
                     <ExitToAppIcon />
                 </IconButton>
@@ -172,6 +175,7 @@ function NavBar() {
             <Route exact path="/Purchase" component={Purchase}/>
             <Route exact path="/Help" component={Help}/>
             <Route exact path="/About" component={About}/>
+            <Route exact path="/UserAccount" component={UserAccount}/>
         </Switch>
         </div>
         </Router>
