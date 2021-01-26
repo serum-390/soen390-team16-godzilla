@@ -14,10 +14,9 @@ const Inventory = () => {
 
   const classes = useStyles();
 
-
   return (
     <div className={classes.papierRoot}>
-      <InventoryItem></InventoryItem>
+      <InventoryItem name='Full Bike' image_url='/resources/images/full-bike.jpeg'></InventoryItem>
     </div>
   );
 }
