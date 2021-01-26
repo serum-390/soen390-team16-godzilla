@@ -1,12 +1,9 @@
 package ca.serum390.godzilla.routers;
 
+import static ca.serum390.godzilla.helper.BuildableMap.map;
 
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static ca.serum390.godzilla.helper.BuildableMap.map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +22,8 @@ public class InventoryRouter {
 
     @Bean
     public RouterFunction<ServerResponse> inventoryRoute() {
-        return RouterFunctions.route(
-            RequestPredicates.GET("/inv/"),
-            InventoryRouter::getInventory
-        );
+        return RouterFunctions.route(RequestPredicates.GET("/inv/"),
+                                     InventoryRouter::getInventory);
     }
 
     private static Mono<ServerResponse> getInventory(ServerRequest request) {
@@ -41,11 +36,17 @@ public class InventoryRouter {
         return map().with("message", "Success. Here is your inventory")
                     .with("inventory", List.of(
                         map().with("name", "Bike Wheel")
-                             .with("image_url", "/resources/images/wheel.jpeg"),
+                             .with("type", "raw-material")
+                             .with("image_url", "/resources/images/wheel.jpeg")
+                             .with("description", "A bicycle wheel."),
                         map().with("name", "Drive Train")
-                             .with("image_url", "/resources/images/drive-train.jpeg"),
+                             .with("type", "raw-material")
+                             .with("image_url", "/resources/images/drive-train.jpeg")
+                             .with("description", "A gear system and bike chain."),
                         map().with("name", "Full Bike")
+                             .with("type", "finished-product")
                              .with("image_url", "/resources/images/full-bike.jpeg")
+                             .with("description", "A finished bicycle.")
                     ));
     }
 }
