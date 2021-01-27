@@ -1,32 +1,22 @@
-package ca.serum390.godzilla.routers;
+package ca.serum390.godzilla.handlers;
 
 import static ca.serum390.godzilla.helper.BuildableMap.map;
 
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
 
-@Configuration
-public class InventoryRouter {
+public class InventoryHandler {
 
-    @Bean
-    public RouterFunction<ServerResponse> inventoryRoute() {
-        return RouterFunctions.route(RequestPredicates.GET("/inv/"),
-                                     InventoryRouter::getInventory);
-    }
+    private InventoryHandler() {}
 
-    private static Mono<ServerResponse> getInventory(ServerRequest request) {
+    public static Mono<ServerResponse> getInventory(ServerRequest request) {
         return ServerResponse.ok()
                              .contentType(MediaType.APPLICATION_JSON)
                              .body(BodyInserters.fromValue(buildDemoInventory()));
