@@ -1,7 +1,7 @@
-import { AppBar, Divider, Drawer, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
+import { AppBar, CssBaseline, Divider, Drawer, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -27,9 +27,70 @@ import Production from '../pages/Production';
 import Purchase from '../pages/Purchase';
 import Sales from '../pages/Sales';
 import UserAccount from '../pages/UserAccount';
+import clsx from 'clsx';
 
+const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% -${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  hide: {
+    display: 'none',
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  drawerOpen: {
+    width: drawerWidth,
+    transition: theme.transitions.create(['width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerClose: {
+    transition: theme.transitions.create(['width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9) + 1,
+    }
+  },
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+
   link: {
     textDecoration: 'none',
     color: theme.palette.text.primary
@@ -38,19 +99,26 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar() {
 
-  const [open, setOpen] = useState(false)
-
-  const handleDrawer = () => {
-    setOpen(true)
-  }
-
   const classes = useStyles();
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
+
   return (
     <Router on>
-      <div>
-        <AppBar position="sticky">
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={
+            // `clsx` is used to conditionally apply a className to an element in React
+            clsx(classes.appBar, { [classes.appBarShift]: open, })
+          }
+        >
           <Toolbar>
-            <IconButton onClick={handleDrawer}>
+            <IconButton onClick={handleDrawerOpen}>
               <MenuIcon />
             </IconButton>
             <Typography style={{ flexGrow: 1 }}>
