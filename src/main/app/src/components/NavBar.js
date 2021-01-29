@@ -84,7 +84,6 @@ function NavBar() {
                   <ListItemText primary={"Home"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/Planning" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
@@ -93,7 +92,6 @@ function NavBar() {
                   <ListItemText primary={"Planning"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/Production" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
@@ -102,25 +100,22 @@ function NavBar() {
                   <ListItemText primary={"Production"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/Sales" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
                     <AttachMoneyIcon />
                   </ListItemIcon>
-                  <ListItemText primary={"Sales Department"} />
+                  <ListItemText primary={"Sales"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/Purchase" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
                     <ReceiptIcon />
                   </ListItemIcon>
-                  <ListItemText primary={"Purchase Department"} />
+                  <ListItemText primary={"Purchasing"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/Inventory" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
@@ -129,7 +124,6 @@ function NavBar() {
                   <ListItemText primary={"Inventory"} />
                 </ListItem>
               </Link >
-              <Divider />
               <Link to="/Accounting" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
@@ -138,7 +132,6 @@ function NavBar() {
                   <ListItemText primary={"Accounting"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/Help" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
@@ -147,7 +140,6 @@ function NavBar() {
                   <ListItemText primary={"Help"} />
                 </ListItem>
               </Link>
-              <Divider />
               <Link to="/About" className={classes.link}>
                 <ListItem button>
                   <ListItemIcon>
@@ -156,7 +148,6 @@ function NavBar() {
                   <ListItemText primary={"About Us"} />
                 </ListItem>
               </Link>
-              <Divider />
             </List>
           </div>
         </Drawer>
