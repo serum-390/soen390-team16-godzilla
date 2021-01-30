@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getInventory = async () => {
-  const api = '/inv/';
+  const api = '/api/inv/';
   const got = await fetch(api);
   const json = await got.json();
   return json.inventory || [];
