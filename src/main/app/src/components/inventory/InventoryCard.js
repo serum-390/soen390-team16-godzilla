@@ -31,7 +31,14 @@ const InventoryCard = props => {
         />
         <CardContent>
           <Grid container>
-            <Typography gutterBottom variant='h5' component='h2' className={classes.title}>{name}</Typography>
+            <Typography
+              gutterBottom
+              variant='h5'
+              component='h2'
+              className={classes.title}
+            >
+              {name}
+            </Typography>
             <div className={classes.typeIcon}>
               {
                 props.type === 'finished-product'
