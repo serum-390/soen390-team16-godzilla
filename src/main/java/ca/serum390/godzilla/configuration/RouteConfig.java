@@ -12,8 +12,13 @@ import ca.serum390.godzilla.handlers.HelloHandler;
 import ca.serum390.godzilla.handlers.InventoryHandler;
 
 @Configuration
-public class RouteConfig implements WebFluxConfigurer { 
+public class RouteConfig implements WebFluxConfigurer {
 
+    /**
+     * Router using the functional endpoints Spring WebFlux API
+     *
+     * @return A router function bound to the application's RESTful APIs.
+     */
     @Bean
     public RouterFunction<ServerResponse> route() {
         return RouterFunctions.route()
@@ -23,6 +28,9 @@ public class RouteConfig implements WebFluxConfigurer {
                 .build();
     }
 
+    /**
+     * Serve some static resources via /resources/<my_resource>
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
