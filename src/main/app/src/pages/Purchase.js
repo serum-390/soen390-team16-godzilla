@@ -103,7 +103,7 @@ function ShowPurchaseOrderDetail({row}){
 function Purchase(){
 
     const classes = useStyles();
-    const [inventory, setInventory] = useState([]);
+    //const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(true);
   
     useEffect(() => {
@@ -114,8 +114,12 @@ function Purchase(){
       setLoading(false);
     }, []);
   
+
     return loading ? <Spinner />
-                   : <LoadedView classes={classes} inventory={inventory} />;
+                   : <LoadedView classes={classes} />;
+    /*
+    return loading ? <Spinner />
+                   : <LoadedView classes={classes} inventory={inventory} />;*/
 
 }
 
