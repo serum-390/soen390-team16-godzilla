@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 PROJECT_ROOT=../
 IMAGE_TAG="ghcr.io/serum-390/godzilla:latest"
 
@@ -19,7 +17,7 @@ build_image() (
 
 run_container() {
     CONTAINER_NAME='godzilla-test'
-    docker container rm -f "$CONTAINER_NAME" && true || true
+    docker container rm -f "$CONTAINER_NAME"
     docker run -d \
                --name "$CONTAINER_NAME" \
                -p 0.0.0.0:8080:8080 \
