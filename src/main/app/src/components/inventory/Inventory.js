@@ -1,9 +1,9 @@
 import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import InventoryCard from '../components/inventory/InventoryCard';
+import InventoryCard from './InventoryCard';
 import MenuIcon from '@material-ui/icons/Menu'
-import AppLogo from '../logo.svg';
-import '../React-Spinner.css';
+import AppLogo from '../../misc/logo.svg';
+import '../../misc/React-Spinner.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -105,5 +105,5 @@ const Inventory = () => {
                  : <LoadedView classes={classes} inventory={inventory} />;
 }
 
-export { Inventory, FilledInventoryView };
+export { Inventory, FilledInventoryView, Spinner };
 export default Inventory;
