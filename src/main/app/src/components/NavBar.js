@@ -21,23 +21,29 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Switch, useLocation } from 'react-router-dom';
+import useNavBarStyles from '../styles/NavBarSyles';
 import About from './About';
 import Accounting from './Accounting';
 import Help from './Help';
 import Home from './Home';
+import { Inventory } from './inventory/Inventory';
 import Planning from './Planning';
 import Production from './Production';
 import Purchase from './Purchasing';
 import Sales from './Sales';
 import UserAccount from './UserAccount';
-import useNavBarStyles from '../styles/NavBarSyles';
-import { Inventory } from './inventory/Inventory';
 
-const DrawerItem = ({ cls, Icon, link, text }) => {
+const DrawerItem = ({ cls, Icon, link, text, selected, onClick }) => {
+  const classes = useNavBarStyles();
   return (
     <Link to={link} className={cls}>
-      <ListItem button>
+      <ListItem
+        button
+        selected={selected}
+        onClick={onClick}
+        className={clsx({ [classes.selected]: selected })}
+      >
         <ListItemIcon>
           <Icon />
         </ListItemIcon>
@@ -48,6 +54,7 @@ const DrawerItem = ({ cls, Icon, link, text }) => {
 };
 
 const DrawerList = ({ drawerItemClass }) => {
+  const location = useLocation();
   return (
     <List>
       {
@@ -61,13 +68,14 @@ const DrawerList = ({ drawerItemClass }) => {
           [AccountBalanceIcon, '/accounting', 'Accounting'],
           [HelpIcon, '/help', 'Help'],
           [InfoIcon, '/about', 'About']
-        ].map(([Icon, path, text]) => (
+        ].map(([icon, path, text], index) => (
           <DrawerItem
-            Icon={Icon}
+            Icon={icon}
             cls={drawerItemClass}
             link={path}
             text={text}
-            key={text}
+            key={index}
+            selected={location.pathname === path}
           />
         ))
       }

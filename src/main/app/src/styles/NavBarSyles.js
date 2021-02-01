@@ -98,6 +98,10 @@ const useNavBarStyles = makeStyles(theme => ({
       width: '20ch',
     },
   },
+  selected: {
+    borderLeft: '4px solid',
+    borderColor: '#2196F3',
+  },
 }));
 
 export default useNavBarStyles;
