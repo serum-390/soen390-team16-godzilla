@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -16,10 +15,10 @@ public class InventoryHandler {
 
     private InventoryHandler() {}
 
-    public static Mono<ServerResponse> getInventory(ServerRequest request) {
+    public static Mono<ServerResponse> demoInventory(ServerRequest request) {
         return ServerResponse.ok()
                              .contentType(MediaType.APPLICATION_JSON)
-                             .body(BodyInserters.fromValue(buildDemoInventory()));
+                             .bodyValue(buildDemoInventory());
     }
 
     private static Map<Object, Object> buildDemoInventory() {

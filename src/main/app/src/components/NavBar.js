@@ -22,7 +22,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Link, Route, Switch, useLocation } from 'react-router-dom';
-import useNavBarStyles from '../styles/NavBarSyles';
+import useNavBarStyles from '../styles/navBarSyles';
 import About from './About';
 import Accounting from './Accounting';
 import Help from './Help';
