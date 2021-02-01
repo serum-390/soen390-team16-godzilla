@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
 import AppLogo from '../logo.svg';
 
@@ -66,23 +66,39 @@ const LoadedView = ({classes, inventory}) => {
             <h1 style={{textAlign:"center"}}>Purchase Department</h1>
             <div style={{ height: 600, width: '45%', float: 'left'}}>
                 <h2 style={{float: 'left'}}>Vendors</h2>
-                    <Button variant="contained" color="primary" style={{float: 'right'}}>
+                    <Button variant="contained" color="primary" style={{float: 'right'}} onClick={() => { AddNewVendor(); }}>
                         Add New Vendor
                     </Button>
-                <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} />
+                <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} onRowClick={(newSelection) => { ShowVendorDetail(newSelection); }} />
             </div>
             <div style={{ height: 600, width: '45%', float: 'right'}}>
                 <div>
                     <h2 style={{float: 'left'}}>Purchase Orders</h2>
-                    <Button variant="contained" color="primary" style={{float: 'right'}}>
+                    <Button variant="contained" color="primary" style={{float: 'right'}} onClick={() => { AddNewPurchaseOrder(); }}>
                         Add New Purchase Order
                     </Button>
                 </div>
-                <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} />
+                <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} onRowClick={(newSelection) => { ShowPurchaseOrderDetail(newSelection); }}/>
             </div>
         </div>  
     );
-  }
+}
+
+function AddNewVendor(){
+    alert('clicked');
+}
+
+function AddNewPurchaseOrder(){
+    alert('clicked');
+}
+
+function ShowVendorDetail({row}){
+    alert('clicked ' + row.id + " " + row.vendorName);
+}
+
+function ShowPurchaseOrderDetail({row}){
+    alert('clicked ' + row.id + " " + row.vendorName);
+}
 
 function Purchase(){
 
@@ -100,6 +116,7 @@ function Purchase(){
   
     return loading ? <Spinner />
                    : <LoadedView classes={classes} inventory={inventory} />;
-  }
+
+}
 
 export default Purchase;
