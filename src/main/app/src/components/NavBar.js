@@ -33,11 +33,13 @@ import Production from './Production';
 import Purchase from './Purchasing';
 import Sales from './Sales';
 import UserAccount from './UserAccount';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const DrawerItem = ({ cls, Icon, link, text, selected, onClick }) => {
   const classes = useNavBarStyles();
   return (
     <Link to={link} className={cls}>
+      <Tooltip title={text}>
       <ListItem
         button
         selected={selected}
@@ -49,6 +51,7 @@ const DrawerItem = ({ cls, Icon, link, text, selected, onClick }) => {
         </ListItemIcon>
         <ListItemText primary={text} />
       </ListItem>
+      </Tooltip>
     </Link>
   );
 };
@@ -147,13 +150,17 @@ function NavBar() {
             </div>
             <div style={{ marginLeft: 'auto' }}>
               <Link to="/useraccount" className={classes.link}>
+              <Tooltip title="User Account">
                 <IconButton>
                   <AccountCircleIcon />
                 </IconButton>
+                </Tooltip>
               </Link>
+              <Tooltip title="Logout">
               <IconButton>
                 <ExitToAppIcon />
               </IconButton>
+              </Tooltip>
             </div>
           </Toolbar>
         </AppBar>
