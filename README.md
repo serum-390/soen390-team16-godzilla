@@ -9,3 +9,7 @@ Visit the live demo environment here: <https://godzilla.serum-390.app/>
 ## Getting Started
 
 To get started with the app, checkout the [Quickstart wiki page](https://github.com/Serum-390/godzilla/wiki).
+
+## Contributing
+
+Check out the [Contributors wiki page](https://github.com/Serum-390/godzilla/wiki/Contributors) for the style guides and coding practices required for contributing.
