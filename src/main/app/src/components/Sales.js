@@ -13,9 +13,13 @@ const cols = [
     field: 'salesOrders',
     headerName: 'Sales Orders',
     width: 160,
-    renderCell: () => (
+    renderCell: params => (
       <div style={{ margin: 'auto' }}>
-        <Button variant='contained' color='secondary'>Show</Button>
+        <Button variant='contained'
+                color='secondary'
+                onClick={params.value.onClick}>
+          Show
+        </Button>
       </div>
     ),
   },
@@ -29,7 +33,9 @@ const getSales = async () => {
   if (!json.sales) return [];
 
   return json.sales.map(sale => {
-    sale.salesOrders = <Button variant='contained' color='secondary'>Show</Button>;
+    sale.salesOrders = {
+      onClick: () => alert(`Test: ${sale.vendorName}`),
+    };
     return sale;
   });
 };
@@ -55,7 +61,7 @@ function Sales() {
   useEffect(() => {
     getSales().then(sales => setRows(sales))
               .then(() => setLoading(false));
-  }, [])
+  }, []);
 
   const handleRowclick = params => {
     console.log(params);
