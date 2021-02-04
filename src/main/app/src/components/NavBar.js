@@ -35,28 +35,28 @@ import Sales from './Sales';
 import UserAccount from './UserAccount';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const DrawerItem = ({ cls, Icon, link, text, selected, onClick }) => {
+const DrawerItem = ({ className, Icon, link, text, selected, onClick }) => {
   const classes = useNavBarStyles();
   return (
-    <Link to={link} className={cls}>
+    <Link to={link} className={className}>
       <Tooltip title={text}>
-      <ListItem
-        button
-        selected={selected}
-        onClick={onClick}
-        className={clsx({ [classes.selected]: selected })}
-      >
-        <ListItemIcon>
-          <Icon />
-        </ListItemIcon>
-        <ListItemText primary={text} />
-      </ListItem>
+        <ListItem
+          button
+          selected={selected}
+          onClick={onClick}
+          className={clsx({ [classes.selected]: selected })}
+        >
+          <ListItemIcon>
+            <Icon />
+          </ListItemIcon>
+          <ListItemText primary={text} />
+        </ListItem>
       </Tooltip>
     </Link>
   );
 };
 
-const DrawerList = ({ drawerItemClass }) => {
+const DrawerList = ({ className }) => {
   const location = useLocation();
   return (
     <List>
@@ -74,7 +74,7 @@ const DrawerList = ({ drawerItemClass }) => {
         ].map(([icon, path, text], index) => (
           <DrawerItem
             Icon={icon}
-            cls={drawerItemClass}
+            className={className}
             link={path}
             text={text}
             key={index}
@@ -134,7 +134,7 @@ function NavBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant='h6' noWrap>Muto ERP</Typography>
+            <Typography variant='h6' noWrap>Godzilla ERP</Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -150,16 +150,16 @@ function NavBar() {
             </div>
             <div style={{ marginLeft: 'auto' }}>
               <Link to="/useraccount" className={classes.link}>
-              <Tooltip title="User Account">
-                <IconButton>
-                  <AccountCircleIcon />
-                </IconButton>
+                <Tooltip title="User Account">
+                  <IconButton>
+                    <AccountCircleIcon />
+                  </IconButton>
                 </Tooltip>
               </Link>
               <Tooltip title="Logout">
-              <IconButton>
-                <ExitToAppIcon />
-              </IconButton>
+                <IconButton>
+                  <ExitToAppIcon />
+                </IconButton>
               </Tooltip>
             </div>
           </Toolbar>
@@ -182,7 +182,7 @@ function NavBar() {
               {theme.direction === 'rtl' ? <DoubleArrowRoundedIcon /> : <ChevronLeft />}
             </IconButton>
           </div>
-          <DrawerList drawerItemClass={classes.link} />
+          <DrawerList className={classes.link} />
         </Drawer>
         <main className={classes.content} >
           <div className={classes.toolbar} />
@@ -193,4 +193,5 @@ function NavBar() {
   );
 }
 
+export { DrawerList, NavBar, ContentSwitch };
 export default NavBar;

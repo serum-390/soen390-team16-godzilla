@@ -3,17 +3,23 @@ import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike';
 import BuildIcon from '@material-ui/icons/Build';
 import { useState } from "react";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
-    width: 360
+    width: '98vw',
+    [theme.breakpoints.up('sm')]: {
+      width: 300,
+    }
   },
   media: {
-    height: 230,
+    height: 200,
+    [theme.breakpoints.down('xs')]: {
+      height: '30vh',
+    },
   },
   typeIcon: {
     marginLeft: 'auto',
   },
-})
+}));
 
 const InventoryCard = props => {
 

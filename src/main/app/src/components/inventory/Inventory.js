@@ -8,7 +8,7 @@ import '../../misc/React-Spinner.css';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   sort: {
     margin: theme.spacing(1),
@@ -41,7 +41,7 @@ const FilledInventoryView = ({ inventoryItems, classes }) => {
   }
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justify='center'>
+      <Grid container spacing={2} justify='center'>
         {items}
       </Grid>
     </div>
