@@ -46,28 +46,26 @@ const FilledInventoryView = ({ inventoryItems, classes }) => {
       </Grid>
     </div>
   );
-}
+};
 
 const Spinner = () => {
   return (
-    <div>
-      <Box
-        display='flex'
-        flexDirection='column'
-        flexGrow={1}
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <img src={AppLogo} alt='React Logo' className='App-logo' />
-        <h1>Loading...</h1>
-      </Box>
-    </div>
+    <Box
+      display='flex'
+      flexDirection='column'
+      flexGrow={1}
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <img src={AppLogo} alt='React Logo' className='App-logo' />
+      <h1>Loading...</h1>
+    </Box>
   );
-}
+};
 
-const LoadedView = ({classes, inventory}) => {
+const LoadedView = ({ classes, inventory }) => {
   return (
     <div>
       <Box display='flex' flexDirection='row-reverse'>
@@ -86,7 +84,7 @@ const LoadedView = ({classes, inventory}) => {
       />
     </div>
   );
-}
+};
 
 const Inventory = () => {
 
@@ -102,8 +100,8 @@ const Inventory = () => {
   }, []);
 
   return loading ? <Spinner />
-                 : <LoadedView classes={classes} inventory={inventory} />;
-}
+    : <LoadedView classes={classes} inventory={inventory} />;
+};
 
 export { Inventory, FilledInventoryView, Spinner };
 export default Inventory;
