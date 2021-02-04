@@ -43,9 +43,10 @@ const DelayedTooltip = ({title, placement, ...props}) => {
       placement={placement}
       arrow
       enterDelay={650}
-      leaveDelay={200}
       TransitionComponent={Fade}
-      TransitionProps={{ timeout: 300 }}
+      TransitionProps={{ timeout: 250 }}
+      disableFocusListener
+      disableTouchListener
     >
       {props.children}
     </Tooltip>

@@ -1,7 +1,7 @@
 import { Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
-import React, { useEffect, useState } from 'react';
-import { Spinner } from './inventory/Inventory';
+import React from 'react';
+import { SpinBeforeLoading } from './inventory/Inventory';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -84,15 +84,12 @@ function ShowPurchaseOrderDetail({ row }) {
 function Purchase() {
 
   const classes = useStyles();
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-
-  return loading ? <Spinner />
-                 : <LoadedView classes={classes} />;
+  return (
+    <SpinBeforeLoading minLoadingTime={700}>
+      <LoadedView classes={classes} />
+    </SpinBeforeLoading>
+  );
 }
 
 export default Purchase;

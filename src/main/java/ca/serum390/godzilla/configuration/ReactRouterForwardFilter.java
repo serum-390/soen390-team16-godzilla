@@ -20,15 +20,10 @@ public class ReactRouterForwardFilter implements WebFilter {
         if (matchesReactRouterRoute(exchange)) {
             return forwardToReactRouter(exchange, chain);
         }
-
         return chain.filter(exchange);
     }
 
     /**
-     * ! NOTE: This is probably not the most effecient way to forward all these
-     * ! requests to the react-router - we are basically checking each and every
-     * ! request to see if it needs to be forwarded to index.html
-     *
      * @param exchange
      * @return
      */
@@ -41,6 +36,12 @@ public class ReactRouterForwardFilter implements WebFilter {
             && !path.endsWith(".svg");
     }
 
+    /**
+     *
+     * @param exchange
+     * @param chain
+     * @return
+     */
     private Mono<Void> forwardToReactRouter(ServerWebExchange exchange, WebFilterChain chain) {
         return chain.filter(
                 exchange.mutate()

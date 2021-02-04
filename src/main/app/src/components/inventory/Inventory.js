@@ -1,9 +1,10 @@
 import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import InventoryCard from './InventoryCard';
 import MenuIcon from '@material-ui/icons/Menu'
 import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
+import { spinnyBoi } from '../About';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,6 +40,7 @@ const FilledInventoryView = ({ inventoryItems, classes }) => {
       )
     );
   }
+
   return (
     <div className={classes.root}>
       <Grid container spacing={2} justify='center'>
@@ -86,22 +88,34 @@ const LoadedView = ({ classes, inventory }) => {
   );
 };
 
+const SpinBeforeLoading = ({ awaiting = async () => {},
+                             minLoadingTime = 0,
+                             ...props }) => {
+
+  const [loading, setLoading] = useState(true);
+  const [loadingMin, setLoadingMin] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoadingMin(false), minLoadingTime);
+    awaiting().then(() => setLoading(false));
+  }, [awaiting, minLoadingTime]);
+
+  return loading || loadingMin ? spinnyBoi
+                               : <Fragment>{props.children}</Fragment>;
+};
+
 const Inventory = () => {
 
   const classes = useStyles();
   const [inventory, setInventory] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const waitForGetRequest = async () => getInventory().then(inv => setInventory(inv));
 
-  useEffect(() => {
-    getInventory().then(inv => {
-      setInventory(inv);
-      setLoading(false);
-    });
-  }, []);
-
-  return loading ? <Spinner />
-    : <LoadedView classes={classes} inventory={inventory} />;
+  return (
+    <SpinBeforeLoading minLoadingTime={1000} awaiting={waitForGetRequest}>
+      <LoadedView classes={classes} inventory={inventory} />
+    </SpinBeforeLoading>
+  );
 };
 
-export { Inventory, FilledInventoryView, Spinner };
+export { Inventory, FilledInventoryView, Spinner, SpinBeforeLoading };
 export default Inventory;
