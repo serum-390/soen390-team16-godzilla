@@ -2,6 +2,8 @@
 
 PROJECT_ROOT=../
 IMAGE_TAG="ghcr.io/serum-390/godzilla:latest"
+NETWORK='godzilla_network'
+CONTAINER_NAME='godzilla-test'
 
 build_app() (
     cd "$PROJECT_ROOT"
@@ -15,33 +17,28 @@ build_image() (
     docker image prune -f
 )
 
+run_postgres_and_pgadmin() (
+    cd "$PROJECT_ROOT"
+    docker-compose down
+    docker-compose up -d
+)
+
 run_container() {
-    CONTAINER_NAME='godzilla-test'
-    docker container rm -f "$CONTAINER_NAME"
-    docker run -e SPRING_PROFILE=dev \
-               --net=host \
-               -d \
+    docker run -d \
+               -e SPRING_PROFILE=dev \
+               -e DB_HOST=postgres \
+               --network "$NETWORK" \
                --name "$CONTAINER_NAME" \
                -p 0.0.0.0:8080:8080 \
                "$IMAGE_TAG"
 }
 
-run_container_prod() {
-    CONTAINER_NAME='godzilla-test'
-    docker container rm -f "$CONTAINER_NAME"
-    docker run -d \
-               -e DB_HOST='godzilla-demo-db-2.ceg0j98uvizv.us-east-1.rds.amazonaws.com' \
-			   -e DB_USERNAME=$(cat ../PRIVATE/aws/db-creds | head -n 1) \
-			   -e DB_PASSWORD=$(cat ../PRIVATE/aws/db-creds | tail -n 1) \
-               --name "$CONTAINER_NAME" \
-               "$IMAGE_TAG"
-}
-
 main() {
+    docker container rm -f "$CONTAINER_NAME"
+    run_postgres_and_pgadmin
     build_app
     build_image
-#    run_container
-    run_container_prod
+    run_container
 }
 
 [[ ${BASH_SOURCE[0]} == $0 ]] && main $@
