@@ -17,6 +17,6 @@ public interface GoodsRepository extends ReactiveCrudRepository<Good, UUID> {
      * This is how you do a custom query on the repository.
      */
     @Modifying
-    @Query("UPDATE good SET name = $1, description = $2 WHERE id = $3")
+    @Query("UPDATE goods SET name = $1, description = $2 WHERE id = $3")
     Mono<Integer> update(String name, String description, UUID id);
 }
