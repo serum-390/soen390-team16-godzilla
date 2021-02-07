@@ -14,6 +14,16 @@ on:
   # Run tests for any PRs.
   pull_request:
 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        required: false
+        description: 'Test scenario tags'
+
 env:
   IMAGE_ID: ghcr.io/serum-390/godzilla
   DOCKER_FILE: docker/godzilla.dockerfile
@@ -28,6 +38,21 @@ jobs:
     name: Docker Build
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: godzilla
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin123
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v2
 
@@ -37,8 +62,14 @@ jobs:
           java-version: 11
 
       - name: Run tests
+        env:
+          DB_HOST: "127.0.0.1"
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
         run: |
-          ./mvnw clean package
+          docker ps -a
+          pwd
+          ls -al
+          mvn -B clean package
           if [ -f docker-compose.test.yml ]; then
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
@@ -58,6 +89,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: godzilla
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin123
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v2
 
@@ -67,8 +113,14 @@ jobs:
           java-version: 11
 
       - name: Build image
+        env:
+          DB_HOST: "127.0.0.1"
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
         run: |
-          ./mvnw clean package
+          docker ps -a
+          pwd
+          ls -al
+          mvn -B clean package
           docker build . --file $DOCKER_FILE --tag $IMAGE_ID
 
       - name: Log into registry

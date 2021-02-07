@@ -1,6 +1,6 @@
 import { Button, makeStyles, TextField } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { Spinner } from './inventory/Inventory';
+import React from 'react';
+import { SpinBeforeLoading } from './inventory/Inventory';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -39,10 +39,10 @@ function GenerateCalendarRows(){
       }
 
       // Row is filled
-      if(cols.length === 7){    
+      if(cols.length === 7){
         rows.push(cols);
         cols = [];
-      }   
+      }
   }
 
   // Not empty
@@ -87,8 +87,8 @@ function ScheduleTable() {
               {row[5]}
               {row[6]}
             </TableRow>
-          ))}   
-    
+          ))}
+
         </TableBody>
       </Table>
     </TableContainer>
@@ -145,7 +145,7 @@ const LoadedView = () => {
         <ScheduleTable></ScheduleTable>
       </div>
       <div style={{ height: 600, width: '40%', float: 'right' }}>
-        
+
         <ActivityTable></ActivityTable>
       </div>
     </div>
@@ -159,15 +159,12 @@ function SavePlanning() {
 function Planning() {
 
   const classes = useStyles();
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-
-  return loading ? <Spinner />
-                 : <LoadedView classes={classes} />;
+  return (
+    <SpinBeforeLoading minLoadingTime={700}>
+      <LoadedView classes={classes} />
+    </SpinBeforeLoading>
+  );
 }
 
 

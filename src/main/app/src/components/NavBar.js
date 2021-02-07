@@ -1,4 +1,4 @@
-import { AppBar, CssBaseline, Drawer, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
+import { AppBar, CssBaseline, Drawer, Fade, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -35,11 +35,29 @@ import Sales from './Sales';
 import UserAccount from './UserAccount';
 import Tooltip from '@material-ui/core/Tooltip';
 
+const DelayedTooltip = ({title, placement, ...props}) => {
+  return (
+    <Tooltip
+      {...props}
+      title={title}
+      placement={placement}
+      arrow
+      enterDelay={650}
+      TransitionComponent={Fade}
+      TransitionProps={{ timeout: 250 }}
+      disableFocusListener
+      disableTouchListener
+    >
+      {props.children}
+    </Tooltip>
+  );
+};
+
 const DrawerItem = ({ className, Icon, link, text, selected, onClick }) => {
   const classes = useNavBarStyles();
   return (
     <Link to={link} className={className}>
-      <Tooltip title={text}>
+      <DelayedTooltip title={text} placement='right'>
         <ListItem
           button
           selected={selected}
@@ -51,7 +69,7 @@ const DrawerItem = ({ className, Icon, link, text, selected, onClick }) => {
           </ListItemIcon>
           <ListItemText primary={text} />
         </ListItem>
-      </Tooltip>
+      </DelayedTooltip>
     </Link>
   );
 };
@@ -150,17 +168,17 @@ function NavBar() {
             </div>
             <div style={{ marginLeft: 'auto' }}>
               <Link to="/useraccount" className={classes.link}>
-                <Tooltip title="User Account">
+                <DelayedTooltip title="User Account">
                   <IconButton>
                     <AccountCircleIcon />
                   </IconButton>
-                </Tooltip>
+                </DelayedTooltip>
               </Link>
-              <Tooltip title="Logout">
+              <DelayedTooltip title="Logout">
                 <IconButton>
                   <ExitToAppIcon />
                 </IconButton>
-              </Tooltip>
+              </DelayedTooltip>
             </div>
           </Toolbar>
         </AppBar>

@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - network
+    environment:
+      POSTGRES_DB: godzilla
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    depends_on:
+      - postgres
+    image: dpage/pgadmin4
+    ports:
+      - 3500:3500
+    networks:
+      - network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 3500
+
+networks:
+  network:
