@@ -74,7 +74,6 @@ TextMaskCustom.propTypes = {
   inputRef: PropTypes.func.isRequired,
 };
 
-
 const PhoneNumberField = () => {
   const [values, setValues] = React.useState({
     textmask: '(  )    -    ',
@@ -99,7 +98,6 @@ const PhoneNumberField = () => {
       </FormControl>
   );
 };
-
 
 const ProvinceDrawer = () =>{
   const [province, setProvince] = React.useState('');
@@ -193,7 +191,6 @@ function LoadedView() {
       </Dialog>
     );
   };
-
 
   return (
     <div style={{ height: 600, width: '100%' }}>
