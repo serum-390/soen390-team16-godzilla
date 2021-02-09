@@ -4,7 +4,6 @@ import React from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import MaskedInput from 'react-text-mask';
@@ -88,32 +87,42 @@ const PhoneNumberField = () => {
   };
   return (
     <FormControl>
-        <InputLabel>Phone Number</InputLabel>
-        <Input
-          value={values.textmask}
-          onChange={handleChange}
-          name="textmask"
-          inputComponent={TextMaskCustom}
-        />
-      </FormControl>
+      <InputLabel>Phone Number</InputLabel>
+      <Input
+        value={values.textmask}
+        onChange={handleChange}
+        name="textmask"
+        inputComponent={TextMaskCustom}
+      />
+    </FormControl>
   );
 };
 
-const ProvinceDrawer = () =>{
+const ProvinceDrawer = () => {
   const [province, setProvince] = React.useState('');
 
   const handleChange = (event) => {
     setProvince(event.target.value);
   };
-  return(
-    <div  style={{ width: "250px" }}>
+  return (
+    <div >
       <FormControl>
         <Select
           value={province}
           onChange={handleChange}
+          margin="normal"
         >
-          <MenuItem value={"QC"}>QC</MenuItem>
-          <MenuItem value={"ON"}>ON</MenuItem>SS
+          {
+            ['AB', 'BC', 'MB',
+              'NB', 'NL', 'NT',
+              'NS', 'NU', 'ON',
+              'PE', 'QC', 'SK', 'YT'
+            ].map(province =>
+              <MenuItem value={province}>
+                {province}
+              </MenuItem>
+            )
+          }
         </Select>
       </FormControl>
     </div>
@@ -136,55 +145,52 @@ function LoadedView() {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
         <DialogTitle>Add New Vendor</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please Do Not Leave Any Fields Empty!
-          </DialogContentText>
           <InputLabel>Vendor Name</InputLabel>
           <TextField
-            autoFocus
+            required
+            autoFocuss
             margin="dense"
             id="name"
+            label="Required"
             type="text"
-            />
+          />
           <InputLabel>Address</InputLabel>
           <TextField
             autoFocus
-            margin="dense"
+            margin="normal"
             type="text"
-            multiline
-            rows={2}
-            fullWidth/>
-
-            <Grid container spacing={2}>
+            fullWidth />
+          <Grid container spacing={2}>
             <Grid item md={3}>
-            <InputLabel>City</InputLabel>
-            <TextField
-            autoFocus
-            margin="dense"
-            type="text"/>
+              <InputLabel>City</InputLabel>
+              <TextField
+                autoFocus
+                margin="normal"
+                type="text" />
             </Grid>
             <Grid item md={3}>
-            <InputLabel>Postal Code</InputLabel>
-            <TextField
-            autoFocus
-            margin="dense"
-            type="text"/>
+              <InputLabel>Postal Code</InputLabel>
+              <TextField
+                autoFocus
+                margin="normal"
+                inputProps={{ maxLength: 6 }}
+                type="text" />
             </Grid>
             <Grid item md={3}>
-            <InputLabel>Province</InputLabel>
-            <ProvinceDrawer/>
+              <InputLabel>Province</InputLabel>
+              <ProvinceDrawer />
             </Grid>
           </Grid>
-          <PhoneNumberField/>
+          <PhoneNumberField />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
           <Button onClick={() => {
-            handleClose() ;
+            handleClose();
             AddNewVendor();
-        }} color="primary">
+          }} color="primary">
             Add Vendor
           </Button>
         </DialogActions>
@@ -200,17 +206,17 @@ function LoadedView() {
         <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
           Add New Vendor
         </Button>
-        <AddCustomerDialogBox/>
-        <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} onRowClick={(newSelection) => { ShowVendorDetail(newSelection); } } />
+        <AddCustomerDialogBox />
+        <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} onRowClick={(newSelection) => { ShowVendorDetail(newSelection); }} />
       </div>
       <div style={{ height: 600, width: '45%', float: 'right' }}>
         <div>
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
-          <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewPurchaseOrder(); } }>
+          <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewPurchaseOrder(); }}>
             Add New Purchase Order
           </Button>
         </div>
-        <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} onRowClick={(newSelection) => { ShowPurchaseOrderDetail(newSelection); } } />
+        <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} onRowClick={(newSelection) => { ShowPurchaseOrderDetail(newSelection); }} />
       </div>
     </div>
   );
