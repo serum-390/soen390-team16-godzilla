@@ -148,6 +148,7 @@ const LogOutButton = () => {
         </Button>
           <Button onClick={() => {
             handleClose();
+            Logout();
           }} color="primary">
             Confirm Log Out
         </Button>
@@ -159,12 +160,14 @@ const LogOutButton = () => {
   return (
     <div>
       <DelayedTooltip title="Logout">
-        <IconButton onClick={handleClickOpen}>
+        <IconButton onClick={
+          handleClickOpen
+        }>
           <ExitToAppIcon />
         </IconButton>
       </DelayedTooltip>
       <LogOutDialogBox />
-    </div>
+    </div >
   );
 
 };
@@ -257,7 +260,7 @@ function NavBar() {
 }
 
 function Logout() {
-  alert('LogOut');
+  alert('Logged out');
 }
 
 export { DrawerList, NavBar, ContentSwitch, LogOutButton };
