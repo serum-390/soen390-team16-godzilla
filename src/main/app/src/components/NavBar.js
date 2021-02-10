@@ -159,10 +159,13 @@ const LogOutButton = () => {
 
   return (
     <div>
-      <IconButton onClick={handleClickOpen}>
-        <ExitToAppIcon />
-      </IconButton>
+      <DelayedTooltip title="Logout">
+        <IconButton onClick={handleClickOpen}>
+          <ExitToAppIcon />
+        </IconButton>
+      </DelayedTooltip>
       <LogOutDialogBox />
+
     </div>
   );
 
@@ -225,9 +228,7 @@ function NavBar() {
                 </DelayedTooltip>
               </Link>
             </div>
-            <DelayedTooltip title="Logout">
-              <LogOutButton />
-            </DelayedTooltip>
+            <LogOutButton />
           </Toolbar>
         </AppBar>
         <Drawer
