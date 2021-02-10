@@ -1,7 +1,19 @@
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, Dialog, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
 import React from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import MaskedInput from 'react-text-mask';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import PropTypes from 'prop-types';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,15 +53,160 @@ const orderRows = [
   { id: 4, vendorName: 'Vendor1', items: '????', timestamp: "01/31/2021", cost: "$100" }
 ];
 
-const LoadedView = () => {
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={(ref) => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+}
+
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+};
+
+const PhoneNumberField = () => {
+  const [values, setValues] = React.useState({
+    textmask: '(  )    -    ',
+    numberformat: '1320',
+  });
+
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+  };
+  return (
+    <FormControl>
+      <InputLabel>Phone Number</InputLabel>
+      <Input
+        value={values.textmask}
+        onChange={handleChange}
+        name="textmask"
+        inputComponent={TextMaskCustom}
+      />
+    </FormControl>
+  );
+};
+
+const ProvinceDrawer = () => {
+  const [province, setProvince] = React.useState('');
+
+  const handleChange = (event) => {
+    setProvince(event.target.value);
+  };
+  return (
+    <div >
+      <FormControl>
+        <Select
+          value={province}
+          onChange={handleChange}
+          margin="normal"
+        >
+          {
+            ['AB', 'BC', 'MB',
+              'NB', 'NL', 'NT',
+              'NS', 'NU', 'ON',
+              'PE', 'QC', 'SK', 'YT'
+            ].map(province =>
+              <MenuItem value={province}>
+                {province}
+              </MenuItem>
+            )
+          }
+        </Select>
+      </FormControl>
+    </div>
+  );
+};
+
+function LoadedView() {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const AddCustomerDialogBox = () => {
+    return (
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
+        <DialogTitle>Add New Vendor</DialogTitle>
+        <DialogContent>
+          <InputLabel>Vendor Name</InputLabel>
+          <TextField
+            required
+            autoFocuss
+            margin="dense"
+            id="name"
+            label="Required"
+            type="text"
+          />
+          <InputLabel>Address</InputLabel>
+          <TextField
+            autoFocus
+            margin="normal"
+            type="text"
+            fullWidth />
+          <Grid container spacing={2}>
+            <Grid item md={3}>
+              <InputLabel>City</InputLabel>
+              <TextField
+                autoFocus
+                margin="normal"
+                type="text" />
+            </Grid>
+            <Grid item md={3}>
+              <InputLabel>Postal Code</InputLabel>
+              <TextField
+                autoFocus
+                margin="normal"
+                inputProps={{ maxLength: 6 }}
+                type="text" />
+            </Grid>
+            <Grid item md={3}>
+              <InputLabel>Province</InputLabel>
+              <ProvinceDrawer />
+            </Grid>
+          </Grid>
+          <PhoneNumberField />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => {
+            handleClose();
+            AddNewVendor();
+          }} color="primary">
+            Add Vendor
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
       <div style={{ height: 600, width: '45%', float: 'left' }}>
         <h2 style={{ float: 'left' }}>Vendors</h2>
-        <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewVendor(); }}>
+        <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
           Add New Vendor
-                    </Button>
+        </Button>
+        <AddCustomerDialogBox />
         <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} onRowClick={(newSelection) => { ShowVendorDetail(newSelection); }} />
       </div>
       <div style={{ height: 600, width: '45%', float: 'right' }}>
@@ -57,7 +214,7 @@ const LoadedView = () => {
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
           <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewPurchaseOrder(); }}>
             Add New Purchase Order
-                    </Button>
+          </Button>
         </div>
         <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} onRowClick={(newSelection) => { ShowPurchaseOrderDetail(newSelection); }} />
       </div>
