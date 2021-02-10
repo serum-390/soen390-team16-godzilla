@@ -135,7 +135,6 @@ const LogOutButton = () => {
     setOpen(false);
   };
 
-
   const LogOutDialogBox = () => {
     return (
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
@@ -165,13 +164,10 @@ const LogOutButton = () => {
         </IconButton>
       </DelayedTooltip>
       <LogOutDialogBox />
-
     </div>
   );
 
 };
-
-
 
 function NavBar() {
 
@@ -258,6 +254,10 @@ function NavBar() {
       </Router>
     </div>
   );
+}
+
+function Logout() {
+  alert('LogOut');
 }
 
 export { DrawerList, NavBar, ContentSwitch, LogOutButton };
