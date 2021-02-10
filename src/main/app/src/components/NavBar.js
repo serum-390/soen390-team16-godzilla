@@ -157,7 +157,6 @@ const LogOutButton = () => {
     );
   };
 
-
   return (
     <div>
       <IconButton onClick={handleClickOpen}>

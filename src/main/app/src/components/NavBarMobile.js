@@ -7,8 +7,6 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { ContentSwitch, DrawerList, LogOutButton } from './NavBar';
 import useNavBarStyles from '../styles/navBarSyles';
 
-
-
 function NavBarMobile() {
 
   const classes = useNavBarStyles();
