@@ -1,11 +1,10 @@
 import { AppBar, Drawer, IconButton, Toolbar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
-import { ContentSwitch, DrawerList } from './NavBar';
+import { ContentSwitch, DrawerList, LogOutButton } from './NavBar';
 import useNavBarStyles from '../styles/navBarSyles';
 
 function NavBarMobile() {
@@ -33,9 +32,7 @@ function NavBarMobile() {
                 <AccountCircleIcon />
               </IconButton>
             </Link>
-            <IconButton>
-              <ExitToAppIcon />
-            </IconButton>
+            <LogOutButton />
           </Toolbar>
         </AppBar>
         <Drawer

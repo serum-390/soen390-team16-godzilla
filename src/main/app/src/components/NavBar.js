@@ -1,4 +1,4 @@
-import { AppBar, CssBaseline, Drawer, Fade, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
+import { AppBar, Button, CssBaseline, Dialog, DialogContentText, Drawer, Fade, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -34,8 +34,11 @@ import Purchase from './Purchasing';
 import Sales from './Sales';
 import UserAccount from './UserAccount';
 import Tooltip from '@material-ui/core/Tooltip';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-const DelayedTooltip = ({title, placement, ...props}) => {
+const DelayedTooltip = ({ title, placement, ...props }) => {
   return (
     <Tooltip
       {...props}
@@ -121,6 +124,54 @@ const ContentSwitch = () => {
   );
 };
 
+const LogOutButton = () => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const LogOutDialogBox = () => {
+    return (
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
+        <DialogTitle>Log Out</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Do you want to log out of your account?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+        </Button>
+          <Button onClick={() => {
+            handleClose();
+            Logout();
+          }} color="primary">
+            Confirm Log Out
+        </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
+  return (
+    <div>
+      <DelayedTooltip title="Logout">
+        <IconButton onClick={
+          handleClickOpen
+        }>
+          <ExitToAppIcon />
+        </IconButton>
+      </DelayedTooltip>
+      <LogOutDialogBox />
+    </div >
+  );
+
+};
+
 function NavBar() {
 
   const classes = useNavBarStyles();
@@ -129,6 +180,7 @@ function NavBar() {
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
+
 
   return (
     <div className={classes.root}>
@@ -174,12 +226,8 @@ function NavBar() {
                   </IconButton>
                 </DelayedTooltip>
               </Link>
-              <DelayedTooltip title="Logout">
-                <IconButton>
-                  <ExitToAppIcon />
-                </IconButton>
-              </DelayedTooltip>
             </div>
+            <LogOutButton />
           </Toolbar>
         </AppBar>
         <Drawer
@@ -211,5 +259,9 @@ function NavBar() {
   );
 }
 
-export { DrawerList, NavBar, ContentSwitch };
+function Logout() {
+  alert('Logged out');
+}
+
+export { DrawerList, NavBar, ContentSwitch, LogOutButton };
 export default NavBar;
