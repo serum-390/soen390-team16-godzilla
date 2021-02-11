@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.experimental;
+package ca.serum390.godzilla.util.experimental;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

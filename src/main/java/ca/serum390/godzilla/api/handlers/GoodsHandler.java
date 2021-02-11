@@ -1,8 +1,8 @@
-package ca.serum390.godzilla.handlers;
+package ca.serum390.godzilla.api.handlers;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
-import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.created;
+import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
+import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 import java.net.URI;
@@ -13,8 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.manufacturing.Good;
-import ca.serum390.godzilla.repository.GoodsRepository;
+import ca.serum390.godzilla.data.repositories.GoodsRepository;
+import ca.serum390.godzilla.domain.manufacturing.Good;
 import reactor.core.publisher.Mono;
 
 @Component

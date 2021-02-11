@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.configuration;
+package ca.serum390.godzilla.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
