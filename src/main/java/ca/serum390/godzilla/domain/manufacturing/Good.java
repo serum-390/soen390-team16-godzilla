@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.manufacturing;
+package ca.serum390.godzilla.domain.manufacturing;
 
 import java.util.UUID;
 

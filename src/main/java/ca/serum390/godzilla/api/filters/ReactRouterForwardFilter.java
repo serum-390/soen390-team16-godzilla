@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.configuration;
+package ca.serum390.godzilla.api.filters;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;

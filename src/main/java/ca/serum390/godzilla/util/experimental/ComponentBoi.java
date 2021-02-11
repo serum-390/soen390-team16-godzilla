@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.experimental;
+package ca.serum390.godzilla.util.experimental;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

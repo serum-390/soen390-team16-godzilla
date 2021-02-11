@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.configuration.routers;
+package ca.serum390.godzilla.api.routers;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +8,10 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.experimental.HelloHandler;
-import ca.serum390.godzilla.handlers.InventoryHandler;
-import ca.serum390.godzilla.handlers.SalesHandler;
+import ca.serum390.godzilla.api.handlers.InventoryHandler;
+import ca.serum390.godzilla.api.handlers.SalesHandler;
+import ca.serum390.godzilla.util.experimental.HelloHandler;
+
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
@@ -22,12 +23,15 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route(
-            RouterFunction<ServerResponse> goodsRoute,
-            HelloHandler helloHandler) {
+            HelloHandler helloHandler,
+            InventoryHandler inventoryHandler,
+            SalesHandler salesHandler,
+            RouterFunction<ServerResponse> goodsRoute) {
+
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
-                    .GET("/inv", InventoryHandler::demoInventory)
-                    .GET("/sales", SalesHandler::demoSales)
+                    .GET("/inv", inventoryHandler::demoInventory)
+                    .GET("/sales", salesHandler::demoSales)
                     .GET("/hello", helloHandler::helloWorld)
                     .add(goodsRoute)
                     .build())

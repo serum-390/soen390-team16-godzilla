@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.helper;
+package ca.serum390.godzilla.util;
 
 import java.util.HashMap;
 import java.util.Map;
