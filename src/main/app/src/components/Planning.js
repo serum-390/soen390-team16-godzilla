@@ -8,6 +8,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Calendar from './planning/Calendar';
+
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -76,7 +79,7 @@ function ScheduleTable() {
             <TableCell>Sa</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {scheduleRows.map((row) => (
             <TableRow key={row.name}>
               {row[0]}
@@ -137,12 +140,15 @@ function ActivityTable() {
   );
 }
 
+
+
 const LoadedView = () => {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Planning Department</h1>
       <div style={{ height: 600, width: '55%', float: 'left' }}>
-        <ScheduleTable></ScheduleTable>
+        {/*<ScheduleTable></ScheduleTable>*/}
+        {<Calendar></Calendar>}
       </div>
       <div style={{ height: 600, width: '40%', float: 'right' }}>
 
@@ -156,7 +162,7 @@ function SavePlanning() {
   alert("Now saving planning...");
 }
 
-function Planning() {
+const Planning = props => {
 
   const classes = useStyles();
 
