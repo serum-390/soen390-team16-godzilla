@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 
-export default function AddCustomerForm() {
+export default function CustomerForm(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -23,13 +23,14 @@ export default function AddCustomerForm() {
   return (
     <div>
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
-      Add New Customer
+      {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add New Customer</DialogTitle>
+        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
+        
         <DialogContent>
           <DialogContentText>
-            Please enter the following information below to add a new customer: 
+            {props.dialogContentText}
           </DialogContentText>
           <TextField
             autoFocus
@@ -60,7 +61,7 @@ export default function AddCustomerForm() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Save
+            {props.submitButton}
           </Button>
           <Button onClick={handleClose} color="primary">
             Cancel

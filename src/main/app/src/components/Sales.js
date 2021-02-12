@@ -3,7 +3,6 @@ import { DataGrid } from "@material-ui/data-grid";
 import { useState } from 'react';
 import useSalesPageStyles from "../styles/salesPageStyles";
 import { SpinBeforeLoading } from "./inventory/Inventory";
-import  EditDialog  from "../Forms/EditForm";
 import  CustomerForm  from "../Forms/CustomerForm";
 
 
@@ -19,17 +18,18 @@ const cols = [
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
-          /*
-          <Button variant='contained'
+         /*<Button variant='contained'
           color='secondary'
           onClick={params.value.onClick}>
-          Show
-          </Button>
+          show</Button> 
           */
-         <EditDialog/>
-          
-        } 
-        
+         <CustomerForm  
+         initialButton='Edit' 
+         dialogTitle='Customer Information '  
+         dialogContentText='Please enter any information you would like to modify: ' 
+         submitButton='Update'  
+         /> 
+        }  
       </div>
     ),
   },
@@ -58,7 +58,11 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
       <div style={{ height: 600, width: '45%', float: 'left' }}> 
         <div>
         <h2 style={{ float: 'left' }}>Customer</h2>
-        <CustomerForm />
+        <CustomerForm  
+        initialButton='Add New Customer'  
+        dialogTitle='Add New Customer '  
+        dialogContentText='Please enter the following information below to add a new customer: ' 
+        submitButton='Save'/>
         </div>
         <DataGrid
           columns={columns}
