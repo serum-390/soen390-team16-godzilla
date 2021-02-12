@@ -1,18 +1,9 @@
 <!-- Header and logo -->
 <p align="center">
   <a href="https://godzilla.serum-390.app/">
-    <!-- <img src="https://raw.githubusercontent.com/wiki/serum-390/soen390-team16-godzilla/images/main-on-transparent-min-small.png"
-         alt="Godzilla ERP"
-    /> -->
     <img src="https://raw.githubusercontent.com/wiki/serum-390/soen390-team16-godzilla/images/main-on-transparent-min.png"
          alt="Godzilla ERP"
-         height="378"
-    />
-        <!-- <img src="https://raw.githubusercontent.com/wiki/serum-390/soen390-team16-godzilla/images/main-on-transparent-min.png"
-         alt="Godzilla ERP"
-         height="378"
-         width="500"
-    /> -->
+         height="378" />
   </a>
 </p>
 

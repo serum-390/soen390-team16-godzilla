@@ -1,5 +1,4 @@
 import { AppBar, Drawer, IconButton, Toolbar } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
@@ -24,9 +23,10 @@ function NavBarMobile() {
             <IconButton onClick={handleDrawer}>
               <MenuIcon />
             </IconButton>
-            <Typography style={{ flexGrow: 1 }}>
-              Godzilla ERP
-            </Typography>
+            <img src="/resources/images/name-logo-min.png"
+                 className={classes.nameLogo}
+                 alt="Godzilla ERP"
+            />
             <Link to="/UserAccount" className={classes.link}>
               <IconButton>
                 <AccountCircleIcon />
