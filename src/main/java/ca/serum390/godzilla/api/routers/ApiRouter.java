@@ -23,9 +23,9 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route(
+            SalesHandler salesHandler,
             HelloHandler helloHandler,
             InventoryHandler inventoryHandler,
-            SalesHandler salesHandler,
             RouterFunction<ServerResponse> goodsRoute) {
 
         return RouterFunctions.route()
@@ -44,6 +44,8 @@ public class ApiRouter implements WebFluxConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
-                .addResourceLocations("/public", "classpath:/static/");
+                .addResourceLocations("/public",
+                                      "classpath:/static/",
+                                      "classpath:/static/resources/");
     }
 }
