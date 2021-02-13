@@ -1,9 +1,8 @@
-import { AppBar, Button, CssBaseline, Dialog, DialogContentText, Drawer, Fade, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
+import { AppBar, Button, CssBaseline, Dialog, DialogContentText, Drawer, Fade, Grid, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useTheme } from "@material-ui/core/styles";
-import Typography from '@material-ui/core/Typography';
 import { ChevronLeft } from '@material-ui/icons';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -20,7 +19,7 @@ import MotorcycleIcon from '@material-ui/icons/Motorcycle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Link, Route, Switch, useLocation } from 'react-router-dom';
 import useNavBarStyles from '../styles/navBarSyles';
 import About from './About';
@@ -37,6 +36,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import useBooleanState from '../util/hooks';
 
 const DelayedTooltip = ({ title, placement, ...props }) => {
   return (
@@ -125,15 +125,8 @@ const ContentSwitch = () => {
 };
 
 const LogOutButton = () => {
-  const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [open, handleOpen, handleClose] = useBooleanState(false);
 
   const LogOutDialogBox = () => {
     return (
@@ -160,27 +153,57 @@ const LogOutButton = () => {
   return (
     <div>
       <DelayedTooltip title="Logout">
-        <IconButton onClick={
-          handleClickOpen
-        }>
+        <IconButton onClick={handleOpen}>
           <ExitToAppIcon />
         </IconButton>
       </DelayedTooltip>
       <LogOutDialogBox />
     </div >
   );
+};
 
+const UserAccountButton = ({ className }) => {
+  return (
+    <Link to="/useraccount" className={className}>
+      <DelayedTooltip title="User Account">
+        <IconButton>
+          <AccountCircleIcon />
+        </IconButton>
+      </DelayedTooltip>
+    </Link>
+  );
+};
+
+const SearchBar = ({classes, searchBarFocused, focusSearchBar, unfocusSearchBar}) => {
+  return (
+    <div
+    className={clsx(classes.search, {
+      [classes.searchBarFocused]: searchBarFocused,
+    })}
+    onFocus={focusSearchBar}
+    onBlur={unfocusSearchBar}
+  >
+    <div className={classes.searchIcon}>
+      <SearchIcon />
+    </div>
+    <InputBase
+      placeholder="Search…"
+      classes={{
+        root: classes.inputRoot,
+        input: classes.inputInput,
+      }}
+      inputProps={{ 'aria-label': 'search' }}
+    />
+  </div>
+  );
 };
 
 function NavBar() {
 
   const classes = useNavBarStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
-
-  const handleDrawerOpen = () => setOpen(true);
-  const handleDrawerClose = () => setOpen(false);
-
+  const [open, handleDrawerOpen, handleDrawerClose] = useBooleanState(false);
+  const [searchBarFocused, focusSearchBar, unfocusSearchBar] = useBooleanState(false);
 
   return (
     <div className={classes.root}>
@@ -204,30 +227,26 @@ function NavBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant='h6' noWrap>Godzilla ERP</Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </div>
-            <div style={{ marginLeft: 'auto' }}>
-              <Link to="/useraccount" className={classes.link}>
-                <DelayedTooltip title="User Account">
-                  <IconButton>
-                    <AccountCircleIcon />
-                  </IconButton>
-                </DelayedTooltip>
-              </Link>
-            </div>
-            <LogOutButton />
+            <img src="/resources/images/name-logo-min.png"
+                 className={classes.nameLogo}
+                 alt="Godzilla ERP"
+            />
+            <Grid container spacing={0} justify='flex-end' >
+              <Grid item key={0} style={{ padding: useTheme().spacing(1, 0)}}>
+                <SearchBar
+                  classes={classes}
+                  searchBarFocused={searchBarFocused}
+                  focusSearchBar={focusSearchBar}
+                  unfocusSearchBar={unfocusSearchBar}
+                />
+              </Grid>
+              <Grid item key={1}>
+                <UserAccountButton className={classes.link} />
+              </Grid>
+              <Grid item key={2}>
+                <LogOutButton />
+              </Grid>
+            </Grid>
           </Toolbar>
         </AppBar>
         <Drawer

@@ -64,17 +64,27 @@ const useNavBarStyles = makeStyles(theme => ({
   },
   link: {
     textDecoration: 'none',
-    color: theme.palette.text.primary
+    color: theme.palette.text.primary,
   },
   search: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(1, 0),
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
-    margin: 'auto',
-    width: '44%',
+    height: '2.5em',
+    width: '20em',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.shorter,
+    }),
+  },
+  searchBarFocused: {
+    width: '23em',
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -101,6 +111,9 @@ const useNavBarStyles = makeStyles(theme => ({
   selected: {
     borderLeft: '4px solid',
     borderColor: '#2196F3',
+  },
+  nameLogo: {
+    maxHeight: "2em",
   },
 }));
 
