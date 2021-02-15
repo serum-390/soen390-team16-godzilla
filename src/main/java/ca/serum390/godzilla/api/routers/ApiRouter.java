@@ -12,7 +12,6 @@ import ca.serum390.godzilla.api.handlers.InventoryHandler;
 import ca.serum390.godzilla.api.handlers.SalesHandler;
 import ca.serum390.godzilla.util.experimental.HelloHandler;
 
-
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
 
@@ -26,7 +25,8 @@ public class ApiRouter implements WebFluxConfigurer {
             SalesHandler salesHandler,
             HelloHandler helloHandler,
             InventoryHandler inventoryHandler,
-            RouterFunction<ServerResponse> goodsRoute) {
+            RouterFunction<ServerResponse> goodsRoute,
+            RouterFunction<ServerResponse> inventoryRoute) {
 
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
@@ -34,6 +34,7 @@ public class ApiRouter implements WebFluxConfigurer {
                     .GET("/sales", salesHandler::demoSales)
                     .GET("/hello", helloHandler::helloWorld)
                     .add(goodsRoute)
+                    .add(inventoryRoute)
                     .build())
                 .build();
     }

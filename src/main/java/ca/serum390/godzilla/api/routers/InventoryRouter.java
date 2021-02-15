@@ -16,7 +16,7 @@ public class InventoryRouter {
     public RouterFunction<ServerResponse> inventoryRoute(InventoryHandler inventoryHandler){
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/inventory/", build -> builder)
+                .path("/inventory/", builder -> builder
                     .GET("/", inventoryHandler :: getAll)
                     .GET(ID, inventoryHandler :: getById)
                     .DELETE(ID, inventoryHandler :: deleteByID))

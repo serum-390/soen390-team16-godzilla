@@ -1,5 +1,6 @@
 package ca.serum390.godzilla.domain.Inventory;
 
+import java.net.Inet4Address;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -23,7 +24,7 @@ import lombok.ToString;
 public class Item {
 
     @Id
-    private UUID id;
+    private Integer id;
     private String item_name;
     private int good_type;
     private int quantity;
