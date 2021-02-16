@@ -90,7 +90,7 @@ public class InventoryHandler {
      */
     public Mono<ServerResponse> getById(ServerRequest req){
         return items.findById(
-            UUID.fromString(req.pathVariable("id")))
+            Integer.parseInt(req.pathVariable("id")))
             .flatMap(inventory -> ok().body(Mono.just(inventory),Item.class))
             .switchIfEmpty(notFound().build()
         );
@@ -101,7 +101,7 @@ public class InventoryHandler {
      */
     public Mono<ServerResponse> deleteByID(ServerRequest req){
         return items.deleteById(
-            UUID.fromString(req.pathVariable("id")))
+            Integer.parseInt(req.pathVariable("id")))
             .flatMap(deleted -> noContent().build()
         );
     }

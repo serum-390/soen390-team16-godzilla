@@ -22,7 +22,7 @@ import lombok.ToString;
 public class Item {
 
     @Id
-    private UUID id;
+    private Integer id;
     private String itemName;
     private int goodType;
     private int quantity;
