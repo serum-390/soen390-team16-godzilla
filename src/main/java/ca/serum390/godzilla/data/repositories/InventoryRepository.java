@@ -13,4 +13,21 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface InventoryRepository extends ReactiveCrudRepository<Item, UUID> {
 
+    
+    //Search by id for the bill of material 
+    @Query("SELECT 'bill_of_material' FROM inventory WHERE id = $1")
+    Mono<Integer> BOMfindById(Integer id);
+
+    //Search by id for the quantity
+    @Query("SELECT 'quantity' FROM inventory WHERE id = $1")
+    Mono<Integer> QTYfindById(Integer id);
+
+    //Search by name
+    @Query("SELECT FROM inventory WHERE item_name = $1")
+    Mono<String> FindbyName(String item_name);
+
+    //@Modifying
+    //@Query("UPDATE goods SET item_name = $1, good_type = $2, quantity = $3, buy_price = $4, sell_price = $5, location = $6, bill_of_material = $7 WHERE id = $8")
+    //Mono<Integer> update(String item_name,int good_type,int quantity, float buy_price, float sell_price, String location, Boolean bill_of_material, UUID id);
+
 }

@@ -19,16 +19,15 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Item {
 
     @Id
     private UUID id;
-    private String item_name;
-    private int good_type;
+    private String itemName;
+    private int goodType;
     private int quantity;
-    private float buy_price;
-    private float sell_price;
+    private float buyPrice;
+    private float sellPrice;
     private String location;
-    private boolean bill_of_material;
+    private boolean billOfMaterial;
 }

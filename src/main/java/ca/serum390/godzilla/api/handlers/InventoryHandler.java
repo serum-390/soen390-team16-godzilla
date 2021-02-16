@@ -1,41 +1,36 @@
 package ca.serum390.godzilla.api.handlers;
 
-import static ca.serum390.godzilla.util.BuildableMap.map;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-
-import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.domain.Inventory.Item;
-import reactor.core.publisher.Mono;
-
-
-import java.net.URI;
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import static org.springframework.web.reactive.function.server.ServerResponse.created;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.util.NumberUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import ca.serum390.godzilla.data.repositories.InventoryRepository;
+import ca.serum390.godzilla.domain.Inventory.Item;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 @Component
 public class InventoryHandler {
 
-    public Mono<ServerResponse> demoInventory(ServerRequest request) {
+    /*public Mono<ServerResponse> demoInventory(ServerRequest request) {
         return ok().contentType(MediaType.APPLICATION_JSON)
                    .bodyValue(buildDemoInventory());
-    }
+    }/
 
-    private static Map<Object, Object> buildDemoInventory() {
+    /*private static Map<Object, Object> buildDemoInventory() {
         final String NAME = "name";
         final String TYPE = "type";
         final String IMAGE_URL = "image_url";
@@ -57,7 +52,11 @@ public class InventoryHandler {
                              .with(DESCRIPTION, "A finished bicycle.")
                     ));
     }
+    */
 
+    /**
+     * {@link InventoryRepository}
+     */
     private final InventoryRepository items;
 
     public InventoryHandler(InventoryRepository items){
@@ -76,48 +75,6 @@ public class InventoryHandler {
     /**
      * Update item in the table
      */
-    public Mono<ServerResponse> update(ServerRequest req){
-        var existed = items.findById(UUID.fromString(req.pathVariable("id")));
-        return Mono.zip(
-            data -> {
-                Item i = (Item) data[0];
-                Item i2 = (Item) data[1];
-                if (i2 != null && StringUtils.hasText(i2.getItem_name())){
-                    i.setItem_name(i2.getItem_name);
-                }
-                if (i2 != null && StringUtils.hasText(i2.getGood_type())){
-                    i.setGood_type(i2.getGood_type);
-                }
-                if (i2 != null && StringUtils.hasText(i2.getQuantity())){
-                    i.setQuantity(i2.getQuantity);
-                }
-                if (i2 != null && StringUtils.hasText(i2.getBuy_price())){
-                    i.setBuy_price(i2.getBuy_price);
-                }
-                if (i2 != null && StringUtils.hasText(i2.getSell_price())){
-                    i.setSell_price(i2.getSell_price);
-                }
-                if (i2 != null && StringUtils.hasText(i2.getLocation())){
-                    i.setLocation(i2.getLocation);
-                }
-                if (i2 != null && StringUtils.hasText(i2.getBill_of_material())){
-                    i.setBill_of_material(i2.getBill_of_material);
-                }
-                return g;
-            }, 
-            existed,
-            req.bodyToMono(Item.class)
-        ).cast(Item.class)
-            .flatMap(inventory -> items.update(item.getId(),
-                                                item.getItem_name(),
-                                                item.getGood_type(),
-                                                item.getQuantity(),
-                                                item.getBuy_price(),
-                                                item.getSell_price(),
-                                                item.getLocation(),
-                                                item.getBill_of_material()))
-            .flatMap(inventory -> noContent().build());
-    }
 
     /**
      * Get db table inventory
@@ -129,7 +86,7 @@ public class InventoryHandler {
     }
 
     /**
-     * Get db table inventory by id
+     * Get db table inventory by id 
      */
     public Mono<ServerResponse> getById(ServerRequest req){
         return items.findById(
@@ -147,5 +104,14 @@ public class InventoryHandler {
             UUID.fromString(req.pathVariable("id")))
             .flatMap(deleted -> noContent().build()
         );
+    }
+
+    /**
+     * Find by item name
+     */
+    public Mono<ServerResponse> FindbyName(ServerRequest req) {
+        String name = "SuperSkill BICYCLE1";
+        return items.FindbyName(name).flatMap(inventory -> ok().body(Mono.just(inventory), Item.class))
+        .switchIfEmpty(notFound().build());
     }
 }
