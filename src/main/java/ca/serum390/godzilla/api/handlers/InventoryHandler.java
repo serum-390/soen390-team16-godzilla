@@ -65,6 +65,61 @@ public class InventoryHandler {
     }
 
     /**
+     * Insert into the table
+     */
+    public Mono<ServerResponse> insert(ServerRequest req){
+        return req.bodyToMono(Item.class)
+            .flatMap(items::save)
+            .flatMap(id -> created(URI.create("/items/" + id)).build());
+    } 
+
+    /**
+     * Update item in the table
+     */
+    public Mono<ServerResponse> update(ServerRequest req){
+        var existed = items.findById(UUID.fromString(req.pathVariable("id")));
+        return Mono.zip(
+            data -> {
+                Item i = (Item) data[0];
+                Item i2 = (Item) data[1];
+                if (i2 != null && StringUtils.hasText(i2.getItem_name())){
+                    i.setItem_name(i2.getItem_name);
+                }
+                if (i2 != null && StringUtils.hasText(i2.getGood_type())){
+                    i.setGood_type(i2.getGood_type);
+                }
+                if (i2 != null && StringUtils.hasText(i2.getQuantity())){
+                    i.setQuantity(i2.getQuantity);
+                }
+                if (i2 != null && StringUtils.hasText(i2.getBuy_price())){
+                    i.setBuy_price(i2.getBuy_price);
+                }
+                if (i2 != null && StringUtils.hasText(i2.getSell_price())){
+                    i.setSell_price(i2.getSell_price);
+                }
+                if (i2 != null && StringUtils.hasText(i2.getLocation())){
+                    i.setLocation(i2.getLocation);
+                }
+                if (i2 != null && StringUtils.hasText(i2.getBill_of_material())){
+                    i.setBill_of_material(i2.getBill_of_material);
+                }
+                return g;
+            }, 
+            existed,
+            req.bodyToMono(Item.class)
+        ).cast(Item.class)
+            .flatMap(inventory -> items.update(item.getId(),
+                                                item.getItem_name(),
+                                                item.getGood_type(),
+                                                item.getQuantity(),
+                                                item.getBuy_price(),
+                                                item.getSell_price(),
+                                                item.getLocation(),
+                                                item.getBill_of_material()))
+            .flatMap(inventory -> noContent().build());
+    }
+
+    /**
      * Get db table inventory
      */
     public Mono<ServerResponse> getAll(ServerRequest req){
