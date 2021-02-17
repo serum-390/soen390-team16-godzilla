@@ -109,9 +109,9 @@ public class InventoryHandler {
     /**
      * Find by item name
      */
-    public Mono<ServerResponse> FindbyName(ServerRequest req) {
-        String name = "SuperSkill BICYCLE1";
-        return items.FindbyName(name).flatMap(inventory -> ok().body(Mono.just(inventory), Item.class))
-        .switchIfEmpty(notFound().build());
-    }
+//    public Mono<ServerResponse> FindbyName(ServerRequest req) {
+//        String name = "SuperSkill BICYCLE1";
+//        return items.FindbyName(name).flatMap(inventory -> ok().body(Mono.just(inventory), Item.class))
+//        .switchIfEmpty(notFound().build());
+//    }
 }

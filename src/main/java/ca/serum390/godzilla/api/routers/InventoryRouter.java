@@ -20,7 +20,7 @@ public class InventoryRouter {
                     .GET("/", inventoryHandler :: getAll)
                     //.GET(ID, inventoryHandler :: getById)
                     //.DELETE(ID, inventoryHandler :: deleteByID)
-                    .GET("/find", inventoryHandler :: FindbyName))
-                .build();
+                    //.GET("/find", inventoryHandler :: FindbyName))
+                ).build();
     }
 }
