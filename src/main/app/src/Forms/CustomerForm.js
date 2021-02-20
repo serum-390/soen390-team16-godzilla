@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
   },
   formControl: {
-    margin: theme.spacing(0.5),
+    margin: theme.spacing(2),
     minWidth: 120,
   },
 }));
@@ -45,7 +45,6 @@ function ProvinceOptions() {
 
   return (
     <div>
-      <Button className={classes.button} onClick={handleOpen}> </Button>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-controlled-open-select-label">Province</InputLabel>
         <Select
