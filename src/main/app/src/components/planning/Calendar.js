@@ -42,8 +42,8 @@ function daysInMonth(y, m)
 function loadCalendarData(m, y){
   // CALL BACK-END FOR DAYS BASED ON GIVEN MONTH AND YEAR
   var cData = Array(31).fill('');
-  cData[10] = ['11', "2/11/21", "Cool Activity", "This activity is REALLY cool!", "Monthly", "Ogan Nizer"];
-  cData[11] = ['12', "2/12/21", "Cool Activity2", "This activity is REALLY cool!", "Monthly", "Ogan Nizer"];
+  cData[10] = ["2/11/21", "Cool Activity", "This activity is REALLY cool!", "Monthly", "Ogan Nizer"];
+  cData[11] = ["2/12/21", "Cool Activity2", "This activity is REALLY cool!", "Monthly", "Ogan Nizer"];
   return cData;
 }
 
@@ -128,7 +128,7 @@ const Calendar = ({ changeDay}) => {
   function SelectDay(e, m, y){
     var day = e.target.id;
     var cal = calendarData[day-1];
-    changeDay(day, m, y, cal[2], cal[3], cal[4], cal[5]);
+    changeDay(day, m, y, cal[1], cal[2], cal[3], cal[4]);
   }
 
   return (
