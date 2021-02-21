@@ -6,8 +6,10 @@ import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.domain.Inventory.Item;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -24,7 +26,7 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
 
     //Search by name
     @Query("SELECT FROM inventory WHERE item_name = $1")
-    Mono<String> FindbyName(String item_name);
+    Flux<Item> FindbyName(String item_name);
 
     //@Modifying
     //@Query("UPDATE goods SET item_name = $1, good_type = $2, quantity = $3, buy_price = $4, sell_price = $5, location = $6, bill_of_material = $7 WHERE id = $8")

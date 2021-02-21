@@ -1,5 +1,6 @@
 package ca.serum390.godzilla.api.handlers;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.created;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
@@ -109,8 +110,10 @@ public class InventoryHandler {
     /**
      * Find by item name
      */
-    public Mono<ServerResponse> FindbyName(ServerRequest req) {
-        return items.FindbyName(req.pathVariable("item_name"));
+    public Mono<ServerResponse> findbyName(ServerRequest req) {
+        String name = "SuperSpeed BICYCLE 1";
+        //req.pathVariable("item_name");
+        return ok().contentType(APPLICATION_JSON).body(items.FindbyName(name),Item.class);
     }
 
     /**
