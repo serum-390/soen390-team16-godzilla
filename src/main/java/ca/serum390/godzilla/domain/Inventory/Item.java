@@ -20,7 +20,7 @@ import lombok.ToString;
 public class Item {
 
     @Id
-    private Integer Id;
+    private Integer id;
     private String itemName;
     private int goodType;
     private int quantity;
@@ -29,3 +29,4 @@ public class Item {
     private String location;
     private boolean billOfMaterial;
 }
+

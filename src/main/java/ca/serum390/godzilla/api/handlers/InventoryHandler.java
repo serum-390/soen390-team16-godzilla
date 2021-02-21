@@ -111,8 +111,7 @@ public class InventoryHandler {
      * Find by item name
      */
     public Mono<ServerResponse> findbyName(ServerRequest req) {
-        String name = "SuperSpeed BICYCLE 1";
-        //req.pathVariable("item_name");
+        String name = req.pathVariable("item_name");
         return ok().contentType(APPLICATION_JSON).body(items.FindbyName(name),Item.class);
     }
 

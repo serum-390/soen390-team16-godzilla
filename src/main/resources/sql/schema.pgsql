@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS orders(
 );
 
 CREATE TABLE IF NOT EXISTS BILL_OF_MATERIAL(
-    ITEM_NAME INT references inventory(ID) NOT NULL,
-    item_needed int references inventory(ID) NOT NULL,
+    ITEM_NAME INT NOT NULL,
+    item_needed int NOT NULL,
     QUANTITY INT not NULL
 );
 
