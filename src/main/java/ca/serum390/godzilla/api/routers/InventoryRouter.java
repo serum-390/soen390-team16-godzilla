@@ -17,10 +17,10 @@ public class InventoryRouter {
         final String ID = "/{id}";
         return RouterFunctions.route()
                 .path("/inventory/", builder -> builder
-                    .GET("/", inventoryHandler :: getAll)
-                    //.GET(ID, inventoryHandler :: getById)
-                    //.DELETE(ID, inventoryHandler :: deleteByID)
-                    //.GET("/find", inventoryHandler :: FindbyName))
+                    .GET("/", inventoryHandler::getAll)
+                    //.GET(ID, inventoryHandler::getById)
+                    //.DELETE(ID, inventoryHandler::deleteByID)
+                    //.GET("/find", inventoryHandler::FindbyName))
                 ).build();
     }
 }

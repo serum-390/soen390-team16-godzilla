@@ -40,3 +40,10 @@ CREATE TABLE IF NOT EXISTS orders(
     DUE_DATE DATE NOT NULL,
     DELIVERY_LOCATION VARCHAR NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS BILL_OF_MATERIAL(
+    ITEM_NAME INT references inventory(ID) NOT NULL,
+    item_needed int references inventory(ID) NOT NULL,
+    QUANTITY INT not NULL
+);
+

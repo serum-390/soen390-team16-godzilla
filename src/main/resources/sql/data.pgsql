@@ -1,4 +1,5 @@
 DELETE FROM goods;
+DELETE FROM bill_of_material;
 
 INSERT INTO goods (name, description)
     VALUES ('SuperSpeed Bicycle', 'A really fast bike, fun for the whole family');
@@ -794,3 +795,9 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, sell_price, LO
                 good_type
             WHERE
                 type = 'accp'), 251, 5.99, 5.99, 'MONTREAL CONCORDIA', FALSE);
+
+--BILL_OF_MATERIAL
+INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
+    (1,5,1),
+    (1,9,1),
+    (1,13,1);

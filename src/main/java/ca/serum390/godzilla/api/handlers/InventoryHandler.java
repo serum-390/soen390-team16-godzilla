@@ -114,4 +114,8 @@ public class InventoryHandler {
 //        return items.FindbyName(name).flatMap(inventory -> ok().body(Mono.just(inventory), Item.class))
 //        .switchIfEmpty(notFound().build());
 //    }
+
+    /**
+     * returns true or false for bill of material.
+     */
 }

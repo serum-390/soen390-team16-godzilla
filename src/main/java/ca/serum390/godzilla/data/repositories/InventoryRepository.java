@@ -11,7 +11,7 @@ import ca.serum390.godzilla.domain.Inventory.Item;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface InventoryRepository extends ReactiveCrudRepository<Item, Integer>
+public interface InventoryRepository extends ReactiveCrudRepository<Item, Integer>{
 
     
     //Search by id for the bill of material 
