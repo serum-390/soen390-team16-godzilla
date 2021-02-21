@@ -15,11 +15,13 @@ public class InventoryRouter {
     @Bean
     public RouterFunction<ServerResponse> inventoryRoute(InventoryHandler inventoryHandler){
         final String ID = "/{id}";
+        final String Name = "/{item_name}";
         return RouterFunctions.route()
                 .path("/inventory/", builder -> builder
                     .GET("/", inventoryHandler::getAll)
-                    //.GET(ID, inventoryHandler::getById)
-                    //.DELETE(ID, inventoryHandler::deleteByID)
+                    .GET(ID, inventoryHandler::getById)
+                    .DELETE(ID, inventoryHandler::deleteByID)
+                    .GET(Name, inventoryHandler::FindbyName)
                     //.GET("/find", inventoryHandler::FindbyName))
                 ).build();
     }

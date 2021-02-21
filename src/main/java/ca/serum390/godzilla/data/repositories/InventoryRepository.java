@@ -23,8 +23,8 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
     //Mono<Integer> QTYfindById(Integer id);
 
     //Search by name
-    //@Query("SELECT FROM inventory WHERE item_name = $1")
-    //Mono<String> FindbyName(String item_name);
+    @Query("SELECT FROM inventory WHERE item_name = $1")
+    Mono<String> FindbyName(String item_name);
 
     //@Modifying
     //@Query("UPDATE goods SET item_name = $1, good_type = $2, quantity = $3, buy_price = $4, sell_price = $5, location = $6, bill_of_material = $7 WHERE id = $8")
