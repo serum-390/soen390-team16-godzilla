@@ -18,6 +18,8 @@ public class BomRouter {
                 .path("/bom/", builder -> builder
                     .GET("/", bomHandler::getAll)
                     .GET(ID, bomHandler::findAllByID)
+                    //.DELETE(ID, bomHandler::deleteById)
+                    .POST("/", bomHandler::insert)
                 ).build();    
     }
 }

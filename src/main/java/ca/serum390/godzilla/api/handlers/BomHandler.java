@@ -55,11 +55,11 @@ public class BomHandler {
     /**
      * Delete by id
      */
-    public Mono<ServerResponse> deleteById(ServerRequest req){
-        return boms.deleteById(
-            Integer.parseInt(req.pathVariable("item_name"))
-        ).flatMap(deleted -> noContent().build());
-    }
+    //public Mono<ServerResponse> deleteById(ServerRequest req){
+    //    return boms.deleteById(
+    //        Integer.parseInt(req.pathVariable("item_name"))
+    //    ).flatMap(deleted -> noContent().build());
+    //}
 
     /**
      * Get all by ID
@@ -71,4 +71,8 @@ public class BomHandler {
             BomEntry.class
         );
     }
+
+    //public Mono<ServerResponse> update(ServerRequest req){
+
+    //}
 }

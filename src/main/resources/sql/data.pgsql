@@ -800,4 +800,17 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, sell_price, LO
 INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
     (1,5,1),
     (1,9,1),
-    (1,13,1);
+    (1,13,1),
+    (1,17,2),
+    (2,6,1),
+    (2,10,1),
+    (2,14,1),
+    (2,18,2),
+    (3,7,1),
+    (3,11,1),
+    (3,15,1),
+    (3,19,2),
+    (4,8,1);
+    (4,12,1),
+    (4,16,1),
+    (4,20,2);
