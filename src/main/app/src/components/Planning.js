@@ -9,7 +9,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Calendar from './planning/Calendar';
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,6 +22,12 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 650,
+  },
+  visible: {
+    visibility: 'visible'
+  },
+  invisible: {
+    visibility: 'hidden'
   }
 }));
 
@@ -29,52 +35,112 @@ function createActivityData(title, content) {
   return { title, content };
 }
 
-const LoadedView = () => {
-  const [date, setDate] = useState();
+let showTable = false;
 
-  const changeDay = (d, m, y) => {
+const LoadedView = (classes) => {
+  const [date, setDate] = useState();
+  const [activityName, setActivityName] = useState();
+  const [activityDesc, setActivityDesc] = useState();
+  const [frequency, setFrequency] = useState();
+  const [organiserName, setOrganiserName] = useState();
+
+  const activityTableRef = useRef();
+  //className={classes.invisible}
+
+  const changeDay = (d, m, y, aName, aDesc, freq, oName) => {
     m = (Number.parseInt(m, 10) +1);
     //let day = new Date(m + "/" + d + "/" + y);
     setDate(m + "/" + d + "/" + y); 
-    //alert(day);
+    setActivityName(aName);
+    setActivityDesc(aDesc);
+    setFrequency(freq);
+    setOrganiserName(oName);
+    
+    if(!showTable)
+      showTable = true;
   }
 
   const activityRows = [
     createActivityData('Date', [date]),
-    createActivityData('Activity Name', 'Placeholder Day'),
-    createActivityData('Activity Description', 'A day for temporary placeholders'),
-    createActivityData('Frequency', 'Monthly'),
-    createActivityData('Organiser Name', 'Jane Doe')
+    createActivityData('Activity Name', [activityName]),
+    createActivityData('Activity Description', [activityDesc]),
+    createActivityData('Frequency', [frequency]),
+    createActivityData('Organiser Name', [organiserName])
   ];
 
-  function ActivityTable() {
-    const classes = useStyles();
-  
-    return (
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableCell colSpan='2'>
-              <h2 style={{textAlign:'center'}}>Add to Schedule</h2>
-            </TableCell>
-          </TableHead>
-          <TableBody>
-            {activityRows.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell>{row.title}</TableCell>
-                <TableCell>{row.content}</TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell colSpan='2'>
-                <TextField id="filled-basic" label="Notes" multiline rows={6} style={{ width: '100%'}}/>
-                <Button variant='contained' color='primary' style={{float: 'right', marginTop:'20px'}} onClick={() => { SavePlanning();}}>Save</Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+  function SavePlanning() {
+    alert("Now saving planning...\n" 
+          + [date] + "\n"
+          + [activityName] + "\n"
+          + [activityDesc] + "\n"
+          + [frequency] + "\n"
+          + [organiserName] + "\n"
     );
+  }
+
+  function ActivityTable() {
+    classes = useStyles();
+
+    // You might be wondering, hey Sean, what the fuck are you doing here?
+    // Well it's simple really
+    // React JS is a fucking bitch and refuses to let me keep element classes from disappearing because it's always refreshing
+    // Fuck you too React JS
+    if(showTable){
+      return (
+        <TableContainer ref={activityTableRef} component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableCell colSpan='2'>
+                <h2 style={{textAlign:'center'}}>Add to Schedule</h2>
+              </TableCell>
+            </TableHead>
+            <TableBody>
+              {activityRows.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell>{row.title}</TableCell>
+                  <TableCell>{row.content}</TableCell>
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell colSpan='2'>
+                  <TextField id="filled-basic" label="Notes" multiline rows={6} style={{ width: '100%'}}/>
+                  <Button variant='contained' color='primary' style={{float: 'right', marginTop:'20px'}} onClick={() => { SavePlanning();}}>Save</Button>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+    else{
+      return (
+        <TableContainer ref={activityTableRef} component={Paper} className={classes.invisible}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableCell colSpan='2'>
+                <h2 style={{textAlign:'center'}}>Add to Schedule</h2>
+              </TableCell>
+            </TableHead>
+            <TableBody>
+              {activityRows.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell>{row.title}</TableCell>
+                  <TableCell>{row.content}</TableCell>
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell colSpan='2'>
+                  <TextField id="filled-basic" label="Notes" multiline rows={6} style={{ width: '100%'}}/>
+                  <Button variant='contained' color='primary' style={{float: 'right', marginTop:'20px'}} onClick={() => { SavePlanning();}}>Save</Button>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+  
+    
   }
 
   return (
@@ -89,10 +155,6 @@ const LoadedView = () => {
       </div>
     </div>
   );
-}
-
-function SavePlanning() {
-  alert("Now saving planning...");
 }
 
 const Planning = props => {
