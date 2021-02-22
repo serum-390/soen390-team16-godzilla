@@ -9,6 +9,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.MediaType;
@@ -80,11 +81,11 @@ public class InventoryHandler {
     /**
      * Get db table inventory
      */
-    public Mono<ServerResponse> getAll(ServerRequest req){
-        return ok().body(
-            items.findAll(),
-            Item.class);
-    }
+    // public Mono<ServerResponse> getAll(ServerRequest req){
+    //     return ok().body(
+    //         items.findAll(),
+    //         Item.class);
+    // }
 
     /**
      * Get db table inventory by id 
@@ -115,6 +116,26 @@ public class InventoryHandler {
         return ok().contentType(APPLICATION_JSON).body(items.findbyName(name),Item.class);
     }
 
+    /**
+     * 
+     */
+    public Mono<ServerResponse> getBy(ServerRequest req) {
+        Optional<String> name = req.queryParam("name");
+        Optional<String> id = req.queryParam("id");
+
+        if (name.isPresent()) {
+            // Query by name
+            return ok().contentType(APPLICATION_JSON).body(items.findbyName(name.get()), Item.class);
+        } else if (id.isPresent()) {
+            // Query by id
+            return items.findById(Integer.parseInt(id.get()))
+                    .flatMap(inventory -> ok().body(Mono.just(inventory), Item.class))
+                    .switchIfEmpty(notFound().build());
+        }
+        return ok().body(
+            items.findAll(),
+            Item.class);
+    }
     /**
      * Parsing query. GET BY INPUT
      * id or name

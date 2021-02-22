@@ -1,4 +1,5 @@
 DELETE FROM goods;
+DELETE FROM inventory;
 DELETE FROM bill_of_material;
 
 INSERT INTO goods (name, description)
