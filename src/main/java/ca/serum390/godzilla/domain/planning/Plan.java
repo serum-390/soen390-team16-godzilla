@@ -8,22 +8,4 @@ import ca.serum390.godzilla.data.repositories.InventoryRepository;
 @Component
 public class Plan {
     // TODO: Implement `Plan` domain object
-
-    private int item_quantity;
-
-     //Constructor
-    public Plan(){
-
-    }
-
-     /**
-      * Check if specific item quantity
-      */
-    private InventoryRepository searchInTable;
-
-    public Boolean checkQuantity(int quantity){
-        
-        return false;
-    }
-
 }

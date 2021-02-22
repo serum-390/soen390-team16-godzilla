@@ -22,6 +22,6 @@ public class BomEntry {
     
     @Id
     private Integer item_name;
-    private int item_needed;
-    private int quantity;
+    private Integer item_needed;
+    private Integer quantity;
 }
