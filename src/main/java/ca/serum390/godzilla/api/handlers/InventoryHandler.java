@@ -91,11 +91,12 @@ public class InventoryHandler {
      * Get db table inventory by id 
      */
     public Mono<ServerResponse> getById(ServerRequest req){
-        return items.findById(
-            Integer.parseInt(req.pathVariable("id")))
-            .flatMap(inventory -> ok().body(Mono.just(inventory),Item.class))
-            .switchIfEmpty(notFound().build()
-        );
+        return ok().contentType(APPLICATION_JSON).bodyValue(items.findById(Integer.parseInt(req.pathVariable("id"))));
+//        return items.findById(
+//            Integer.parseInt(req.pathVariable("id")))
+//            .flatMap(inventory -> ok().body(inventory,Item.class))
+//            .switchIfEmpty(notFound().build()
+//        );
     }
 
     /**
