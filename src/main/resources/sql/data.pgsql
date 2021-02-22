@@ -832,3 +832,5 @@ INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
     (8,32,2),
     (8,36,2),
     (8,40,7);
+--SalesOrder 
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE) VALUES ('2021-02-15','2021-02-16','montreal','sales');
