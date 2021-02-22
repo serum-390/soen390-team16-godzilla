@@ -112,9 +112,14 @@ public class InventoryHandler {
      */
     public Mono<ServerResponse> findbyName(ServerRequest req) {
         String name = req.pathVariable("item_name");
-        return ok().contentType(APPLICATION_JSON).body(items.FindbyName(name),Item.class);
+        return ok().contentType(APPLICATION_JSON).body(items.findbyName(name),Item.class);
     }
 
+    /**
+     * Parsing query. GET BY INPUT
+     * id or name
+     * then the query. 
+     */
     /**
      * returns true or false for bill of material.
      */
