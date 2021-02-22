@@ -77,27 +77,7 @@ public class InventoryHandler {
     /**
      * Update item in the table
      */
-
-    /**
-     * Get db table inventory
-     */
-    // public Mono<ServerResponse> getAll(ServerRequest req){
-    //     return ok().body(
-    //         items.findAll(),
-    //         Item.class);
-    // }
-
-    /**
-     * Get db table inventory by id 
-     */
-    public Mono<ServerResponse> getById(ServerRequest req){
-        return items.findById(
-            Integer.parseInt(req.pathVariable("id")))
-            .flatMap(inventory -> ok().body(Mono.just(inventory),Item.class))
-            .switchIfEmpty(notFound().build()
-        );
-    }
-
+    
     /**
      * Delete element in table by id
      */
@@ -106,14 +86,6 @@ public class InventoryHandler {
             Integer.parseInt(req.pathVariable("id")))
             .flatMap(deleted -> noContent().build()
         );
-    }
-
-    /**
-     * Find by item name
-     */
-    public Mono<ServerResponse> findbyName(ServerRequest req) {
-        String name = req.pathVariable("item_name");
-        return ok().contentType(APPLICATION_JSON).body(items.findbyName(name),Item.class);
     }
 
     /**
@@ -136,12 +108,4 @@ public class InventoryHandler {
             items.findAll(),
             Item.class);
     }
-    /**
-     * Parsing query. GET BY INPUT
-     * id or name
-     * then the query. 
-     */
-    /**
-     * returns true or false for bill of material.
-     */
 }
