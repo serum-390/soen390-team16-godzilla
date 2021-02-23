@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.net.URI;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -27,19 +28,33 @@ public class SalesHandler {
 
     private final SalesOrderRepository salesOrders;
 
-    public void salesOrderHandler(SalesOrderRepository salesOrder) {
+    public SalesHandler(SalesOrderRepository salesOrder) {
         this.salesOrders = salesOrder;
     }
 
-    public Mono<ServerResponse> demoSales(ServerRequest request) {
-        return ok().contentType(MediaType.APPLICATION_JSON).bodyValue(buildDemoSalesList());
+    // Get All the sales orders
+    public Mono<ServerResponse> all(ServerRequest request) {
+        return ok().body(salesOrders.findAll(), SalesOrder.class);
     }
 
-    private static Map<Object, Object> buildDemoSalesList() {
-        return map().with("message", "Success. Here are your sales orders").with("sales", Stream
-                .iterate(1, i -> i <= 50, i -> i + 1)
-                .map(val -> map().with("id", val).with("vendorName", "Vendor-" + val).with("vendorAddress", "????")
-                        .with("vendorPhone", "123-456-7890").with("salesOrders", List.of()))
-                .collect(Collectors.toList()));
+    // Create a sales order
+    public Mono<ServerResponse> create(ServerRequest req) {
+        return req.bodyToMono(SalesOrder.class).flatMap(salesOrders::save)
+                .flatMap(id -> created(URI.create("/salesorder/" + id)).build());
     }
+
+    // Get a sales order
+    public Mono<ServerResponse> get(ServerRequest req) {
+        return salesOrders.findById(Integer.parseInt(req.pathVariable("id")))
+                .flatMap(salesOrder -> ok().body(Mono.just(salesOrder), SalesOrder.class))
+                .switchIfEmpty(notFound().build());
+    }
+
+    // Delete a sales order
+    public Mono<ServerResponse> delete(ServerRequest req) {
+        return salesOrders.deleteById(Integer.parseInt(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
+    }
+
+    // TODO Update a sales order
+
 }
