@@ -1,5 +1,7 @@
 package ca.serum390.godzilla.api.routers;
 
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
@@ -8,13 +10,14 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import ca.serum390.godzilla.api.handlers.BomHandler;
 import ca.serum390.godzilla.api.handlers.InventoryHandler;
 import ca.serum390.godzilla.api.handlers.SalesHandler;
-import ca.serum390.godzilla.util.experimental.HelloHandler;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
 
+<<<<<<< HEAD
         /**
          * Router using the functional endpoints Spring WebFlux API
          *
@@ -33,6 +36,34 @@ public class ApiRouter implements WebFluxConfigurer {
                                                 .add(salesOrderRoute).add(salesContactRoute).build())
                                 .build();
         }
+=======
+    public static final String ALL_GOOD_IN_THE_HOOD = "All good in the hood";
+
+    /**
+     * Router using the functional endpoints Spring WebFlux API
+     *
+     * @return A router function bound to the application's RESTful APIs.
+     */
+    @Bean
+    public RouterFunction<ServerResponse> route(
+            SalesHandler salesHandler,
+            InventoryHandler inventoryHandler,
+            BomHandler bomHandler,
+            RouterFunction<ServerResponse> goodsRoute,
+            RouterFunction<ServerResponse> inventoryRoute,
+            RouterFunction<ServerResponse> bomRoute) {
+
+        return RouterFunctions.route()
+                .path("/api", apiBuilder -> apiBuilder
+                    .GET("/healthcheck", req -> ok().bodyValue(ALL_GOOD_IN_THE_HOOD))
+                    .GET("/sales", salesHandler::demoSales)
+                    .add(goodsRoute)
+                    .add(inventoryRoute)
+                    .add(bomRoute)
+                    .build())
+                .build();
+    }
+>>>>>>> main
 
         /**
          * Serve some static resources via /resources/<my_resource>

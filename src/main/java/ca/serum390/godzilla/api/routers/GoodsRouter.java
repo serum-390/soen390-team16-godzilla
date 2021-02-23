@@ -15,12 +15,12 @@ public class GoodsRouter {
     public RouterFunction<ServerResponse> goodsRoute(GoodsHandler goodsHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                              .path("/goods/", builder -> builder
-                                  .GET("/", goodsHandler::all)
-                                  .POST("/", goodsHandler::create)
-                                  .GET(ID, goodsHandler::get)
-                                  .PUT(ID, goodsHandler::update)
-                                  .DELETE(ID, goodsHandler::delete))
-                              .build();
+                .path("/goods/", builder -> builder
+                    .GET("/", goodsHandler::all)
+                    .POST("/", goodsHandler::create)
+                    .GET(ID, goodsHandler::get)
+                    .PUT(ID, goodsHandler::update)
+                    .DELETE(ID, goodsHandler::delete))
+                .build();
     }
 }
