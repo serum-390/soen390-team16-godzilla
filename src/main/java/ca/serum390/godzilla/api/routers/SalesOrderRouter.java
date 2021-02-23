@@ -14,8 +14,13 @@ public class SalesOrderRouter {
     public RouterFunction<ServerResponse> salesOrderRoute(SalesHandler salesHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/sales/", builder -> builder.GET("/", salesHandler::all).POST("/", salesHandler::create)
-                        .GET(ID, salesHandler::get).PUT(ID, salesHandler::update).DELETE(ID, salesHandler::delete))
+                .path("/sales/", builder -> 
+                builder
+                .GET("/", salesHandler::all)
+                .POST("/", salesHandler::create)
+                .GET(ID, salesHandler::get)
+                .PUT(ID, salesHandler::update)
+                .DELETE(ID, salesHandler::delete))
                 .build();
     }
 }
