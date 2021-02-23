@@ -42,9 +42,10 @@ public class ReactRouterForwardFilter implements WebFilter {
      * @return
      */
     private Mono<Void> forwardToReactRouter(ServerWebExchange exchange, WebFilterChain chain) {
-        return chain
-                .filter(exchange.mutate()
-                        .request(exchange.getRequest()
+        return chain.filter(
+            exchange.mutate()
+                        .request(
+                            exchange.getRequest()
                                  .mutate()
                                  .path("/index.html")
                                  .build()
