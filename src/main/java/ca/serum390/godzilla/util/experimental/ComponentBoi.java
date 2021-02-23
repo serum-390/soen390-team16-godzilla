@@ -3,7 +3,7 @@ package ca.serum390.godzilla.util.experimental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/*@Component
+@Component
 public class ComponentBoi {
 
     @Autowired
@@ -15,4 +15,4 @@ public class ComponentBoi {
                + " " + myBoi.getLastName()
                + " " + myBoi.getId();
     }
-}*/
+}

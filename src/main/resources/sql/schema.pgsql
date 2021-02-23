@@ -51,5 +51,5 @@ CREATE TABLE IF NOT EXISTS erp_user(
     ID SERIAL PRIMARY KEY NOT NULL,
     username VARCHAR NOT NULL,
     password VARCHAR NOT NULL,
-    authorities VARCHAR NOT NULL,
+    authorities VARCHAR NOT NULL
 );

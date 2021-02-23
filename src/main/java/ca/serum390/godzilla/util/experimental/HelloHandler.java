@@ -1,4 +1,4 @@
-/*package ca.serum390.godzilla.util.experimental;
+package ca.serum390.godzilla.util.experimental;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ public class HelloHandler {
     private HelloHandler() {}
 
     @Autowired
-    //private ComponentBoi myComponentBoi;
+    private ComponentBoi myComponentBoi;
 
     public Mono<ServerResponse> helloWorld(ServerRequest request) {
         return ServerResponse.ok()
@@ -22,4 +22,3 @@ public class HelloHandler {
                              .bodyValue(myComponentBoi.lookWhatYouDidToMyBoi());
     }
 }
-*/

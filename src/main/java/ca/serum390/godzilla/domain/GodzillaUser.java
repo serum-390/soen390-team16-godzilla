@@ -1,32 +1,35 @@
 package ca.serum390.godzilla.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @Data
+@Builder
+@With
 @AllArgsConstructor
 @NoArgsConstructor
 @Table("erp_user")
-public class erp_user implements UserDetails {
+public class GodzillaUser implements UserDetails {
+    private static final long serialVersionUID = -336666572414315874L;
+
     @Id
-    private int ID;
+    private Integer id;
     private String username;
     private String password;
     private String authorities;
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -34,17 +37,6 @@ public class erp_user implements UserDetails {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
 
     @Override
     public boolean isAccountNonExpired() {
@@ -64,5 +56,10 @@ public class erp_user implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "GodzillaUser [username=" + username + "]";
     }
 }
