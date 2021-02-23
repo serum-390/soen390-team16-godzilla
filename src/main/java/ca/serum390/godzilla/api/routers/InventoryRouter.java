@@ -19,8 +19,7 @@ public class InventoryRouter {
         return RouterFunctions.route()
                 .path("/inventory/", builder -> builder
                     .GET("/", inventoryHandler::getBy)
-                    .DELETE(ID, inventoryHandler::deleteByID)
-                    )
+                    .DELETE(ID, inventoryHandler::deleteById))
                 .build();
     }
 }
