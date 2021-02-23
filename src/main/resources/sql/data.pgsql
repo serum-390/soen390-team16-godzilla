@@ -1,4 +1,6 @@
 DELETE FROM goods;
+DELETE FROM orders;
+DELETE FROM contact;
 
 INSERT INTO goods (name, description)
     VALUES ('SuperSpeed Bicycle', 'A really fast bike, fun for the whole family');
@@ -797,3 +799,6 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, sell_price, LO
 
 --SalesOrder 
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE) VALUES ('2021-02-15','2021-02-16','montreal','sales');
+
+--SalesContact
+INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'priority');

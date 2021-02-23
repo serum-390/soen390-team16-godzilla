@@ -11,11 +11,13 @@ import ca.serum390.godzilla.api.handlers.SalesContactHandler;
 @Configuration
 public class SalesContactRouter {
     @Bean
-    public RouterFunction<ServerResponse> salesOrderRoute(SalesContactHandler salesContactHandler) {
+    public RouterFunction<ServerResponse> salesContactRoute(SalesContactHandler salesContactHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/sales/", builder -> builder.GET("/", salesHandler::all).POST("/", salesHandler::create)
-                        .GET(ID, salesHandler::get).PUT(ID, salesHandler::update).DELETE(ID, salesHandler::delete))
+                .path("/salescontact/",
+                        builder -> builder.GET("/", salesContactHandler::all).POST("/", salesContactHandler::create)
+                                .GET(ID, salesContactHandler::get).PUT(ID, salesContactHandler::update)
+                                .DELETE(ID, salesContactHandler::delete))
                 .build();
     }
 }

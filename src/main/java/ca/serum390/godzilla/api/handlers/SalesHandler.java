@@ -3,6 +3,7 @@ package ca.serum390.godzilla.api.handlers;
 import static ca.serum390.godzilla.util.BuildableMap.map;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,8 +40,7 @@ public class SalesHandler {
 
     // Create a sales order
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(SalesOrder.class).flatMap(salesOrders::save)
-                .flatMap(id -> created(URI.create("/salesorder/" + id)).build());
+        return req.bodyToMono(SalesOrder.class).flatMap(salesOrders::save).flatMap(id -> noContent().build());
     }
 
     // Get a sales order
@@ -55,6 +55,23 @@ public class SalesHandler {
         return salesOrders.deleteById(Integer.parseInt(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
     }
 
-    // TODO Update a sales order
+    // Update a sales order
+    public Mono<ServerResponse> update(ServerRequest req) {
+        var existed = salesOrders.findById(Integer.parseInt(req.pathVariable("id")));
+        return Mono.zip(data -> {
+            SalesOrder g = (SalesOrder) data[0];
+            SalesOrder g2 = (SalesOrder) data[1];
+            if (g2 != null) {
+                g.setCreatedDate(g2.getCreatedDate());
+                g.setDueDate(g2.getDueDate());
+                g.setDeliveryLocation(g2.getDeliveryLocation());
+                g.setOrderType(g2.getOrderType());
+            }
+            return g;
+        }, existed, req.bodyToMono(SalesOrder.class)).cast(SalesOrder.class)
+                .flatMap(SalesOrder -> salesOrders.update(SalesOrder.getCreatedDate(), SalesOrder.getDueDate(),
+                        SalesOrder.getDeliveryLocation(), SalesOrder.getOrderType(), SalesOrder.getId()))
+                .flatMap(SalesOrder -> noContent().build());
+    }
 
 }

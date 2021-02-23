@@ -6,7 +6,6 @@ import org.springframework.data.annotation.Id;
 
 import org.springframework.data.relational.core.mapping.Table;
 
-import jdk.vm.ci.meta.Local;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,16 +16,17 @@ import lombok.ToString;
 @Data
 @Builder
 @ToString
-@Table("orders")
+@Table("contact")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesOrder {
+public class SalesContact {
     @Id
     private Integer id;
-    private LocalDate createdDate;
-    private LocalDate dueDate;
-    private String deliveryLocation;
-    private String orderType;
+    private String companyName;
+    private String contactName;
+    private String address;
+    private String contact;
+    private String contactType;
 
 }
