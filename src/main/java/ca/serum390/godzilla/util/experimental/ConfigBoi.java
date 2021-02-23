@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.util.experimental;
+/*package ca.serum390.godzilla.util.experimental;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,3 +17,4 @@ public class ConfigBoi {
                      .build();
     }
 }
+*/
