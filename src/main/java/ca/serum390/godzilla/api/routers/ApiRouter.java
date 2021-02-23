@@ -12,31 +12,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.BomHandler;
 import ca.serum390.godzilla.api.handlers.InventoryHandler;
-import ca.serum390.godzilla.api.handlers.SalesHandler;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
 
-<<<<<<< HEAD
-        /**
-         * Router using the functional endpoints Spring WebFlux API
-         *
-         * @return A router function bound to the application's RESTful APIs.
-         */
-        @Bean
-        public RouterFunction<ServerResponse> route(SalesHandler salesHandler, HelloHandler helloHandler,
-                        InventoryHandler inventoryHandler, RouterFunction<ServerResponse> goodsRoute,
-                        RouterFunction<ServerResponse> salesOrderRoute,
-                        RouterFunction<ServerResponse> salesContactRoute) {
-
-                return RouterFunctions.route()
-                                .path("/api", apiBuilder -> apiBuilder.GET("/inv", inventoryHandler::demoInventory)
-                                                // .GET("/sales", salesHandler::demoSales)
-                                                .GET("/hello", helloHandler::helloWorld).add(goodsRoute)
-                                                .add(salesOrderRoute).add(salesContactRoute).build())
-                                .build();
-        }
-=======
     public static final String ALL_GOOD_IN_THE_HOOD = "All good in the hood";
 
     /**
@@ -46,25 +25,26 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route(
-            SalesHandler salesHandler,
             InventoryHandler inventoryHandler,
             BomHandler bomHandler,
             RouterFunction<ServerResponse> goodsRoute,
             RouterFunction<ServerResponse> inventoryRoute,
-            RouterFunction<ServerResponse> bomRoute) {
+            RouterFunction<ServerResponse> bomRoute,
+            RouterFunction<ServerResponse> salesOrderRoute,
+            RouterFunction<ServerResponse> salesContactRoute) 
+    {
 
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
                     .GET("/healthcheck", req -> ok().bodyValue(ALL_GOOD_IN_THE_HOOD))
-                    .GET("/sales", salesHandler::demoSales)
                     .add(goodsRoute)
                     .add(inventoryRoute)
+                    .add(salesOrderRoute)
+                    .add(salesContactRoute)
                     .add(bomRoute)
                     .build())
                 .build();
     }
->>>>>>> main
-
         /**
          * Serve some static resources via /resources/<my_resource>
          */

@@ -28,8 +28,11 @@ public class ReactRouterForwardFilter implements WebFilter {
      */
     private boolean matchesReactRouterRoute(ServerWebExchange exchange) {
         String path = exchange.getRequest().getURI().getPath();
-        return !path.startsWith("/api/") && !path.startsWith("/goods/") && !path.startsWith("/resources/")
-                && !path.endsWith(".js") && !path.endsWith(".css") && !path.endsWith(".svg");
+        return !path.startsWith("/api/") 
+                && !path.startsWith("/resources/")
+                && !path.endsWith(".js") 
+                && !path.endsWith(".css") 
+                && !path.endsWith(".svg");
     }
 
     /**
@@ -39,7 +42,13 @@ public class ReactRouterForwardFilter implements WebFilter {
      * @return
      */
     private Mono<Void> forwardToReactRouter(ServerWebExchange exchange, WebFilterChain chain) {
-        return chain
-                .filter(exchange.mutate().request(exchange.getRequest().mutate().path("/index.html").build()).build());
+        return chain.filter(
+            exchange.mutate()
+                        .request(
+                            exchange.getRequest()
+                                 .mutate()
+                                 .path("/index.html")
+                                 .build()
+                        ).build());
     }
 }
