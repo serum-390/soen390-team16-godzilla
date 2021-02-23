@@ -58,11 +58,14 @@ public class GoodsHandler {
             }
             return g;
         }, existed, req.bodyToMono(Good.class)).cast(Good.class)
-                .flatMap(good -> goods.update(good.getName(), good.getDescription(), good.getId()))
+                .flatMap(good -> goods.update(
+                    good.getName(), good.getDescription(), good.getId()))
                 .flatMap(good -> noContent().build());
     }
 
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return goods.deleteById(UUID.fromString(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
+        return goods.deleteById(UUID.fromString(req.pathVariable("id")))
+            .flatMap(deleted -> noContent()
+                     .build());
     }
 }
