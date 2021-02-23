@@ -17,12 +17,6 @@ import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-import java.util.Optional;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.*;
-
 @Component
 public class InventoryHandler {
 

@@ -13,13 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.created;
-import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
-import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
 import ca.serum390.godzilla.data.repositories.SalesOrderRepository;
-import ca.serum390.godzilla.domain.sales.SalesOrder;
 import reactor.core.publisher.Mono;
 
 @Component
