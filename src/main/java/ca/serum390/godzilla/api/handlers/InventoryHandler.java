@@ -73,9 +73,6 @@ public class InventoryHandler {
                     if (g2 != null && StringUtils.hasText(Float.toString(g2.getBuyPrice()))) {
                         g.setBuyPrice(g2.getBuyPrice());
                     }
-                    if (g2 != null && StringUtils.hasText(Integer.toString(g2.getGoodType()))) {
-                        g.setGoodType(g2.getGoodType());
-                    }
                     if (g2 != null && StringUtils.hasText(g2.getLocation())) {
                         g.setLocation(g2.getLocation());
                     }
