@@ -7,54 +7,18 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.NumberUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
 public class InventoryHandler {
-
-    /*public Mono<ServerResponse> demoInventory(ServerRequest request) {
-        return ok().contentType(MediaType.APPLICATION_JSON)
-                   .bodyValue(buildDemoInventory());
-    }/
-
-    /*private static Map<Object, Object> buildDemoInventory() {
-        final String NAME = "name";
-        final String TYPE = "type";
-        final String IMAGE_URL = "image_url";
-        final String DESCRIPTION = "description";
-
-        return map().with("message", "Success. Here is your inventory")
-                    .with("inventory", List.of(
-                        map().with(NAME, "Bike Wheel")
-                             .with(TYPE, "raw-material")
-                             .with(IMAGE_URL, "/resources/images/wheel.jpeg")
-                             .with(DESCRIPTION, "A bicycle wheel."),
-                        map().with(NAME, "Drive Train")
-                             .with(TYPE, "raw-material")
-                             .with(IMAGE_URL, "/resources/images/drive-train.jpeg")
-                             .with(DESCRIPTION, "A gear system and bike chain."),
-                        map().with(NAME, "Full Bike")
-                             .with(TYPE, "finished-product")
-                             .with(IMAGE_URL, "/resources/images/full-bike.jpeg")
-                             .with(DESCRIPTION, "A finished bicycle.")
-                    ));
-    }
-    */
 
     /**
      * {@link InventoryRepository}
@@ -72,12 +36,8 @@ public class InventoryHandler {
         return req.bodyToMono(Item.class)
             .flatMap(items::save)
             .flatMap(id -> created(URI.create("/items/" + id)).build());
-    } 
+    }
 
-    /**
-     * Update item in the table
-     */
-    
     /**
      * Delete element in table by id
      */
@@ -89,23 +49,35 @@ public class InventoryHandler {
     }
 
     /**
-     * 
+     *
+     * @param req
+     * @return
      */
     public Mono<ServerResponse> getBy(ServerRequest req) {
         Optional<String> name = req.queryParam("name");
         Optional<String> id = req.queryParam("id");
 
         if (name.isPresent()) {
-            // Query by name
-            return ok().contentType(APPLICATION_JSON).body(items.findbyName(name.get()), Item.class);
+            return queryItemsByName(name.get());
         } else if (id.isPresent()) {
-            // Query by id
-            return items.findById(Integer.parseInt(id.get()))
+            return queryItemsById(id.get());
+        } else {
+            return queryAllItems();
+        }
+    }
+
+    private Mono<ServerResponse> queryItemsByName(String name) {
+        return ok().contentType(APPLICATION_JSON)
+                   .body(items.findbyName(name), Item.class);
+    }
+
+    private Mono<ServerResponse> queryItemsById(String id) {
+        return items.findById(Integer.parseInt(id))
                     .flatMap(inventory -> ok().body(Mono.just(inventory), Item.class))
                     .switchIfEmpty(notFound().build());
-        }
-        return ok().body(
-            items.findAll(),
-            Item.class);
+    }
+
+    private Mono<ServerResponse> queryAllItems() {
+        return ok().body(items.findAll(), Item.class);
     }
 }

@@ -34,7 +34,6 @@ public class ApiRouter implements WebFluxConfigurer {
 
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
-                    //.GET("/inv", inventoryHandler::demoInventory)
                     .GET("/sales", salesHandler::demoSales)
                     .GET("/hello", helloHandler::helloWorld)
                     .add(goodsRoute)
