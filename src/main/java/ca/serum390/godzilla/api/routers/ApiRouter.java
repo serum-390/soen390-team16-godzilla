@@ -33,7 +33,10 @@ public class ApiRouter implements WebFluxConfigurer {
             BomHandler bomHandler,
             RouterFunction<ServerResponse> goodsRoute,
             RouterFunction<ServerResponse> inventoryRoute,
-            RouterFunction<ServerResponse> bomRoute) {
+            RouterFunction<ServerResponse> bomRoute,
+            RouterFunction<ServerResponse> salesOrderRoute,
+            RouterFunction<ServerResponse> salesContactRoute) 
+    {
 
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
