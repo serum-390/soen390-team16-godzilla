@@ -30,6 +30,7 @@ public class ReactRouterForwardFilter implements WebFilter {
     private boolean matchesReactRouterRoute(ServerWebExchange exchange) {
         String path = exchange.getRequest().getURI().getPath();
         return !path.startsWith("/api/")
+                &&!path.startsWith("/goods/")
             && !path.startsWith("/resources/")
             && !path.endsWith(".js")
             && !path.endsWith(".css")

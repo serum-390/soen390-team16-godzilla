@@ -27,7 +27,7 @@ public class SalesHandler {
 
     private final SalesOrderRepository salesOrders;
 
-    public void salesOrderHandler(SalesOrderRepository salesOrder) {
+    public SalesHandler(SalesOrderRepository salesOrder) {
         this.salesOrders = salesOrder;
     }
 
