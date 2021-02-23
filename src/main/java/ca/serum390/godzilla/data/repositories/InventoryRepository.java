@@ -16,5 +16,5 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
      * @return
      */
     @Query("SELECT * FROM inventory WHERE item_name = $1")
-    Flux<Item> findbyName(String itemName);
+    Flux<Item> findByName(String itemName);
 }

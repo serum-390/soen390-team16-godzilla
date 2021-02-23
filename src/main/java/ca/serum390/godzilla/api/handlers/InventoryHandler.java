@@ -68,7 +68,7 @@ public class InventoryHandler {
 
     private Mono<ServerResponse> queryItemsByName(String name) {
         return ok().contentType(APPLICATION_JSON)
-                   .body(items.findbyName(name), Item.class);
+                   .body(items.findByName(name), Item.class);
     }
 
     private Mono<ServerResponse> queryItemsById(String id) {

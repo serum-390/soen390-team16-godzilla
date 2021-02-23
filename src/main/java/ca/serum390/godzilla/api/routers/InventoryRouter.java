@@ -12,7 +12,7 @@ import ca.serum390.godzilla.api.handlers.InventoryHandler;
 public class InventoryRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> inventoryRoute(InventoryHandler inventoryHandler){
+    public RouterFunction<ServerResponse> inventoryRoute(InventoryHandler inventoryHandler) {
         return RouterFunctions.route()
                 .path("/inventory/", builder -> builder
                     .GET("/", inventoryHandler::getBy)
