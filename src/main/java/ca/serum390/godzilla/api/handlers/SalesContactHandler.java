@@ -36,33 +36,31 @@ public class SalesContactHandler {
         return ok().body(salesContact.findAll(), SalesContact.class);
     }
 
-    // Create a sales order
+    // Create a sales contact
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(SalesContact.class).flatMap(salesContact::save)
-                .flatMap(id -> created(URI.create("/salescontact/" + id)).build());
+        return req.bodyToMono(SalesContact.class).flatMap(salesContact::save).flatMap(id -> noContent().build());
     }
 
-    // Get a sales order
+    // Get a sales contact
     public Mono<ServerResponse> get(ServerRequest req) {
         return salesContact.findById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(salesContact -> ok().body(Mono.just(salesContact), SalesContact.class))
                 .switchIfEmpty(notFound().build());
     }
 
-    // Delete a sales order
+    // Delete a sales contact
     public Mono<ServerResponse> delete(ServerRequest req) {
         return salesContact.deleteById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(deleted -> noContent().build());
     }
 
-    // TODO Update a sales order
+    // Update a sales contact
     public Mono<ServerResponse> update(ServerRequest req) {
         var existed = salesContact.findById(Integer.parseInt(req.pathVariable("id")));
         return Mono.zip(data -> {
             SalesContact g = (SalesContact) data[0];
             SalesContact g2 = (SalesContact) data[1];
             if (g2 != null) {
-                g.setId(g2.getId());
                 g.setCompanyName(g2.getCompanyName());
                 g.setContactName(g2.getContactName());
                 g.setAddress(g2.getAddress());
@@ -71,9 +69,9 @@ public class SalesContactHandler {
             }
             return g;
         }, existed, req.bodyToMono(SalesContact.class)).cast(SalesContact.class)
-                .flatMap(SalesContact -> salesContact.update(SalesContact.getCompanyName, SalesContact.getContactName(),
-                        SalesContact.getAddress(), SalesContact.getContact(), SalesContact.getContactType(),
-                        SalesContact.getId()))
+                .flatMap(SalesContact -> salesContact.update(SalesContact.getCompanyName(),
+                        SalesContact.getContactName(), SalesContact.getAddress(), SalesContact.getContact(),
+                        SalesContact.getContactType(), SalesContact.getId()))
                 .flatMap(SalesContact -> noContent().build());
     }
 
