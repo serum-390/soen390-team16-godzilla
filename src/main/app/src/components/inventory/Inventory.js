@@ -1,6 +1,5 @@
-import {Box, Button, makeStyles, Typography} from '@material-ui/core';
+import {Box, makeStyles} from '@material-ui/core';
 import React, {Fragment, useEffect, useState} from 'react';
-import MenuIcon from '@material-ui/icons/Menu'
 import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
 import {spinnyBoi} from '../About';
@@ -31,6 +30,18 @@ const update = async data => {
     }
 };
 
+const insert = async data => {
+    try {
+        const api = `/api/inventory/`;
+        const inserted = await axios.post(api, data);
+        console.log(`STATUS CODE: ${inserted.status}`);
+        console.log(`DATA: ${inserted.data || "Nothing"}`);
+    } catch (err) {
+        console.log(err);
+        return err;
+    }
+};
+
 
 const inventoryCols = [
     {field: 'id', headerName: 'Item', width: 130},
@@ -53,7 +64,7 @@ const inventoryCols = [
                         dialogTitle='Inventory Information '
                         dialogContentText='Please enter any information you would like to modify: '
                         submitButton='Update'
-                        onUpdate={params.value}
+                        onSubmit={params.value}
                     />
                 }
             </div>
@@ -77,12 +88,12 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
         update({
             id: item.id,
             itemName: updatedItem.itemName,
-            goodType: item.goodType,
+            goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
             quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
             sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
             buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
             location: updatedItem.location,
-            billOfMaterial: item.billOfMaterial
+            billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
         })
     };
     inventoryItems.map((item, index) => {
@@ -127,16 +138,13 @@ const Spinner = () => {
 const LoadedView = ({classes, inventory}) => {
     return (
         <div>
-            <Box display='flex' flexDirection='row-reverse'>
-                <Button
-                    variant='contained'
-                    className={classes.sort}
-                    color='secondary'
-                    startIcon={<MenuIcon/>}
-                >
-                    <Typography variant='h6'>Sort By</Typography>
-                </Button>
-            </Box>
+            <InventoryForm
+                initialButton='Insert'
+                dialogTitle='Inventory Information '
+                dialogContentText='Please enter information of the new item:'
+                submitButton='Insert'
+                onSubmit={(data) => insert(data)}
+            />
             <div style={{height: 600, width: '90%', float: 'center'}}>
                 <FilledInventoryView
                     inventoryItems={inventory}

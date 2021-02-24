@@ -25,6 +25,8 @@ export default function InventoryForm(props) {
     const [sellPrice, setSellPrice] = React.useState("");
     const [buyPrice, setBuyPrice] = React.useState("");
     const [quantity, setQuantity] = React.useState("");
+    const [goodType, setGoodType] = React.useState("");
+    const [billOfMaterial, setBillOfMaterial] = React.useState("");
 
 
     const handleClickOpen = () => {
@@ -35,17 +37,18 @@ export default function InventoryForm(props) {
         setOpen(false);
     };
 
-    const handleUpdate = () => {
+    const handleSubmit = () => {
         let data = {
-            id: -1,
+            id: "",
             itemName: itemName,
-            goodType: -1,
+            goodType: goodType,
             quantity: quantity,
             sellPrice: sellPrice,
             buyPrice: buyPrice,
-            location: location
+            location: location,
+            billOfMaterial: billOfMaterial
         };
-        props.onUpdate(data);
+        props.onSubmit(data);
         setOpen(false);
         // want to update the table after clicking this
     };
@@ -107,9 +110,27 @@ export default function InventoryForm(props) {
                         onChange={(event) => setBuyPrice(event.target.value)}
                         fullWidth
                     />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="goodType"
+                        label="Good Type"
+                        type="string"
+                        onChange={(event) => setGoodType(event.target.value)}
+                        fullWidth
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="billOfMaterial"
+                        label="Bill of Material"
+                        type="string"
+                        onChange={(event) => setBillOfMaterial(event.target.value)}
+                        fullWidth
+                    />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleUpdate} color="primary">
+                    <Button onClick={handleSubmit} color="primary">
                         {props.submitButton}
                     </Button>
                     <Button onClick={handleClose} color="primary">
