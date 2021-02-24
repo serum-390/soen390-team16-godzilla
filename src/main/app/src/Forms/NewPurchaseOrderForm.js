@@ -49,6 +49,7 @@ const inventoryCols = [
             id="quantityVal"
             label="Quantity"
             type="number"
+            onChange={(e) => {ChangeRowQuantity(e, params.getValue('id'))}}
             defaultValue="0"
             InputLabelProps={{
             shrink: true,
@@ -58,6 +59,14 @@ const inventoryCols = [
     },
   ];
 
+let dict = {};
+let totalAmt = 0;
+
+function ChangeRowQuantity(qty, id){
+    //alert(id + " " + qty.target.value);
+    // store data into array
+    dict[id] = qty.target.value;     
+}
 
 const inventoryRows = [
     {id: 1, itemName: 'Item1', price: "20"},
@@ -69,36 +78,52 @@ const inventoryRows = [
     {id: 7, itemName: 'Item7', price: "20"},
 ]
 
-function SelectTableRow({ row }) {
-    alert('clicked ' + row.id + " ");
-    
-}
-
 function InventoryTable () {
     const classes = useStyles();
     return (
         <FormControl className={classes.formControl}>
-            <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={4} onRowClick={(newSelection) => {SelectTableRow(newSelection)}}/>   
+            <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={4}/>   
         </FormControl>
     );
 }
 
-
-
 export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
+  const [vendor, setVendor] = React.useState(1);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
+  const handleSubmit = () => {
+    // THIS IS WHERE WE CALL DB TO CREATE NEW ENTRY
+    var outString = "Vendor ID: " + [vendor] + "\n\n";
+
+    for(var key in dict) {
+        var value = dict[key];
+        
+        // Skip if invalid quantity amount
+        if(value <= 0)
+            continue;
+        
+        outString += "Item ID:" + key + " --> Qty: " + value + "\n";
+    }
+      
+    alert(outString);
+
+    dict = {};  // Clear dictionary
+    //setOpen(false);
+  };
+
   const handleClose = () => {
+    dict = {};  // Clear dictionary
     setOpen(false);
   };
 
   const handleChange = (event) => {
     // CHANGE INVENTORY ROWS BY FETCHING VENDOR'S INVENTORY FROM DB
     alert(event.target.value);
+    setVendor(event.target.value);
   };
 
   return (
@@ -136,7 +161,7 @@ export default function PurchaseOrderForm(props) {
           <InventoryTable/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             {props.submitButton}
           </Button>
           <Button onClick={handleClose} color="primary">
