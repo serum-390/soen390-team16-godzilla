@@ -83,6 +83,7 @@ const orderColumns = [
          orderItems={params.getValue('items') || ''}
          orderTimestamp={params.getValue('timestamp') || ''}
          orderCost={params.getValue('cost') || ''}
+         orderStatus={params.getValue('status') || ''}
          initialButton='View' 
          dialogTitle={'Order Information - Order #' + params.getValue('id')}
          dialogContentText={'Data: '} 
