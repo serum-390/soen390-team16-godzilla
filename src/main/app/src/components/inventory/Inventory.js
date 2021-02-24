@@ -101,7 +101,6 @@ const inventoryCols = [
 
 
 const getInventory = async () => {
-    console.log("Print");
     const api = '/api/inventory/';
     const got = await fetch(api);
     const json = await got.json();
