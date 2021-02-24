@@ -47,11 +47,6 @@ const inventoryCols = [
         renderCell: params => (
             <div style={{margin: 'auto'}}>
                 {
-                    /*<Button variant='contained'
-                     color='secondary'
-                     onClick={params.value.onClick}>
-                     show</Button>
-                     */
                     <InventoryForm
                         initialButton='Edit'
                         dialogTitle='Inventory Information '
@@ -144,11 +139,6 @@ const LoadedView = ({classes, inventory}) => {
                     <Typography variant='h6'>Sort By</Typography>
                 </Button>
             </Box>
-            {/*<div style={{height: 600, width: '80%', float: 'center'}}>*/}
-            {/*    <h2 style={{float: 'left'}}>Inventory</h2>*/}
-            {/*    <TextField id="filled-basic" label="Search" variant="filled" style={{float: 'right'}}/>*/}
-            {/*    <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={9}/>*/}
-            {/*</div>*/}
             <div style={{height: 600, width: '90%', float: 'center'}}>
                 <FilledInventoryView
                     inventoryItems={inventory}
