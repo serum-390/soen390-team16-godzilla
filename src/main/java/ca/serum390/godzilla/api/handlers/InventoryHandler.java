@@ -3,7 +3,6 @@ package ca.serum390.godzilla.api.handlers;
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -61,13 +60,18 @@ public class InventoryHandler {
         }
     }
 
+    /**
+     * updates the items in inventory
+     * @param req
+     * @return
+     */
     public Mono<ServerResponse> update(ServerRequest req) {
         var existed = items.findById(Integer.parseInt(req.pathVariable("id")));
         return Mono.zip(
                 data -> {
                     Item original = (Item) data[0];
                     Item updated = (Item) data[1];
-                    if (updated != null ) {
+                    if (updated != null) {
                         original.setBillOfMaterial(updated.isBillOfMaterial());
                         original.setGoodType(updated.getGoodType());
                         original.setBuyPrice(updated.getBuyPrice());
