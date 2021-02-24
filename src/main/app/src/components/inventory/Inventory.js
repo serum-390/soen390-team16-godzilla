@@ -5,6 +5,8 @@ import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
 import {spinnyBoi} from '../About';
 import {DataGrid} from "@material-ui/data-grid";
+import CustomerForm from "../../Forms/CustomerForm";
+import InventoryForm from "../../Forms/InventoryForm";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -25,49 +27,36 @@ const inventoryCols = [
     {field: 'SellPrice', headerName: 'Sell Price', width: 130},
     {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
     {field: 'Location', headerName: 'Location', width: 130},
+    {
+        field: 'modify',
+        headerName: 'Modify',
+        width: 160,
+        renderCell: params => (
+            <div style={{ margin: 'auto' }}>
+                {
+                    /*<Button variant='contained'
+                     color='secondary'
+                     onClick={params.value.onClick}>
+                     show</Button>
+                     */
+                    <InventoryForm
+                        initialButton='Edit'
+                        dialogTitle='Inventory Information '
+                        dialogContentText='Please enter any information you would like to modify: '
+                        submitButton='Update'
+                        onUpdate = {params.value}
+                    />
+                }
+            </div>
+        ),
+    },
 
 ];
 
-const inventoryRows = [
-    {
-        id: '1',
-        ItemName: 'Item',
-        GoodType: '1',
-        Quantity: '3',
-        SellPrice: '223.12',
-        BuyPrice: '124.43',
-        Location: 'Montreal'
-    },
-    {
-        id: '1',
-        ItemName: 'Item',
-        GoodType: '1',
-        Quantity: '3',
-        SellPrice: '223.12',
-        BuyPrice: '124.43',
-        Location: 'Montreal'
-    },
-    {
-        id: '1',
-        ItemName: 'Item',
-        GoodType: '1',
-        Quantity: '3',
-        SellPrice: '223.12',
-        BuyPrice: '124.43',
-        Location: 'Montreal'
-    },
-    {
-        id: '1',
-        ItemName: 'Item',
-        GoodType: '1',
-        Quantity: '3',
-        SellPrice: '223.12',
-        BuyPrice: '124.43',
-        Location: 'Montreal'
-    }
-];
+
 
 const getInventory = async () => {
+    console.log("Print");
     const api = '/api/inventory/';
     const got = await fetch(api);
     const json = await got.json();
@@ -76,16 +65,25 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
-        inventoryItems.map(item => items.push({
-                id: <input value={item.id} />,
-                ItemName: item.itemName,
-                GoodType: item.goodType,
-                Quantity: item.quantity,
-                SellPrice: item.sellPrice,
-                BuyPrice: item.buyPrice,
-                Location: item.location
-            })
+    let updateRow= (rowNum, location, itemName)=>{
+        items[rowNum].ItemName = itemName;
+        items[rowNum].Location = location;
+
+    };
+        inventoryItems.map((item,index) => {
+            items.push({
+                    id: item.id,
+                    ItemName: item.itemName,
+                    GoodType: item.goodType,
+                    Quantity: item.quantity,
+                    SellPrice: item.sellPrice,
+                    BuyPrice: item.buyPrice,
+                    Location: item.location,
+                    modify: (loc, itn)=>updateRow(index,loc, itn)
+                })
+            }
         );
+
     return (
         <div className={classes.root} style={{height: 1000, width: '90%', float: 'left'}}>
             <DataGrid rows={items} columns={inventoryCols} pageSize={15}/>
@@ -128,7 +126,7 @@ const LoadedView = ({classes, inventory}) => {
             {/*    <TextField id="filled-basic" label="Search" variant="filled" style={{float: 'right'}}/>*/}
             {/*    <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={9}/>*/}
             {/*</div>*/}
-            <div style={{height: 600, width: '80%', float: 'center'}}>
+            <div style={{height: 600, width: '90%', float: 'center'}}>
                 <FilledInventoryView
                     inventoryItems={inventory}
                     classes={classes}
@@ -165,7 +163,7 @@ const Inventory = () => {
     const waitForGetRequest = async () => getInventory().then(inv => setInventory(inv));
 
     return (
-        <SpinBeforeLoading minLoadingTime={1000} awaiting={waitForGetRequest}>
+        <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
             <LoadedView classes={classes} inventory={inventory}/>
         </SpinBeforeLoading>
     );
