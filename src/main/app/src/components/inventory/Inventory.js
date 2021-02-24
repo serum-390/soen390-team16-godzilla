@@ -5,8 +5,8 @@ import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
 import {spinnyBoi} from '../About';
 import {DataGrid} from "@material-ui/data-grid";
-import CustomerForm from "../../Forms/CustomerForm";
 import InventoryForm from "../../Forms/InventoryForm";
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -18,6 +18,19 @@ const useStyles = makeStyles(theme => ({
         textTransform: 'none',
     },
 }));
+
+const update = async data => {
+    try {
+        const api = `/api/inventory/${data.id}`;
+        const updated = await axios.put(api, data);
+        console.log(`STATUS CODE: ${updated.status}`);
+        console.log(`DATA: ${updated.data || "Nothing"}`);
+    } catch (err) {
+        console.log(err);
+        return err;
+    }
+};
+
 
 const inventoryCols = [
     {field: 'id', headerName: 'Item', width: 130},
@@ -32,7 +45,7 @@ const inventoryCols = [
         headerName: 'Modify',
         width: 160,
         renderCell: params => (
-            <div style={{ margin: 'auto' }}>
+            <div style={{margin: 'auto'}}>
                 {
                     /*<Button variant='contained'
                      color='secondary'
@@ -44,7 +57,7 @@ const inventoryCols = [
                         dialogTitle='Inventory Information '
                         dialogContentText='Please enter any information you would like to modify: '
                         submitButton='Update'
-                        onUpdate = {params.value}
+                        onUpdate={params.value}
                     />
                 }
             </div>
@@ -52,7 +65,6 @@ const inventoryCols = [
     },
 
 ];
-
 
 
 const getInventory = async () => {
@@ -65,24 +77,35 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
-    let updateRow= (rowNum, location, itemName)=>{
-        items[rowNum].ItemName = itemName;
-        items[rowNum].Location = location;
+    let updateRow = (rowNum,item, location, itemName) => {
+        // items[rowNum].ItemName = itemName;
+        // items[rowNum].Location = location;
+        console.log("item is "+ item.quantity);
+        update({
+            id: item.id,
+            itemName: itemName,
+            goodType: item.goodType,
+            quantity: item.quantity,
+            sellPrice: item.sellPrice,
+            buyPrice: item.buyPrice,
+            location: location
+
+        })
 
     };
-        inventoryItems.map((item,index) => {
+    inventoryItems.map((item, index) => {
             items.push({
-                    id: item.id,
-                    ItemName: item.itemName,
-                    GoodType: item.goodType,
-                    Quantity: item.quantity,
-                    SellPrice: item.sellPrice,
-                    BuyPrice: item.buyPrice,
-                    Location: item.location,
-                    modify: (loc, itn)=>updateRow(index,loc, itn)
-                })
-            }
-        );
+                id: item.id,
+                ItemName: item.itemName,
+                GoodType: item.goodType,
+                Quantity: item.quantity,
+                SellPrice: item.sellPrice,
+                BuyPrice: item.buyPrice,
+                Location: item.location,
+                modify: (loc, itn) => updateRow(index, item, loc, itn)
+            })
+        }
+    );
 
     return (
         <div className={classes.root} style={{height: 1000, width: '90%', float: 'left'}}>
