@@ -7,7 +7,6 @@ import {DataGrid} from "@material-ui/data-grid";
 import InventoryForm from "../../Forms/InventoryForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-import DialogActions from "@material-ui/core/DialogActions";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -58,7 +57,6 @@ const deleteItem = async id => {
 };
 
 
-
 const inventoryCols = [
     {field: 'id', headerName: 'Item', width: 100},
     {field: 'ItemName', headerName: 'Item Name', width: 130},
@@ -92,7 +90,7 @@ const inventoryCols = [
         width: 130,
         renderCell: params => (
             <div style={{margin: 'auto'}}>
-                <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}} >
+                <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
                     Delete
                 </Button>
             </div>
@@ -142,9 +140,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
     );
 
     return (
-        <div className={classes.root} style={{height: 1000, width: '100%', float: 'left'}}>
-            <DataGrid rows={items} columns={inventoryCols} pageSize={15}/>
-        </div>
+        <DataGrid rows={items} columns={inventoryCols} pageSize={9}/>
     );
 };
 
@@ -168,15 +164,17 @@ const Spinner = () => {
 const LoadedView = ({classes, inventory}) => {
     return (
         <div>
-            <h1 style={{ textAlign: "center" }}>Inventory</h1>
-            <InventoryForm
-                initialButton='Insert'
-                dialogTitle='Inventory Information '
-                dialogContentText='Please enter information of the new item:'
-                submitButton='Insert'
-                onSubmit={(data) => insertItem(data)}
-            />
-            <div style={{height: 600, width: '90%',textAlign: "center" }}>
+            <h1 style={{textAlign: "center"}}>Inventory</h1>
+            <div style={{height: 600, width: '85%', float: "left"}}>
+                <div style={{float: "left"}}>
+                    <InventoryForm
+                        initialButton='Insert'
+                        dialogTitle='Inventory Information '
+                        dialogContentText='Please enter information of the new item:'
+                        submitButton='Insert'
+                        onSubmit={(data) => insertItem(data)}
+                    />
+                </div>
                 <FilledInventoryView
                     inventoryItems={inventory}
                     classes={classes}
