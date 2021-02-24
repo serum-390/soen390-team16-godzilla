@@ -172,7 +172,10 @@ const LoadedView = ({classes, inventory}) => {
                         dialogTitle='Inventory Information '
                         dialogContentText='Please enter information of the new item:'
                         submitButton='Insert'
-                        onSubmit={(data) => insertItem(data)}
+                        onSubmit={(data) => {
+                            console.log("inserting "+data.itemName);
+                            insertItem(data);
+                        }}
                     />
                 </div>
                 <FilledInventoryView

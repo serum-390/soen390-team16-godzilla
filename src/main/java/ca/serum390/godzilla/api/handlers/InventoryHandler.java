@@ -31,7 +31,7 @@ public class InventoryHandler {
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Item.class)
                 .flatMap(items::save)
-                .flatMap(id -> created(URI.create("/items/" + id)).build());
+                .flatMap(id -> noContent().build());
     }
 
     /**
