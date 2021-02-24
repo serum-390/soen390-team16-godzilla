@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -6,11 +6,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
@@ -49,7 +47,7 @@ const inventoryCols = [
             id="quantityVal"
             label="Quantity"
             type="number"
-            onChange={(e) => {ChangeRowQuantity(e, params.getValue('id'))}}
+            onChange={(e) => {ChangeRowQuantity(e, params.getValue('id'), params.getValue('price'))}}
             defaultValue="0"
             InputLabelProps={{
             shrink: true,
@@ -60,12 +58,26 @@ const inventoryCols = [
   ];
 
 let dict = {};
-let totalAmt = 0;
+let totalCost = 0;
 
-function ChangeRowQuantity(qty, id){
-    //alert(id + " " + qty.target.value);
-    // store data into array
-    dict[id] = qty.target.value;     
+function ChangeRowQuantity(qty, id, price){
+    dict[id] = [];
+    dict[id][0] = qty.target.value;
+    dict[id][1] = price;
+    
+    totalCost = 0;
+
+    for(var key in dict) {
+        var value = dict[key][0];
+        
+        // Skip if invalid quantity amount
+        if(value <= 0)
+            continue;
+        
+        totalCost += value * dict[key][1];
+    }   
+
+
 }
 
 const inventoryRows = [
@@ -78,18 +90,11 @@ const inventoryRows = [
     {id: 7, itemName: 'Item7', price: "20"},
 ]
 
-function InventoryTable () {
-    const classes = useStyles();
-    return (
-        <FormControl className={classes.formControl}>
-            <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={4}/>   
-        </FormControl>
-    );
-}
-
 export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
   const [vendor, setVendor] = React.useState(1);
+
+  const totalCostText = useRef("Total Cost: $0");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -100,19 +105,21 @@ export default function PurchaseOrderForm(props) {
     var outString = "Vendor ID: " + [vendor] + "\n\n";
 
     for(var key in dict) {
-        var value = dict[key];
+        var value = dict[key][0];
         
         // Skip if invalid quantity amount
         if(value <= 0)
             continue;
         
-        outString += "Item ID:" + key + " --> Qty: " + value + "\n";
+        outString += "Item ID:" + key + " --> Qty: " + value + ", Price: " + dict[key][1] + "\n";
     }
       
-    alert(outString);
+    alert(outString + "Total Cost: " + totalCost);
+
+    // THIS IS WHERE DATABASE FUNCTION WILL TAKE PLACE
 
     dict = {};  // Clear dictionary
-    //setOpen(false);
+    setOpen(false);
   };
 
   const handleClose = () => {
@@ -120,11 +127,25 @@ export default function PurchaseOrderForm(props) {
     setOpen(false);
   };
 
-  const handleChange = (event) => {
-    // CHANGE INVENTORY ROWS BY FETCHING VENDOR'S INVENTORY FROM DB
-    alert(event.target.value);
+  const handleChange = (event) => {  
+    //alert(event.target.value);
     setVendor(event.target.value);
+
+    // CHANGE INVENTORY ROWS BY FETCHING VENDOR'S INVENTORY FROM DB
   };
+
+  const handleTotalCost = () => {
+    totalCostText.current.innerHTML = "Total Cost: $" + totalCost;
+  };
+
+    function InventoryTable () {
+        const classes = useStyles();
+        return (
+            <FormControl className={classes.formControl}>
+                <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={10} onRowClick={handleTotalCost}/>   
+            </FormControl>
+        );
+    }
 
   return (
     <div>
@@ -133,7 +154,6 @@ export default function PurchaseOrderForm(props) {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
-        
         <DialogContent>
             <DialogContentText>
             {props.dialogContentText}
@@ -150,17 +170,18 @@ export default function PurchaseOrderForm(props) {
                     id: 'outlined-vendor-native-simple',
                 }}
                 >
-
                 {vendorRows.map(item =>
                     <option value={item.id}>{item.vendorName}</option>
                 )}
                 </Select>
             </FormControl>  
-            
-      
           <InventoryTable/>
         </DialogContent>
         <DialogActions>
+            <div style={{float: 'left', width: '100%'}}>
+                <h3 ref={totalCostText}>Total Cost: $0</h3>
+            </div>
+            
           <Button onClick={handleSubmit} color="primary">
             {props.submitButton}
           </Button>
