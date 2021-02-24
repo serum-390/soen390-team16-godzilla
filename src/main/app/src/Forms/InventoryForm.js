@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function InventoryForm(props) {
     const [open, setOpen] = React.useState(false);
-    const[location, setLocation] = React.useState("");
-    const[itemName, setItemName] = React.useState("");
-    const[sellPrice, setSellPrice] = React.useState("");
-    const[buyPrice, setBuyPrice] = React.useState("");
-    const[quantity, setQuantity] = React.useState("");
+    const [location, setLocation] = React.useState("");
+    const [itemName, setItemName] = React.useState("");
+    const [sellPrice, setSellPrice] = React.useState("");
+    const [buyPrice, setBuyPrice] = React.useState("");
+    const [quantity, setQuantity] = React.useState("");
 
 
     const handleClickOpen = () => {
@@ -36,14 +36,23 @@ export default function InventoryForm(props) {
     };
 
     const handleUpdate = () => {
-        props.onUpdate(location,itemName, sellPrice, buyPrice,quantity);
+        let data = {
+            id: -1,
+            itemName: itemName,
+            goodType: -1,
+            quantity: quantity,
+            sellPrice: sellPrice,
+            buyPrice: buyPrice,
+            location: location
+        };
+        props.onUpdate(data);
         setOpen(false);
         // want to update the table after clicking this
     };
 
     return (
         <div>
-            <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
+            <Button variant="contained" color="primary" style={{float: 'right'}} onClick={handleClickOpen}>
                 {props.initialButton}
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -59,7 +68,7 @@ export default function InventoryForm(props) {
                         id="itemName"
                         label="Item Name"
                         type="string"
-                        onChange = {(event)=> setItemName(event.target.value)}
+                        onChange={(event) => setItemName(event.target.value)}
                         fullWidth
                     />
                     <TextField
@@ -68,7 +77,7 @@ export default function InventoryForm(props) {
                         id="location"
                         label="Location"
                         type="string"
-                        onChange = {(event)=> setLocation(event.target.value)}
+                        onChange={(event) => setLocation(event.target.value)}
                         fullWidth
                     />
                     <TextField
@@ -77,7 +86,7 @@ export default function InventoryForm(props) {
                         id="quantity"
                         label="Quantity"
                         type="string"
-                        onChange = {(event)=> setQuantity(event.target.value)}
+                        onChange={(event) => setQuantity(event.target.value)}
                         fullWidth
                     />
                     <TextField
@@ -86,7 +95,7 @@ export default function InventoryForm(props) {
                         id="sellPrice"
                         label="Sell Price"
                         type="string"
-                        onChange = {(event)=> setSellPrice(event.target.value)}
+                        onChange={(event) => setSellPrice(event.target.value)}
                         fullWidth
                     />
                     <TextField
@@ -95,7 +104,7 @@ export default function InventoryForm(props) {
                         id="buyPrice"
                         label="Buy Price"
                         type="string"
-                        onChange = {(event)=> setBuyPrice(event.target.value)}
+                        onChange={(event) => setBuyPrice(event.target.value)}
                         fullWidth
                     />
                 </DialogContent>

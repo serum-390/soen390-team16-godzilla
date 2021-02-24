@@ -40,6 +40,7 @@ const inventoryCols = [
     {field: 'SellPrice', headerName: 'Sell Price', width: 130},
     {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
     {field: 'Location', headerName: 'Location', width: 130},
+    {field: 'BillOfMaterial', headerName: 'Bill of Material', width: 130},
     {
         field: 'modify',
         headerName: 'Modify',
@@ -72,15 +73,16 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
-    let updateRow = (rowNum, item, location, itemName, sellPrice, buyPrice, quantity) => {
+    let updateRow = (rowNum, item, updatedItem) => {
         update({
             id: item.id,
-            itemName: itemName,
+            itemName: updatedItem.itemName,
             goodType: item.goodType,
-            quantity: quantity,
-            sellPrice: sellPrice,
-            buyPrice: buyPrice,
-            location: location
+            quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
+            sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
+            buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
+            location: updatedItem.location,
+            billOfMaterial: item.billOfMaterial
         })
     };
     inventoryItems.map((item, index) => {
@@ -92,13 +94,14 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
                 SellPrice: item.sellPrice,
                 BuyPrice: item.buyPrice,
                 Location: item.location,
-                modify: (loc, itn, sp, bp, qu) => updateRow(index, item, loc, itn,sp, bp, qu)
+                BillOfMaterial: item.billOfMaterial,
+                modify: (updatedItem) => updateRow(index, item, updatedItem)
             })
         }
     );
 
     return (
-        <div className={classes.root} style={{height: 1000, width: '90%', float: 'left'}}>
+        <div className={classes.root} style={{height: 1000, width: '95%', float: 'left'}}>
             <DataGrid rows={items} columns={inventoryCols} pageSize={15}/>
         </div>
     );
