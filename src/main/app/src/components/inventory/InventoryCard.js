@@ -24,16 +24,18 @@ const useStyles = makeStyles(theme => ({
 const InventoryCard = props => {
 
   const classes = useStyles();
-  const [name] = useState(props.name ? props.name : "No Name");
-  const [description] = useState(props.description ? props.description : "No description...")
-
+  const [itemName] = useState(props.itemName ? props.itemName : "No Name");
+  const [goodType] = useState(props.goodType ? props.goodType : "No type...");
+  const [sellPrice] = useState(props.sellPrice ? props.sellPrice : "No price");
+  const [buyPrice] = useState(props.buyPrice ? props.buyPrice : "No price...");
+  const [location] = useState(props.location ? props.location : "No location");
+  const [quantity] = useState(props.quantity ? props.quantity : "No quantity...");
   return (
     <Card className={classes.root}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={props.image}
-          title={props.name}
+          title={props.itemName}
         />
         <CardContent>
           <Grid container>
@@ -43,26 +45,28 @@ const InventoryCard = props => {
               component='h2'
               className={classes.title}
             >
-              {name}
+              {itemName}
             </Typography>
-            <div className={classes.typeIcon}>
-              {
-                props.type === 'finished-product'
-                  ? <DirectionsBikeIcon />
-                  : <BuildIcon />
-              }
-            </div>
           </Grid>
           <Typography variant='body2' color='textSecondary' component='p'>
-            {description}
+            {sellPrice}
+          </Typography>
+          <Typography variant='body2' color='textSecondary' component='p'>
+            {buyPrice}
+          </Typography>
+          <Typography variant='body2' color='textSecondary' component='p'>
+            {quantity}
+          </Typography>
+          <Typography variant='body2' color='textSecondary' component='p'>
+            {goodType}
+          </Typography>
+          <Typography variant='body2' color='textSecondary' component='p'>
+            {location}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Button size='small' color='primary'>Options</Button>
-        <Button size='small' color='primary'>
-          {props.type === 'finished-product' ? 'Sell' : 'Buy More'}
-        </Button>
       </CardActions>
     </Card>
   )

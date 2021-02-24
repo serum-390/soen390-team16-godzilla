@@ -5,6 +5,8 @@ IMAGE_TAG="ghcr.io/serum-390/godzilla:latest"
 NETWORK='godzilla_network'
 CONTAINER_NAME='godzilla-test'
 
+set -e
+
 build_app() (
     cd "$PROJECT_ROOT"
     ./mvnw clean package
