@@ -1,6 +1,5 @@
-import {Box, Button, Grid, makeStyles, TextField, Typography} from '@material-ui/core';
+import {Box, Button, makeStyles, Typography} from '@material-ui/core';
 import React, {Fragment, useEffect, useState} from 'react';
-import InventoryCard from './InventoryCard';
 import MenuIcon from '@material-ui/icons/Menu'
 import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
@@ -25,7 +24,8 @@ const inventoryCols = [
     {field: 'Quantity', headerName: 'Quantity', width: 130},
     {field: 'SellPrice', headerName: 'Sell Price', width: 130},
     {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
-    {field: 'Location', headerName: 'Location', width: 130}
+    {field: 'Location', headerName: 'Location', width: 130},
+
 ];
 
 const inventoryRows = [
@@ -76,30 +76,19 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
-    for (let i = 0; i < 10; i++) {
-        inventoryItems.map(item => {
-            console.log("Hellllllllo "+item.itemName);
-                items.push(
-                    <Grid item>
-                        <InventoryCard
-                            itemName={item.itemName}
-                            goodType={item.goodType}
-                            sellPrice={item.sellPrice}
-                            buyPrice={item.buyPrice}
-                            location={item.location}
-                            quantity={item.quantity}
-                        />
-                    </Grid>
-                )
-            }
+        inventoryItems.map(item => items.push({
+                id: <input value={item.id} />,
+                ItemName: item.itemName,
+                GoodType: item.goodType,
+                Quantity: item.quantity,
+                SellPrice: item.sellPrice,
+                BuyPrice: item.buyPrice,
+                Location: item.location
+            })
         );
-    }
-
     return (
-        <div className={classes.root}>
-            <Grid container spacing={2} justify='center'>
-                {items}
-            </Grid>
+        <div className={classes.root} style={{height: 1000, width: '90%', float: 'left'}}>
+            <DataGrid rows={items} columns={inventoryCols} pageSize={15}/>
         </div>
     );
 };
@@ -140,10 +129,10 @@ const LoadedView = ({classes, inventory}) => {
             {/*    <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={9}/>*/}
             {/*</div>*/}
             <div style={{height: 600, width: '80%', float: 'center'}}>
-            <FilledInventoryView
-              inventoryItems={inventory}
-              classes={classes}
-            />
+                <FilledInventoryView
+                    inventoryItems={inventory}
+                    classes={classes}
+                />
             </div>
 
         </div>
