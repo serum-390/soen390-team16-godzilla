@@ -62,14 +62,15 @@ const deleteItem = async id => {
 const inventoryCols = [
     {field: 'id', headerName: 'Item', width: 100},
     {field: 'ItemName', headerName: 'Item Name', width: 130},
-    {field: 'GoodType', headerName: 'Good Type', width: 100},
+    {field: 'GoodType', headerName: 'Type', width: 100},
     {field: 'Quantity', headerName: 'Quantity', width: 130},
     {field: 'SellPrice', headerName: 'Sell Price', width: 130},
     {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
     {field: 'Location', headerName: 'Location', width: 130},
-    {field: 'BillOfMaterial', headerName: 'Bill of Material', width: 130},
+    {field: 'BillOfMaterial', headerName: 'BOM', width: 100},
     {
         field: 'modify',
+        headerName: 'Modify',
         width: 100,
         renderCell: params => (
             <div style={{margin: 'auto'}}>
@@ -87,10 +88,11 @@ const inventoryCols = [
     },
     {
         field: 'delete',
-        width: 100,
+        headerName: 'Delete',
+        width: 130,
         renderCell: params => (
             <div style={{margin: 'auto'}}>
-                <Button onClick={params.value} color="primary">
+                <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}} >
                     Delete
                 </Button>
             </div>
@@ -140,7 +142,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
     );
 
     return (
-        <div className={classes.root} style={{height: 1000, width: '95%', float: 'left'}}>
+        <div className={classes.root} style={{height: 1000, width: '100%', float: 'left'}}>
             <DataGrid rows={items} columns={inventoryCols} pageSize={15}/>
         </div>
     );
@@ -166,6 +168,7 @@ const Spinner = () => {
 const LoadedView = ({classes, inventory}) => {
     return (
         <div>
+            <h1 style={{ textAlign: "center" }}>Inventory</h1>
             <InventoryForm
                 initialButton='Insert'
                 dialogTitle='Inventory Information '
@@ -173,7 +176,7 @@ const LoadedView = ({classes, inventory}) => {
                 submitButton='Insert'
                 onSubmit={(data) => insertItem(data)}
             />
-            <div style={{height: 600, width: '90%', float: 'center'}}>
+            <div style={{height: 600, width: '90%',textAlign: "center" }}>
                 <FilledInventoryView
                     inventoryItems={inventory}
                     classes={classes}
