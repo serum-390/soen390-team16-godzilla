@@ -111,7 +111,7 @@ const getInventory = async () => {
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
 
-    let updateRow = (rowNum, item, updatedItem) => {
+    let updateRow = (item, updatedItem) => {
         updateItem({
             id: item.id,
             itemName: updatedItem.itemName === "" ? item.itemName : updatedItem.itemName,
@@ -123,7 +123,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
             billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
         })
     };
-    inventoryItems.map((item, index) => {
+    inventoryItems.map(item=> {
             items.push({
                 id: item.id,
                 ItemName: item.itemName,
@@ -133,7 +133,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
                 BuyPrice: item.buyPrice,
                 Location: item.location,
                 BillOfMaterial: item.billOfMaterial,
-                modify: (updatedItem) => updateRow(index, item, updatedItem),
+                modify: (updatedItem) => updateRow(item, updatedItem),
                 delete: () => deleteItem(item.id)
             })
         }
