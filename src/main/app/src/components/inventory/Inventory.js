@@ -122,21 +122,19 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
             billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
         })
     };
-    inventoryItems.map(item=> {
-            items.push({
-                id: item.id,
-                ItemName: item.itemName,
-                GoodType: item.goodType,
-                Quantity: item.quantity,
-                SellPrice: item.sellPrice,
-                BuyPrice: item.buyPrice,
-                Location: item.location,
-                BillOfMaterial: item.billOfMaterial,
-                modify: (updatedItem) => updateRow(item, updatedItem),
-                delete: () => deleteItem(item.id)
-            })
-        }
-    );
+    inventoryItems.map(item => (
+        items.push({
+            id: item.id,
+            ItemName: item.itemName,
+            GoodType: item.goodType,
+            Quantity: item.quantity,
+            SellPrice: item.sellPrice,
+            BuyPrice: item.buyPrice,
+            Location: item.location,
+            BillOfMaterial: item.billOfMaterial,
+            modify: (updatedItem) => updateRow(item, updatedItem),
+            delete: () => deleteItem(item.id)
+        })));
 
     return (
         <DataGrid rows={items} columns={inventoryCols} pageSize={9}/>
