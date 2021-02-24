@@ -65,28 +65,18 @@ public class InventoryHandler {
         var existed = items.findById(Integer.parseInt(req.pathVariable("id")));
         return Mono.zip(
                 data -> {
-                    Item g = (Item) data[0];
-                    Item g2 = (Item) data[1];
-                    if (g2 != null && StringUtils.hasText(Boolean.toString(g2.isBillOfMaterial()))) {
-                        g.setBillOfMaterial(g2.isBillOfMaterial());
+                    Item original = (Item) data[0];
+                    Item updated = (Item) data[1];
+                    if (updated != null ) {
+                        original.setBillOfMaterial(updated.isBillOfMaterial());
+                        original.setGoodType(updated.getGoodType());
+                        original.setBuyPrice(updated.getBuyPrice());
+                        original.setLocation(updated.getLocation());
+                        original.setSellPrice(updated.getSellPrice());
+                        original.setItemName(updated.getItemName());
+                        original.setQuantity(updated.getQuantity());
                     }
-                    if (g2 != null && StringUtils.hasText(Float.toString(g2.getBuyPrice()))) {
-                        g.setBuyPrice(g2.getBuyPrice());
-                    }
-                    if (g2 != null && StringUtils.hasText(g2.getLocation())) {
-                        g.setLocation(g2.getLocation());
-                    }
-                    if (g2 != null && StringUtils.hasText(Float.toString(g2.getSellPrice()))) {
-                        g.setSellPrice(g2.getSellPrice());
-                    }
-                    if (g2 != null && StringUtils.hasText(g2.getItemName())) {
-                        g.setItemName(g2.getItemName());
-                    }
-                    if (g2 != null && StringUtils.hasText(Integer.toString(g2.getQuantity()))) {
-                        g.setQuantity(g2.getQuantity());
-                    }
-
-                    return g;
+                    return original;
                 },
                 existed,
                 req.bodyToMono(Item.class)

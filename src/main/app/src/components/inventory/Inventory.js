@@ -114,12 +114,12 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
     let updateRow = (rowNum, item, updatedItem) => {
         updateItem({
             id: item.id,
-            itemName: updatedItem.itemName,
+            itemName: updatedItem.itemName === "" ? item.itemName : updatedItem.itemName,
             goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
             quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
             sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
             buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
-            location: updatedItem.location,
+            location: updatedItem.location === "" ? item.location : updatedItem.location,
             billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
         })
     };
