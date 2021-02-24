@@ -104,9 +104,10 @@ export default function InventoryForm(props) {
                         margin="dense"
                         id="goodType"
                         label="Good Type"
-                        type="string"
                         onChange={(event) => setGoodType(event.target.value)}
                         fullWidth
+                        type="number"
+                        InputProps={{ inputProps: { min: 1, max: 6 } }}
                     />
                     <TextField
                         autoFocus
