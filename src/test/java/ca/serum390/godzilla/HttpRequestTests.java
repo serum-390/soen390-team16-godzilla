@@ -45,7 +45,7 @@ class HttpRequestTests {
 	/**
 	 * Pings the root url for the app, expecting it
 	 */
-	@WithMockUser("demo")
+	@WithMockUser("test")
 	@Test
 	void healthCheckTest() {
 		assertThat(

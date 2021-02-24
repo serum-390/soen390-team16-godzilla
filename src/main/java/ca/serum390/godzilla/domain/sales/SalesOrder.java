@@ -12,8 +12,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.With;
 
 @Data
+@With
 @Builder
 @ToString
 @Table("orders")

@@ -39,10 +39,10 @@ class RestApiTests {
      *
      * @param byId
      */
-    @WithMockUser("demo")
+    @WithMockUser("test")
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    void testGetItemByName(boolean byId) {
+    void getItemByNameTest(boolean byId) {
         assertGetItemByNameOrId(byId);
     }
 

@@ -6,21 +6,20 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.SalesHandler;
+import ca.serum390.godzilla.api.handlers.SalesOrderHandler;
 
 @Configuration
 public class SalesOrderRouter {
     @Bean
-    public RouterFunction<ServerResponse> salesOrderRoute(SalesHandler salesHandler) {
+    public RouterFunction<ServerResponse> salesOrderRoute(SalesOrderHandler salesHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/sales/", builder -> 
-                builder
-                .GET("/", salesHandler::all)
-                .POST("/", salesHandler::create)
-                .GET(ID, salesHandler::get)
-                .PUT(ID, salesHandler::update)
-                .DELETE(ID, salesHandler::delete))
+                .path("/sales/", builder -> builder
+                    .GET("/", salesHandler::all)
+                    .POST("/", salesHandler::create)
+                    .GET(ID, salesHandler::get)
+                    .PUT(ID, salesHandler::update)
+                    .DELETE(ID, salesHandler::delete))
                 .build();
     }
 }

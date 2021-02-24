@@ -14,11 +14,11 @@ import ca.serum390.godzilla.domain.sales.SalesOrder;
 import reactor.core.publisher.Mono;
 
 @Component
-public class SalesHandler {
+public class SalesOrderHandler {
 
     private final SalesOrderRepository salesOrders;
 
-    public SalesHandler(SalesOrderRepository salesOrder) {
+    public SalesOrderHandler(SalesOrderRepository salesOrder) {
         this.salesOrders = salesOrder;
     }
 
@@ -59,11 +59,11 @@ public class SalesHandler {
             return g;
         }, existed, req.bodyToMono(SalesOrder.class)).cast(SalesOrder.class)
                 .flatMap(salesOrder -> salesOrders.update(
-                    salesOrder.getCreatedDate(), 
+                    salesOrder.getCreatedDate(),
                     salesOrder.getDueDate(),
-                        salesOrder.getDeliveryLocation(), 
-                        salesOrder.getOrderType(), 
-                        salesOrder.getId()))
+                    salesOrder.getDeliveryLocation(),
+                    salesOrder.getOrderType(),
+                    salesOrder.getId()))
                 .flatMap(salesOrder -> noContent().build());
     }
 

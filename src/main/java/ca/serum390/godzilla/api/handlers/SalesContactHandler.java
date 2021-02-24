@@ -16,37 +16,37 @@ import reactor.core.publisher.Mono;
 @Component
 public class SalesContactHandler {
 
-    private final SalesContactRepository salesContact;
+    private final SalesContactRepository salesContacts;
 
     public SalesContactHandler(SalesContactRepository salesContact) {
-        this.salesContact = salesContact;
+        this.salesContacts = salesContact;
     }
 
-    public Mono<ServerResponse> all(ServerRequest request) {
-        return ok().body(salesContact.findAll(), SalesContact.class);
+    public Mono<ServerResponse> all(ServerRequest req) {
+        return ok().body(salesContacts.findAll(), SalesContact.class);
     }
 
     // Create a sales contact
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(SalesContact.class).flatMap(salesContact::save).flatMap(id -> noContent().build());
+        return req.bodyToMono(SalesContact.class).flatMap(salesContacts::save).flatMap(id -> noContent().build());
     }
 
     // Get a sales contact
     public Mono<ServerResponse> get(ServerRequest req) {
-        return salesContact.findById(Integer.parseInt(req.pathVariable("id")))
+        return salesContacts.findById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(salesContact -> ok().body(Mono.just(salesContact), SalesContact.class))
                 .switchIfEmpty(notFound().build());
     }
 
     // Delete a sales contact
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return salesContact.deleteById(Integer.parseInt(req.pathVariable("id")))
+        return salesContacts.deleteById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(deleted -> noContent().build());
     }
 
     // Update a sales contact
     public Mono<ServerResponse> update(ServerRequest req) {
-        var existed = salesContact.findById(Integer.parseInt(req.pathVariable("id")));
+        var existed = salesContacts.findById(Integer.parseInt(req.pathVariable("id")));
         return Mono.zip(data -> {
             SalesContact g = (SalesContact) data[0];
             SalesContact g2 = (SalesContact) data[1];
@@ -59,10 +59,10 @@ public class SalesContactHandler {
             }
             return g;
         }, existed, req.bodyToMono(SalesContact.class)).cast(SalesContact.class)
-                .flatMap(SalesContact -> salesContact.update(SalesContact.getCompanyName(),
-                        SalesContact.getContactName(), SalesContact.getAddress(), SalesContact.getContact(),
-                        SalesContact.getContactType(), SalesContact.getId()))
-                .flatMap(SalesContact -> noContent().build());
+                .flatMap(salesContact -> salesContacts.update(salesContact.getCompanyName(),
+                        salesContact.getContactName(), salesContact.getAddress(), salesContact.getContact(),
+                        salesContact.getContactType(), salesContact.getId()))
+                .flatMap(rows -> noContent().build());
     }
 
 }
