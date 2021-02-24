@@ -1,20 +1,10 @@
 DELETE FROM goods;
-<<<<<<< HEAD
-<<<<<<< HEAD
 DELETE FROM orders;
 DELETE FROM contact;
-=======
 DELETE FROM inventory;
-DELETE FROM bill_of_material;
 DELETE FROM erp_user;
 DELETE FROM good_type;
->>>>>>> main
-=======
-DELETE FROM orders;
-DELETE FROM contact;
-DELETE FROM inventory;
 DELETE FROM bill_of_material;
->>>>>>> b24faeb13bd28ef13cf1e8001d9fb3cfe8e6c0b6
 
 INSERT INTO goods (name, description)
     VALUES ('SuperSpeed Bicycle', 'A really fast bike, fun for the whole family');
@@ -844,40 +834,3 @@ INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
     (6,26,1), (6,30,2), (6,34,2), (6,38,7), (7,27,1),
     (7,31,2), (7,35,2), (7,39,7), (8,28,1), (8,32,2),
     (8,36,2), (8,40,7);
-
-
---BILL_OF_MATERIAL
-INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
-    (1,5,1),
-    (1,9,1),
-    (1,13,1),
-    (1,17,2),
-    (2,6,1),
-    (2,10,1),
-    (2,14,1),
-    (2,18,2),
-    (3,7,1),
-    (3,11,1),
-    (3,15,1),
-    (3,19,2),
-    (4,8,1),
-    (4,12,1),
-    (4,16,1),
-    (4,20,2),
-    (5,25,1),
-    (5,29,2),
-    (5,33,2),
-    (5,37,7),
-    (6,26,1),
-    (6,30,2),
-    (6,34,2),
-    (6,38,7),
-    (7,27,1),
-    (7,31,2),
-    (7,35,2),
-    (7,39,7),
-    (8,28,1),
-    (8,32,2),
-    (8,36,2),
-    (8,40,7);
-

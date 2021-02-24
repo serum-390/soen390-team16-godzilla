@@ -12,9 +12,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.BomHandler;
 import ca.serum390.godzilla.api.handlers.InventoryHandler;
+import ca.serum390.godzilla.api.handlers.SalesHandler;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
+
 
     public static final String ALL_GOOD_IN_THE_HOOD = "All good in the hood";
 
@@ -25,6 +27,7 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route(
+            SalesHandler salesHandler,
             InventoryHandler inventoryHandler,
             BomHandler bomHandler,
             RouterFunction<ServerResponse> goodsRoute,
@@ -45,6 +48,7 @@ public class ApiRouter implements WebFluxConfigurer {
                     .build())
                 .build();
     }
+
         /**
          * Serve some static resources via /resources/<my_resource>
          */
