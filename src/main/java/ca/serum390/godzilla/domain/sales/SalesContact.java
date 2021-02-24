@@ -12,22 +12,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.With;
 
 @Data
-@With
 @Builder
 @ToString
-@Table("orders")
+@Table("contact")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesOrder {
+public class SalesContact {
     @Id
     private Integer id;
-    private LocalDate createdDate;
-    private LocalDate dueDate;
-    private String deliveryLocation;
-    private String orderType;
+    private String companyName;
+    private String contactName;
+    private String address;
+    private String contact;
+    private String contactType;
 
 }

@@ -7,7 +7,6 @@ import org.springframework.web.server.WebFilterChain;
 
 import reactor.core.publisher.Mono;
 
-
 /**
  * This {@link WebFilter} component is needed to forward requests to the React
  * Router routes.
@@ -29,12 +28,11 @@ public class ReactRouterForwardFilter implements WebFilter {
      */
     private boolean matchesReactRouterRoute(ServerWebExchange exchange) {
         String path = exchange.getRequest().getURI().getPath();
-        return !path.startsWith("/api/")
-                &&!path.startsWith("/goods/")
-            && !path.startsWith("/resources/")
-            && !path.endsWith(".js")
-            && !path.endsWith(".css")
-            && !path.endsWith(".svg");
+        return !path.startsWith("/api/") 
+                && !path.startsWith("/resources/")
+                && !path.endsWith(".js") 
+                && !path.endsWith(".css") 
+                && !path.endsWith(".svg");
     }
 
     /**
@@ -45,12 +43,12 @@ public class ReactRouterForwardFilter implements WebFilter {
      */
     private Mono<Void> forwardToReactRouter(ServerWebExchange exchange, WebFilterChain chain) {
         return chain.filter(
-                exchange.mutate()
+            exchange.mutate()
                         .request(
                             exchange.getRequest()
-                                    .mutate()
-                                    .path("/index.html")
-                                    .build()
+                                 .mutate()
+                                 .path("/index.html")
+                                 .build()
                         ).build());
     }
 }

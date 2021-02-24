@@ -28,7 +28,11 @@ public class StartupApplicationConfiguration {
      */
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        Flux<GodzillaUser> demoUsers = Flux.just(buildDemoUser("demo"), buildDemoUser("jeff"));
+        Flux<GodzillaUser> demoUsers = Flux.just(
+            buildDemoUser("demo"),
+            buildDemoUser("jeff"),
+            buildDemoUser("test")
+        );
         log.debug("Running post start up configuration...");
         godzillaUserRepository
                 .saveAll(demoUsers)
