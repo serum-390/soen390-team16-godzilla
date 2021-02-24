@@ -58,9 +58,13 @@ public class SalesHandler {
             }
             return g;
         }, existed, req.bodyToMono(SalesOrder.class)).cast(SalesOrder.class)
-                .flatMap(SalesOrder -> salesOrders.update(SalesOrder.getCreatedDate(), SalesOrder.getDueDate(),
-                        SalesOrder.getDeliveryLocation(), SalesOrder.getOrderType(), SalesOrder.getId()))
-                .flatMap(SalesOrder -> noContent().build());
+                .flatMap(salesOrder -> salesOrders.update(
+                    salesOrder.getCreatedDate(), 
+                    salesOrder.getDueDate(),
+                        salesOrder.getDeliveryLocation(), 
+                        salesOrder.getOrderType(), 
+                        salesOrder.getId()))
+                .flatMap(salesOrder -> noContent().build());
     }
 
 }
