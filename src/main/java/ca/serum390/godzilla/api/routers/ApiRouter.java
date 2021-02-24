@@ -12,11 +12,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.BomHandler;
 import ca.serum390.godzilla.api.handlers.InventoryHandler;
-import ca.serum390.godzilla.api.handlers.SalesHandler;
-
+import ca.serum390.godzilla.api.handlers.SalesOrderHandler;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
+
 
     public static final String ALL_GOOD_IN_THE_HOOD = "All good in the hood";
 
@@ -27,32 +27,34 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route(
-            SalesHandler salesHandler,
+            SalesOrderHandler salesHandler,
             InventoryHandler inventoryHandler,
             BomHandler bomHandler,
             RouterFunction<ServerResponse> goodsRoute,
             RouterFunction<ServerResponse> inventoryRoute,
-            RouterFunction<ServerResponse> bomRoute) {
+            RouterFunction<ServerResponse> bomRoute,
+            RouterFunction<ServerResponse> salesOrderRoute,
+            RouterFunction<ServerResponse> salesContactRoute)
+    {
 
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
                     .GET("/healthcheck", req -> ok().bodyValue(ALL_GOOD_IN_THE_HOOD))
-                    .GET("/sales", salesHandler::demoSales)
                     .add(goodsRoute)
                     .add(inventoryRoute)
+                    .add(salesOrderRoute)
+                    .add(salesContactRoute)
                     .add(bomRoute)
                     .build())
                 .build();
     }
 
-    /**
-     * Serve some static resources via /resources/<my_resource>
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**")
-                .addResourceLocations("/public",
-                                      "classpath:/static/",
-                                      "classpath:/static/resources/");
-    }
+        /**
+         * Serve some static resources via /resources/<my_resource>
+         */
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/resources/**").addResourceLocations("/public", "classpath:/static/",
+                                "classpath:/static/resources/");
+        }
 }
