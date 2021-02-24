@@ -72,10 +72,7 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
-    let updateRow = (rowNum,item, location, itemName) => {
-        // items[rowNum].ItemName = itemName;
-        // items[rowNum].Location = location;
-        console.log("item is "+ item.quantity);
+    let updateRow = (rowNum, item, location, itemName) => {
         update({
             id: item.id,
             itemName: itemName,
@@ -84,9 +81,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
             sellPrice: item.sellPrice,
             buyPrice: item.buyPrice,
             location: location
-
         })
-
     };
     inventoryItems.map((item, index) => {
             items.push({
