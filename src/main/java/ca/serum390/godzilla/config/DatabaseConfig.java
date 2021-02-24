@@ -13,9 +13,9 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @Configuration
 @EnableR2dbcRepositories
 public class DatabaseConfig {
@@ -57,16 +57,6 @@ public class DatabaseConfig {
         );
     }
 
-    private static Integer extractPortNumber(Environment env, String property) {
-        try {
-            String prop = env.getProperty(property);
-            return prop != null ? Integer.parseInt(prop) : 5432;
-        } catch (NumberFormatException e) {
-            log.error("Could not parse port number from environment variable DB_PORT: ", e);
-            return 5432;
-        }
-    }
-
     /**
      * If the database is empty, this {@link Bean} will populate the tables and test
      * data.
@@ -86,5 +76,15 @@ public class DatabaseConfig {
                 new ResourceDatabasePopulator(new ClassPathResource("sql/data.pgsql")));
         initializer.setDatabasePopulator(populator);
         return initializer;
+    }
+
+    private static Integer extractPortNumber(Environment env, String property) {
+        try {
+            String prop = env.getProperty(property);
+            return prop != null ? Integer.parseInt(prop) : 5432;
+        } catch (NumberFormatException e) {
+            log.error("Could not parse port number from environment variable DB_PORT: ", e);
+            return 5432;
+        }
     }
 }
