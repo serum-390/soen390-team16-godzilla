@@ -12,6 +12,7 @@ import PhoneInput from '../components/forms/PhoneInput';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
 import NewPurchaseOrderForm from "../Forms/NewPurchaseOrderForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
+import DeleteButton from "./forms/DeleteButton";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,30 +33,43 @@ const vendorColumns = [
   {
     field: 'vendorDetails',
     headerName: 'Modify',
-    width: 160,
+    width: 130,
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
-         /*<Button variant='contained'
-          color='secondary'
-          onClick={params.value.onClick}>
-          show</Button> 
-          */
-         
-         <VendorDetailsForm  
-         vendorID={params.getValue('id') || ''}
-         vendorName={params.getValue('vendorName') || ''}
-         vendorAddress={params.getValue('vendorAddress') || ''}
-         vendorPhone={params.getValue('vendorPhone') || ''}
-         initialButton='Edit' 
-         dialogTitle={'Vendor Information - (' + params.getValue('id') +  ") " + params.getValue('vendorName')}
-         dialogContentText='Please enter any information you would like to modify: ' 
-         submitButton='Update'  
-         /> 
-        }  
+          /*<Button variant='contained'
+           color='secondary'
+           onClick={params.value.onClick}>
+           show</Button> 
+           */
+
+          <VendorDetailsForm
+            vendorID={params.getValue('id') || ''}
+            vendorName={params.getValue('vendorName') || ''}
+            vendorAddress={params.getValue('vendorAddress') || ''}
+            vendorPhone={params.getValue('vendorPhone') || ''}
+            initialButton='Edit'
+            dialogTitle={'Vendor Information - (' + params.getValue('id') + ") " + params.getValue('vendorName')}
+            dialogContentText='Please enter any information you would like to modify: '
+            submitButton='Update'
+          />
+        }
       </div>
     ),
   },
+  {
+    field: 'deleteVendor',
+    headerName: 'Delete',
+    width: 130,
+    renderCell: params => (
+      <DeleteButton
+        vendorName={params.getValue('vendorName') || ''}
+      />
+    ),
+  },
+
+
+
 ];
 
 const vendorRows = [
@@ -77,18 +91,18 @@ const orderColumns = [
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
-         <PurchaseOrderDetailsForm  
-         orderID={params.getValue('id') || ''}
-         vendorName={params.getValue('vendorName') || ''}
-         orderItems={params.getValue('items') || ''}
-         orderTimestamp={params.getValue('timestamp') || ''}
-         orderCost={params.getValue('cost') || ''}
-         initialButton='View' 
-         dialogTitle={'Order Information - Order #' + params.getValue('id')}
-         dialogContentText={'Data: '} 
-         submitButton='Cancel Order'  
-         /> 
-        }  
+          <PurchaseOrderDetailsForm
+            orderID={params.getValue('id') || ''}
+            vendorName={params.getValue('vendorName') || ''}
+            orderItems={params.getValue('items') || ''}
+            orderTimestamp={params.getValue('timestamp') || ''}
+            orderCost={params.getValue('cost') || ''}
+            initialButton='View'
+            dialogTitle={'Order Information - Order #' + params.getValue('id')}
+            dialogContentText={'Data: '}
+            submitButton='Cancel Order'
+          />
+        }
       </div>
     ),
   }
@@ -158,11 +172,11 @@ function LoadedView() {
       <div style={{ height: 600, width: '45%', float: 'right' }}>
         <div>
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
-          <NewPurchaseOrderForm  
-            initialButton='Add New Purchase Order' 
-            dialogTitle='New Purchase Order'  
-            dialogContentText='Please enter any information you would like to modify: ' 
-            submitButton='Order'  
+          <NewPurchaseOrderForm
+            initialButton='Add New Purchase Order'
+            dialogTitle='New Purchase Order'
+            dialogContentText='Please enter any information you would like to modify: '
+            submitButton='Order'
           />
         </div>
         <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} onRowClick={(newSelection) => { ShowPurchaseOrderDetail(newSelection); }} />
