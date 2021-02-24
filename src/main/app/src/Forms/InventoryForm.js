@@ -6,15 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import PropTypes from 'prop-types';
-import MaskedInput from 'react-text-mask';
-import Input from '@material-ui/core/Input';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -30,6 +22,10 @@ export default function InventoryForm(props) {
     const [open, setOpen] = React.useState(false);
     const[location, setLocation] = React.useState("");
     const[itemName, setItemName] = React.useState("");
+    const[sellPrice, setSellPrice] = React.useState("");
+    const[buyPrice, setBuyPrice] = React.useState("");
+    const[quantity, setQuantity] = React.useState("");
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -40,7 +36,7 @@ export default function InventoryForm(props) {
     };
 
     const handleUpdate = () => {
-        props.onUpdate(location,itemName);
+        props.onUpdate(location,itemName, sellPrice, buyPrice,quantity);
         setOpen(false);
         // want to update the table after clicking this
     };
@@ -73,6 +69,33 @@ export default function InventoryForm(props) {
                         label="Location"
                         type="string"
                         onChange = {(event)=> setLocation(event.target.value)}
+                        fullWidth
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="quantity"
+                        label="Quantity"
+                        type="string"
+                        onChange = {(event)=> setQuantity(event.target.value)}
+                        fullWidth
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="sellPrice"
+                        label="Sell Price"
+                        type="string"
+                        onChange = {(event)=> setSellPrice(event.target.value)}
+                        fullWidth
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="buyPrice"
+                        label="Buy Price"
+                        type="string"
+                        onChange = {(event)=> setBuyPrice(event.target.value)}
                         fullWidth
                     />
                 </DialogContent>

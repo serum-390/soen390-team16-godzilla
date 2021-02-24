@@ -72,14 +72,14 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
-    let updateRow = (rowNum, item, location, itemName) => {
+    let updateRow = (rowNum, item, location, itemName, sellPrice, buyPrice, quantity) => {
         update({
             id: item.id,
             itemName: itemName,
             goodType: item.goodType,
-            quantity: item.quantity,
-            sellPrice: item.sellPrice,
-            buyPrice: item.buyPrice,
+            quantity: quantity,
+            sellPrice: sellPrice,
+            buyPrice: buyPrice,
             location: location
         })
     };
@@ -92,7 +92,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
                 SellPrice: item.sellPrice,
                 BuyPrice: item.buyPrice,
                 Location: item.location,
-                modify: (loc, itn) => updateRow(index, item, loc, itn)
+                modify: (loc, itn, sp, bp, qu) => updateRow(index, item, loc, itn,sp, bp, qu)
             })
         }
     );
