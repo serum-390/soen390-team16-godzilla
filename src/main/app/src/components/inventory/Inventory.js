@@ -6,6 +6,8 @@ import {spinnyBoi} from '../About';
 import {DataGrid} from "@material-ui/data-grid";
 import InventoryForm from "../../Forms/InventoryForm";
 import axios from "axios";
+import Button from "@material-ui/core/Button";
+import DialogActions from "@material-ui/core/DialogActions";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const update = async data => {
+const updateItem = async data => {
     try {
         const api = `/api/inventory/${data.id}`;
         const updated = await axios.put(api, data);
@@ -30,7 +32,7 @@ const update = async data => {
     }
 };
 
-const insert = async data => {
+const insertItem = async data => {
     try {
         const api = `/api/inventory/`;
         const inserted = await axios.post(api, data);
@@ -43,10 +45,24 @@ const insert = async data => {
 };
 
 
+const deleteItem = async id => {
+    try {
+        const api = `/api/inventory/${id}`;
+        const inserted = await axios.delete(api);
+        console.log(`STATUS CODE: ${inserted.status}`);
+        console.log(`DATA: ${inserted.data || "Nothing"}`);
+    } catch (err) {
+        console.log(err);
+        return err;
+    }
+};
+
+
+
 const inventoryCols = [
-    {field: 'id', headerName: 'Item', width: 130},
+    {field: 'id', headerName: 'Item', width: 100},
     {field: 'ItemName', headerName: 'Item Name', width: 130},
-    {field: 'GoodType', headerName: 'Good Type', width: 130},
+    {field: 'GoodType', headerName: 'Good Type', width: 100},
     {field: 'Quantity', headerName: 'Quantity', width: 130},
     {field: 'SellPrice', headerName: 'Sell Price', width: 130},
     {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
@@ -54,8 +70,7 @@ const inventoryCols = [
     {field: 'BillOfMaterial', headerName: 'Bill of Material', width: 130},
     {
         field: 'modify',
-        headerName: 'Modify',
-        width: 160,
+        width: 100,
         renderCell: params => (
             <div style={{margin: 'auto'}}>
                 {
@@ -70,6 +85,17 @@ const inventoryCols = [
             </div>
         ),
     },
+    {
+        field: 'delete',
+        width: 100,
+        renderCell: params => (
+            <div style={{margin: 'auto'}}>
+                <Button onClick={params.value} color="primary">
+                    Delete
+                </Button>
+            </div>
+        ),
+    }
 
 ];
 
@@ -84,8 +110,9 @@ const getInventory = async () => {
 
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
+
     let updateRow = (rowNum, item, updatedItem) => {
-        update({
+        updateItem({
             id: item.id,
             itemName: updatedItem.itemName,
             goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
@@ -106,7 +133,8 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
                 BuyPrice: item.buyPrice,
                 Location: item.location,
                 BillOfMaterial: item.billOfMaterial,
-                modify: (updatedItem) => updateRow(index, item, updatedItem)
+                modify: (updatedItem) => updateRow(index, item, updatedItem),
+                delete: () => deleteItem(item.id)
             })
         }
     );
@@ -143,7 +171,7 @@ const LoadedView = ({classes, inventory}) => {
                 dialogTitle='Inventory Information '
                 dialogContentText='Please enter information of the new item:'
                 submitButton='Insert'
-                onSubmit={(data) => insert(data)}
+                onSubmit={(data) => insertItem(data)}
             />
             <div style={{height: 600, width: '90%', float: 'center'}}>
                 <FilledInventoryView
