@@ -26,6 +26,11 @@
 
 *Visit the live demo environment here: <https://godzilla.serum-390.app/>*
 
+*Login:*
+- *Username:* `demo`
+- *Password:* `demo`
+
+
 **SOEN-390 Team-16**
 
 **Documentation**: <https://github.com/serum-390/soen390-team16-godzilla/wiki>
