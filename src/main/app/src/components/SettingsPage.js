@@ -1,53 +1,70 @@
-import { Fade, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import clsx from 'clsx';
-import Tooltip from '@material-ui/core/Tooltip';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import DisplaySettings from './settingMiniPages/DisplaySettings';
+import UserManagement from './settingMiniPages/UserManagement';
 
-// const DelayedTooltip = ({ title, placement, ...props }) => {
-//     return (
-//         <Tooltip
-//             {...props}
-//             title={title}
-//             placement={placement}
-//             arrow
-//             enterDelay={650}
-//             TransitionComponent={Fade}
-//             TransitionProps={{ timeout: 250 }}
-//             disableFocusListener
-//             disableTouchListener
-//         >
-//             {props.children}
-//         </Tooltip>
-//     );
-// };
 
-// const DrawerItem = ({ className, Icon, link, text, selected, onClick }) => {
-//     const classes = useNavBarStyles();
-//     return (
-//       <Link to={link} className={className}>
-//         <DelayedTooltip title={text} placement='right'>
-//           <ListItem
-//             button
-//             selected={selected}
-//             onClick={onClick}
-//             className={clsx({ [classes.selected]: selected })}
-//           >
-//             <ListItemIcon>
-//               <Icon />
-//             </ListItemIcon>
-//             <ListItemText primary={text} />
-//           </ListItem>
-//         </DelayedTooltip>
-//       </Link>
-//     );
-//   };
+const useStyles = makeStyles((theme) => ({
+    menu: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        '& > *': {
+            margin: theme.spacing(1),
+            width: theme.spacing(30),
+            height: theme.spacing(25),
+        },
+    },
+    mainDisplay: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        '& > *': {
+            margin: theme.spacing(1),
+            width: theme.spacing(120),
+            height: theme.spacing(50),
+        },
+    },
+}));
+
+
+const SettingsMenu = () => {
+    const classes = useStyles();
+    return (
+        <div className={classes.menu}>
+            <Paper elevation={0}>
+                <MenuList>
+                    <MenuItem>User Management</MenuItem>
+                    <MenuItem>Display Settings</MenuItem>
+                    <MenuItem>Authentication Settings</MenuItem>
+                    <MenuItem>Notification Settings</MenuItem>
+                    <MenuItem>File Upload Settings</MenuItem>
+                </MenuList>
+            </Paper >
+        </div>
+    );
+};
+
+
+const SettingsDisplay = () => {
+    const classes = useStyles();
+    return (
+        <div className={classes.mainDisplay}>
+            <Paper elevation={0}>
+            </Paper >
+        </div>
+    );
+};
 
 
 const ContentSwitch = () => {
     return (
         <Switch>
-            {/* <Route exact path="/" component={Home} /> */}
+            <Route exact path="/settingMiniPages/DisplaySettings" component={DisplaySettings} />
+            <Route exact path="/settingMiniPages/UserManagement" component={UserManagement} />
         </Switch>
     );
 };
@@ -57,24 +74,14 @@ function SettingsPage() {
     return (
         <div>
             <Router on>
-                <h1>This is the Settings page</h1>
-                <List>
-                    <ListItem>
-                        <ListItem button>
-                            <ListItemText primary="User Management"></ListItemText>
-                        </ListItem>
-                    </ListItem>
-                    <ListItem>
-                        <ListItem button>
-                            <ListItemText primary="Application Settings"></ListItemText>
-                        </ListItem>
-                    </ListItem>
-                    <ListItem>
-                        <ListItem button>
-                            <ListItemText primary="Account Settings"></ListItemText>
-                        </ListItem>
-                    </ListItem>
-                </List>
+                <Grid container spacing={7}>
+                    <Grid item>
+                        <SettingsMenu />
+                    </Grid>
+                    <Grid item>
+                        <SettingsDisplay />
+                    </Grid>
+                </Grid>
                 <ContentSwitch />
             </Router>
         </div>
