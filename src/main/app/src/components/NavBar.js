@@ -94,7 +94,7 @@ const DrawerList = ({ className }) => {
           [AccountBalanceIcon, '/accounting', 'Accounting'],
           [HelpIcon, '/help', 'Help'],
           [InfoIcon, '/about', 'About'],
-          [SettingsIcon, '/settingsPage', 'Settings']
+          [SettingsIcon, '/settings', 'Settings']
         ].map(([icon, path, text], index) => (
           <DrawerItem
             Icon={icon}
@@ -123,7 +123,7 @@ const ContentSwitch = () => {
       <Route exact path="/help" component={Help} />
       <Route exact path="/about" component={About} />
       <Route exact path="/useraccount" component={UserAccount} />
-      <Route exact path="/settingspage" component={SettingsPage} />
+      <Route exact path="/settings" component={SettingsPage} />
     </Switch>
   );
 };
