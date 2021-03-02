@@ -26,6 +26,11 @@
 
 *Visit the live demo environment here: <https://godzilla.serum-390.app/>*
 
+*Login:*
+- *Username:* `demo`
+- *Password:* `demo`
+
+
 **SOEN-390 Team-16**
 
 **Documentation**: <https://github.com/serum-390/soen390-team16-godzilla/wiki>
@@ -43,9 +48,12 @@ To get started with the app, checkout the [Quickstart wiki page](https://github.
 ### Docker
 
 ```bash
-# Spin up a development database
+# Grab the latest image
+docker pull ghcr.io/serum-390/godzilla
+
+# Spin up postgres
 docker-compose up -d
 
-# Spin up the app
-docker run --name godzilla -d -p 8080:8080 ghcr.io/serum-390/godzilla
+# Run the app
+docker run --name godzilla -d -p 8080:8080 --network  godzilla_network  -e DB_HOST=postgres ghcr.io/serum-390/godzilla
 ```
