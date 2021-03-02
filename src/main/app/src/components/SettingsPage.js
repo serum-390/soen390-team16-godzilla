@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch, useLocation } from 'react-router-dom';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
@@ -28,17 +28,34 @@ const useStyles = makeStyles((theme) => ({
             height: theme.spacing(50),
         },
     },
+    link: {
+        textDecoration: 'none',
+        color: theme.palette.text.primary,
+    },
 }));
 
 
 const SettingsMenu = () => {
     const classes = useStyles();
+    const location = useLocation();
     return (
         <div className={classes.menu}>
-            <Paper elevation={0}>
+            <Paper elevation={3}>
                 <MenuList>
-                    <MenuItem>User Management</MenuItem>
-                    <MenuItem>Display Settings</MenuItem>
+                    <Link to='/settings/userManagement'
+                        selected={location.pathname === '/settings/userManagement'}
+                        className={classes.link}
+                    >
+                        <MenuItem>
+                            User Management
+                        </MenuItem>
+                    </Link>
+                    <Link to='/settings/displaySettings'
+                        selected={location.pathname === '/settings/displaySettings'}
+                        className={classes.link}
+                    >
+                        <MenuItem>Display Settings</MenuItem>
+                    </Link>
                     <MenuItem>Authentication Settings</MenuItem>
                     <MenuItem>Notification Settings</MenuItem>
                     <MenuItem>File Upload Settings</MenuItem>
@@ -53,7 +70,8 @@ const SettingsDisplay = () => {
     const classes = useStyles();
     return (
         <div className={classes.mainDisplay}>
-            <Paper elevation={0}>
+            <Paper elevation={3}>
+                <ContentSwitch />
             </Paper >
         </div>
     );
@@ -63,8 +81,8 @@ const SettingsDisplay = () => {
 const ContentSwitch = () => {
     return (
         <Switch>
-            <Route exact path="/settingMiniPages/DisplaySettings" component={DisplaySettings} />
-            <Route exact path="/settingMiniPages/UserManagement" component={UserManagement} />
+            <Route exact path="/settings/displaySettings" component={DisplaySettings} />
+            <Route exact path="/settings/userManagement" component={UserManagement} />
         </Switch>
     );
 };
@@ -82,7 +100,6 @@ function SettingsPage() {
                         <SettingsDisplay />
                     </Grid>
                 </Grid>
-                <ContentSwitch />
             </Router>
         </div>
 
