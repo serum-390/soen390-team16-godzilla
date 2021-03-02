@@ -48,9 +48,12 @@ To get started with the app, checkout the [Quickstart wiki page](https://github.
 ### Docker
 
 ```bash
-# Spin up a development database
+# Grab the latest image
+docker pull ghcr.io/serum-390/godzilla
+
+# Spin up postgres
 docker-compose up -d
 
-# Spin up the app
-docker run --name godzilla -d -p 8080:8080 ghcr.io/serum-390/godzilla
+# Run the app
+docker run --name godzilla -d -p 8080:8080 --network  godzilla_network  -e DB_HOST=postgres ghcr.io/serum-390/godzilla
 ```
