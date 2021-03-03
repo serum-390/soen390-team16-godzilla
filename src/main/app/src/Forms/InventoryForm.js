@@ -82,7 +82,7 @@ export default function InventoryForm(props) {
                         margin="dense"
                         id="quantity"
                         label="Quantity"
-                        type="string"
+                        type="number"
                         helperText={item.quantity}
                         onChange={(event) => setQuantity(event.target.value)}
                         fullWidth
@@ -92,7 +92,8 @@ export default function InventoryForm(props) {
                         margin="dense"
                         id="sellPrice"
                         label="Sell Price"
-                        type="string"
+                        type="number"
+                        step={0.5}
                         helperText={item.sellPrice}
                         onChange={(event) => setSellPrice(event.target.value)}
                         fullWidth
@@ -102,7 +103,8 @@ export default function InventoryForm(props) {
                         margin="dense"
                         id="buyPrice"
                         label="Buy Price"
-                        type="string"
+                        type="number"
+                        step={0.5}
                         helperText={item.buyPrice}
                         onChange={(event) => setBuyPrice(event.target.value)}
                         fullWidth
