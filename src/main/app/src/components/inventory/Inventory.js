@@ -110,17 +110,20 @@ const getInventory = async () => {
 const FilledInventoryView = ({inventoryItems, classes}) => {
     let items = [];
 
-    let updateRow = (item, updatedItem) => {
-        updateItem({
-            id: item.id,
-            itemName: updatedItem.itemName === "" ? item.itemName : updatedItem.itemName,
-            goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
-            quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
-            sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
-            buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
-            location: updatedItem.location === "" ? item.location : updatedItem.location,
-            billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
-        })
+    let updateRow = (item, updatedItem, toUpdate) => {
+        if (toUpdate) {
+            updateItem({
+                id: item.id,
+                itemName: updatedItem.itemName === "" ? item.itemName : updatedItem.itemName,
+                goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
+                quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
+                sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
+                buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
+                location: updatedItem.location === "" ? item.location : updatedItem.location,
+                billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
+            })
+        }
+        return item;
     };
     inventoryItems.map(item => (
         items.push({
@@ -132,7 +135,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
             BuyPrice: item.buyPrice,
             Location: item.location,
             BillOfMaterial: item.billOfMaterial,
-            modify: (updatedItem) => updateRow(item, updatedItem),
+            modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
             delete: () => deleteItem(item.id)
         })));
 
@@ -162,17 +165,14 @@ const LoadedView = ({classes, inventory}) => {
     return (
         <div>
             <h1 style={{textAlign: "center"}}>Inventory</h1>
-            <div style={{height: 600, width: '85%', float: "left"}}>
+            <div style={{height: 800, width: '85%', float: "left"}}>
                 <div style={{float: "left"}}>
                     <InventoryForm
                         initialButton='Insert'
                         dialogTitle='Inventory Information '
                         dialogContentText='Please enter information of the new item:'
                         submitButton='Insert'
-                        onSubmit={(data) => {
-                            console.log("inserting "+data.itemName);
-                            insertItem(data);
-                        }}
+                        onSubmit={(data) => insertItem(data)}
                     />
                 </div>
                 <FilledInventoryView

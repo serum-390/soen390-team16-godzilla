@@ -6,8 +6,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export default function InventoryForm(props) {
+    const item = props.onSubmit(null, false);
     const [open, setOpen] = React.useState(false);
     const [location, setLocation] = React.useState("");
     const [itemName, setItemName] = React.useState("");
@@ -15,7 +18,7 @@ export default function InventoryForm(props) {
     const [buyPrice, setBuyPrice] = React.useState("");
     const [quantity, setQuantity] = React.useState("");
     const [goodType, setGoodType] = React.useState("");
-    const [billOfMaterial, setBillOfMaterial] = React.useState("");
+    const [billOfMaterial, setBillOfMaterial] = React.useState(item.billOfMaterial);
 
 
     const handleClickOpen = () => {
@@ -37,7 +40,7 @@ export default function InventoryForm(props) {
             location: location,
             billOfMaterial: billOfMaterial
         };
-        props.onSubmit(data);
+        props.onSubmit(data, true);
         setOpen(false);
         // want to update the table after clicking this
     };
@@ -60,6 +63,7 @@ export default function InventoryForm(props) {
                         id="itemName"
                         label="Item Name"
                         type="string"
+                        helperText={item.itemName}
                         onChange={(event) => setItemName(event.target.value)}
                         fullWidth
                     />
@@ -69,6 +73,7 @@ export default function InventoryForm(props) {
                         id="location"
                         label="Location"
                         type="string"
+                        helperText={item.location}
                         onChange={(event) => setLocation(event.target.value)}
                         fullWidth
                     />
@@ -78,6 +83,7 @@ export default function InventoryForm(props) {
                         id="quantity"
                         label="Quantity"
                         type="string"
+                        helperText={item.quantity}
                         onChange={(event) => setQuantity(event.target.value)}
                         fullWidth
                     />
@@ -87,6 +93,7 @@ export default function InventoryForm(props) {
                         id="sellPrice"
                         label="Sell Price"
                         type="string"
+                        helperText={item.sellPrice}
                         onChange={(event) => setSellPrice(event.target.value)}
                         fullWidth
                     />
@@ -96,6 +103,7 @@ export default function InventoryForm(props) {
                         id="buyPrice"
                         label="Buy Price"
                         type="string"
+                        helperText={item.buyPrice}
                         onChange={(event) => setBuyPrice(event.target.value)}
                         fullWidth
                     />
@@ -107,16 +115,19 @@ export default function InventoryForm(props) {
                         onChange={(event) => setGoodType(event.target.value)}
                         fullWidth
                         type="number"
-                        InputProps={{ inputProps: { min: 1, max: 6 } }}
+                        helperText={item.goodType}
+                        InputProps={{inputProps: {min: 1, max: 6}}}
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="billOfMaterial"
+                    <FormControlLabel
+                        control={<Checkbox
+                            autoFocus
+                            margin="dense"
+                            id="billOfMaterial"
+                            checked={billOfMaterial}
+                            onChange={(event) => setBillOfMaterial(event.target.checked)}
+                            fullWidth
+                        />}
                         label="Bill of Material"
-                        type="string"
-                        onChange={(event) => setBillOfMaterial(event.target.value)}
-                        fullWidth
                     />
                 </DialogContent>
                 <DialogActions>
