@@ -47,8 +47,8 @@ const SettingsMenu = () => {
             className={classes.link}
           >
             <MenuItem>
-              User Management
-                        </MenuItem>
+             User Management
+            </MenuItem>
           </Link>
           <Link to='/settings/displaySettings'
             selected={location.pathname === '/settings/displaySettings'}
