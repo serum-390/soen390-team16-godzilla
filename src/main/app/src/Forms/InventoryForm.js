@@ -6,128 +6,141 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export default function InventoryForm(props) {
-    const [open, setOpen] = React.useState(false);
-    const [location, setLocation] = React.useState("");
-    const [itemName, setItemName] = React.useState("");
-    const [sellPrice, setSellPrice] = React.useState("");
-    const [buyPrice, setBuyPrice] = React.useState("");
-    const [quantity, setQuantity] = React.useState("");
-    const [goodType, setGoodType] = React.useState("");
-    const [billOfMaterial, setBillOfMaterial] = React.useState("");
+  const item = props.onSubmit(null, false);
+  const [open, setOpen] = React.useState(false);
+  const [location, setLocation] = React.useState("");
+  const [itemName, setItemName] = React.useState("");
+  const [sellPrice, setSellPrice] = React.useState("");
+  const [buyPrice, setBuyPrice] = React.useState("");
+  const [quantity, setQuantity] = React.useState("");
+  const [goodType, setGoodType] = React.useState("");
+  const [billOfMaterial, setBillOfMaterial] = React.useState(item.billOfMaterial);
 
 
-    const handleClickOpen = () => {
-        setOpen(true);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = () => {
+    let data = {
+      id: "",
+      itemName: itemName,
+      goodType: goodType,
+      quantity: quantity,
+      sellPrice: sellPrice,
+      buyPrice: buyPrice,
+      location: location,
+      billOfMaterial: billOfMaterial
     };
+    props.onSubmit(data, true);
+    setOpen(false);
+    // want to update the table after clicking this
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  return (
+    <div>
+      <Button variant="contained" color="primary" style={{float: 'right'}} onClick={handleClickOpen}>
+        {props.initialButton}
+      </Button>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
 
-    const handleSubmit = () => {
-        let data = {
-            id: "",
-            itemName: itemName,
-            goodType: goodType,
-            quantity: quantity,
-            sellPrice: sellPrice,
-            buyPrice: buyPrice,
-            location: location,
-            billOfMaterial: billOfMaterial
-        };
-        props.onSubmit(data);
-        setOpen(false);
-        // want to update the table after clicking this
-    };
-
-    return (
-        <div>
-            <Button variant="contained" color="primary" style={{float: 'right'}} onClick={handleClickOpen}>
-                {props.initialButton}
-            </Button>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
-
-                <DialogContent>
-                    <DialogContentText>
-                        {props.dialogContentText}
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="itemName"
-                        label="Item Name"
-                        type="string"
-                        onChange={(event) => setItemName(event.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="location"
-                        label="Location"
-                        type="string"
-                        onChange={(event) => setLocation(event.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="quantity"
-                        label="Quantity"
-                        type="string"
-                        onChange={(event) => setQuantity(event.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="sellPrice"
-                        label="Sell Price"
-                        type="string"
-                        onChange={(event) => setSellPrice(event.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="buyPrice"
-                        label="Buy Price"
-                        type="string"
-                        onChange={(event) => setBuyPrice(event.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="goodType"
-                        label="Good Type"
-                        onChange={(event) => setGoodType(event.target.value)}
-                        fullWidth
-                        type="number"
-                        InputProps={{ inputProps: { min: 1, max: 6 } }}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="billOfMaterial"
-                        label="Bill of Material"
-                        type="string"
-                        onChange={(event) => setBillOfMaterial(event.target.value)}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleSubmit} color="primary">
-                        {props.submitButton}
-                    </Button>
-                    <Button onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
+        <DialogContent>
+          <DialogContentText>
+            {props.dialogContentText}
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="itemName"
+            label="Item Name"
+            type="string"
+            defaultValue={item.itemName}
+            onChange={(event) => setItemName(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="location"
+            label="Location"
+            type="string"
+            defaultValue={item.location}
+            onChange={(event) => setLocation(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="quantity"
+            label="Quantity"
+            type="number"
+            defaultValue={item.quantity}
+            onChange={(event) => setQuantity(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="sellPrice"
+            label="Sell Price"
+            type="number"
+            step={0.5}
+            defaultValue={item.sellPrice}
+            onChange={(event) => setSellPrice(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="buyPrice"
+            label="Buy Price"
+            type="number"
+            step={0.5}
+            defaultValue={item.buyPrice}
+            onChange={(event) => setBuyPrice(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="goodType"
+            label="Good Type"
+            onChange={(event) => setGoodType(event.target.value)}
+            fullWidth
+            type="number"
+            defaultValue={item.goodType}
+            InputProps={{inputProps: {min: 1, max: 6}}}
+          />
+          <FormControlLabel
+            control={<Checkbox
+              autoFocus
+              margin="dense"
+              id="billOfMaterial"
+              checked={billOfMaterial}
+              onChange={(event) => setBillOfMaterial(event.target.checked)}
+              fullWidth
+            />}
+            label="Bill of Material"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSubmit} color="primary">
+            {props.submitButton}
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
 }
