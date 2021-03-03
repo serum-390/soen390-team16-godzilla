@@ -32,11 +32,13 @@ import Production from './Production';
 import Purchase from './Purchasing';
 import Sales from './Sales';
 import UserAccount from './UserAccount';
+import SettingsPage from './SettingsPage';
 import Tooltip from '@material-ui/core/Tooltip';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useBooleanState from '../util/hooks';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 const DelayedTooltip = ({ title, placement, ...props }) => {
   return (
@@ -91,7 +93,8 @@ const DrawerList = ({ className }) => {
           [ListAltIcon, '/inventory', 'Inventory'],
           [AccountBalanceIcon, '/accounting', 'Accounting'],
           [HelpIcon, '/help', 'Help'],
-          [InfoIcon, '/about', 'About']
+          [InfoIcon, '/about', 'About'],
+          [SettingsIcon, '/settings', 'Settings']
         ].map(([icon, path, text], index) => (
           <DrawerItem
             Icon={icon}
@@ -120,6 +123,7 @@ const ContentSwitch = () => {
       <Route exact path="/help" component={Help} />
       <Route exact path="/about" component={About} />
       <Route exact path="/useraccount" component={UserAccount} />
+      <Route exact path="/settings" component={SettingsPage} />
     </Switch>
   );
 };
@@ -174,27 +178,27 @@ const UserAccountButton = ({ className }) => {
   );
 };
 
-const SearchBar = ({classes, searchBarFocused, focusSearchBar, unfocusSearchBar}) => {
+const SearchBar = ({ classes, searchBarFocused, focusSearchBar, unfocusSearchBar }) => {
   return (
     <div
-    className={clsx(classes.search, {
-      [classes.searchBarFocused]: searchBarFocused,
-    })}
-    onFocus={focusSearchBar}
-    onBlur={unfocusSearchBar}
-  >
-    <div className={classes.searchIcon}>
-      <SearchIcon />
+      className={clsx(classes.search, {
+        [classes.searchBarFocused]: searchBarFocused,
+      })}
+      onFocus={focusSearchBar}
+      onBlur={unfocusSearchBar}
+    >
+      <div className={classes.searchIcon}>
+        <SearchIcon />
+      </div>
+      <InputBase
+        placeholder="Search…"
+        classes={{
+          root: classes.inputRoot,
+          input: classes.inputInput,
+        }}
+        inputProps={{ 'aria-label': 'search' }}
+      />
     </div>
-    <InputBase
-      placeholder="Search…"
-      classes={{
-        root: classes.inputRoot,
-        input: classes.inputInput,
-      }}
-      inputProps={{ 'aria-label': 'search' }}
-    />
-  </div>
   );
 };
 
@@ -228,11 +232,11 @@ function NavBar() {
               <MenuIcon />
             </IconButton>
             <img src="/resources/images/name-logo-min.png"
-                 className={classes.nameLogo}
-                 alt="Godzilla ERP"
+              className={classes.nameLogo}
+              alt="Godzilla ERP"
             />
             <Grid container spacing={0} justify='flex-end' >
-              <Grid item key={0} style={{ padding: useTheme().spacing(1, 0)}}>
+              <Grid item key={0} style={{ padding: useTheme().spacing(1, 0) }}>
                 <SearchBar
                   classes={classes}
                   searchBarFocused={searchBarFocused}
