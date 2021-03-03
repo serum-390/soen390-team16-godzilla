@@ -63,7 +63,7 @@ export default function InventoryForm(props) {
                         id="itemName"
                         label="Item Name"
                         type="string"
-                        helperText={item.itemName}
+                        defaultValue={item.itemName}
                         onChange={(event) => setItemName(event.target.value)}
                         fullWidth
                     />
@@ -73,7 +73,7 @@ export default function InventoryForm(props) {
                         id="location"
                         label="Location"
                         type="string"
-                        helperText={item.location}
+                        defaultValue={item.location}
                         onChange={(event) => setLocation(event.target.value)}
                         fullWidth
                     />
@@ -83,7 +83,7 @@ export default function InventoryForm(props) {
                         id="quantity"
                         label="Quantity"
                         type="number"
-                        helperText={item.quantity}
+                        defaultValue={item.quantity}
                         onChange={(event) => setQuantity(event.target.value)}
                         fullWidth
                     />
@@ -94,7 +94,7 @@ export default function InventoryForm(props) {
                         label="Sell Price"
                         type="number"
                         step={0.5}
-                        helperText={item.sellPrice}
+                        defaultValue={item.sellPrice}
                         onChange={(event) => setSellPrice(event.target.value)}
                         fullWidth
                     />
@@ -105,7 +105,7 @@ export default function InventoryForm(props) {
                         label="Buy Price"
                         type="number"
                         step={0.5}
-                        helperText={item.buyPrice}
+                        defaultValue={item.buyPrice}
                         onChange={(event) => setBuyPrice(event.target.value)}
                         fullWidth
                     />
@@ -117,7 +117,7 @@ export default function InventoryForm(props) {
                         onChange={(event) => setGoodType(event.target.value)}
                         fullWidth
                         type="number"
-                        helperText={item.goodType}
+                        defaultValue={item.goodType}
                         InputProps={{inputProps: {min: 1, max: 6}}}
                     />
                     <FormControlLabel
