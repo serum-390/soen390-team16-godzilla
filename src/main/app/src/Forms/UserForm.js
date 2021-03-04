@@ -6,20 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles } from '@material-ui/core/styles';
-
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    display: 'block',
-  },
-  formControl: {
-    margin: theme.spacing(2),
-    minWidth: 120,
-  },
-}));
-
-
 
 export default function UserForm(props) {
   const [open, setOpen] = React.useState(false);
@@ -39,7 +25,6 @@ export default function UserForm(props) {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
-        
         <DialogContent>
           <DialogContentText>
             {props.dialogContentText}
