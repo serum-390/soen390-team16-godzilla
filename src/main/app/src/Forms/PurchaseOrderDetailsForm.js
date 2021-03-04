@@ -89,7 +89,7 @@ export default function PurchaseOrderDetailsForm(props) {
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableCell className={classes.table} aria-label="simple table">Vendor Name</TableCell>
+                  <TableCell className={classes.table} aria-label="simple table">{props.TypeName} Name</TableCell>
                   <TableCell>{props.vendorName}</TableCell>
                 </TableRow>
                 <TableRow>

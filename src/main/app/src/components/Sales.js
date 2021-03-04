@@ -4,6 +4,7 @@ import { useState } from 'react';
 import useSalesPageStyles from "../styles/salesPageStyles";
 import { SpinBeforeLoading } from "./inventory/Inventory";
 import  CustomerForm  from "../Forms/CustomerForm";
+import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
 
 const cols = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -27,7 +28,7 @@ const cols = [
           */
          <CustomerForm  
          initialButton='Edit' 
-         dialogTitle='Customer Information '  
+         dialogTitle= {'Customer Information: ID('+ params.getValue('id')+')'}
          dialogContentText='Please enter any information you would like to modify: ' 
          customerName={params.getValue('customerName') || ''}
          customerAddress={params.getValue('customerAddress').split(",")[0] || ''}
@@ -116,9 +117,19 @@ const salesColumns = [
     width: 130,
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
-        <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewSaleOrder(); }}>
-          View
-        </Button>
+        <PurchaseOrderDetailsForm
+                    orderID={params.getValue('id') || ''}
+                    vendorName={params.getValue('customerName') || ''}
+                    orderItems={params.getValue('items') || ''}
+                    orderTimestamp={params.getValue('timestamp') || ''}
+                    orderCost={params.getValue('cost') || ''}
+                    orderStatus={params.getValue('status') || ''}
+                    initialButton='View'
+                    dialogTitle={'Order Information - Order #' + params.getValue('id')}
+                    dialogContentText={'Data: '}
+                    submitButton='Cancel Order'
+                    TypeName = 'Customer'
+         />
       </div>
     ),
   }
