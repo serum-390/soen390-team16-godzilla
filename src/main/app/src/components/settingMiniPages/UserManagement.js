@@ -5,7 +5,7 @@ import  UserForm  from "../../Forms/UserForm";
 function UserManagement() {
   return (
     <div>
-      <h1 style={{textAlign: "center" , margin: '20px'}} >User Management</h1>
+      <div><h1 style={{textAlign: "center" , margin: '20px'}} >User Management</h1></div>
       <div style={{ height: 30, margin: '20px' }}>
         <UserForm
         initialButton='Add New User'  
