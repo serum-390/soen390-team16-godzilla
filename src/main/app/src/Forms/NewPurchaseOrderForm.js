@@ -142,7 +142,7 @@ export default function PurchaseOrderForm(props) {
         const classes = useStyles();
         return (
             <FormControl className={classes.formControl}>
-                <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={10} onRowClick={handleTotalCost}/>   
+                <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={99} hideFooter={true} onRowClick={handleTotalCost}/>   
             </FormControl>
         );
     }
@@ -152,7 +152,7 @@ export default function PurchaseOrderForm(props) {
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
       {props.initialButton}
       </Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog open={open} onClose={handleClose} scroll='paper' aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
         <DialogContent>
             <DialogContentText>
