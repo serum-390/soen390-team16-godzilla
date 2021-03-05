@@ -823,7 +823,7 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, sell_price, LO
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE) VALUES ('2021-02-15','2021-02-16','montreal','sales');
 
 --SalesContact
-INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'priority');
+INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
 
 --BILL_OF_MATERIAL
 INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
