@@ -23,7 +23,7 @@ import lombok.With;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesOrder {
+public class Order {
     @Id
     private Integer id;
     private LocalDate createdDate;

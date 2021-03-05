@@ -23,7 +23,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
-import ca.serum390.godzilla.domain.sales.SalesOrder;
+import ca.serum390.godzilla.domain.sales.Order;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,7 +55,7 @@ public class SalesTests {
     @WithMockUser("test")
     void retrieveAllSalesOrdersTest() {
         int numberOfDemoOrders = 9;
-        List<SalesOrder> ordersCollection = new ArrayList<>();
+        List<Order> ordersCollection = new ArrayList<>();
         when(salesOrderRepository.findAll()).thenReturn(
                 buildDemoSalesOrderFlux()
                     .doOnNext(ordersCollection::add)
@@ -68,7 +68,7 @@ public class SalesTests {
                 .is2xxSuccessful()
                 .expectHeader()
                 .contentType(APPLICATION_JSON)
-                .expectBodyList(SalesOrder.class)
+                .expectBodyList(Order.class)
                 .hasSize(numberOfDemoOrders)
                 .isEqualTo(ordersCollection)
                 .value(list -> {
@@ -84,7 +84,7 @@ public class SalesTests {
     @Test
     @WithMockUser("test")
     void createSalesOrderTest() {
-        SalesOrder order = buildDemoSalesOrderFlux().blockFirst();
+        Order order = buildDemoSalesOrderFlux().blockFirst();
         when(salesOrderRepository.save(order)).thenReturn(Mono.just(order));
         when(salesOrderRepository.findById(order.getId())).thenReturn(Mono.just(order));
 
@@ -115,8 +115,8 @@ public class SalesTests {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     void getSalesOrderTest(int id) {
-        List<SalesOrder> collector = new ArrayList<>(id);
-        SalesOrder order = buildDemoSalesOrderFlux()
+        List<Order> collector = new ArrayList<>(id);
+        Order order = buildDemoSalesOrderFlux()
                 .take(id)
                 .doOnNext(collector::add)
                 .last()
@@ -132,8 +132,8 @@ public class SalesTests {
     @Test
     @WithMockUser("test")
     void updateSalesOrderTest() {
-        SalesOrder order = buildDemoSalesOrderFlux().blockFirst();
-        SalesOrder order2 = order
+        Order order = buildDemoSalesOrderFlux().blockFirst();
+        Order order2 = order
                 .withCreatedDate(LocalDate.of(1997, 3, 14))
                 .withDeliveryLocation("Some other location")
                 .withDueDate(LocalDate.of(2025, 12, 21));
@@ -174,7 +174,7 @@ public class SalesTests {
     @Test
     @WithMockUser("test")
     void deleteSalesOrderTest() {
-        SalesOrder order = buildDemoSalesOrderFlux().blockFirst();
+        Order order = buildDemoSalesOrderFlux().blockFirst();
         when(salesOrderRepository.deleteById(order.getId())).thenReturn(Mono.empty());
 
         webClient.delete()
@@ -189,19 +189,19 @@ public class SalesTests {
     }
 
     /**
-     * Generates {@link SalesOrder SalesOrders} with progressively incrementing
+     * Generates {@link Order SalesOrders} with progressively incrementing
      * id values
      *
      * @return An inifinitely long Flux SalesOrders that
      */
-    private Flux<SalesOrder> buildDemoSalesOrderFlux() {
+    private Flux<Order> buildDemoSalesOrderFlux() {
         class Incrementer {
             int val = 1;
             int next() { return val++; }
         }
 
         Incrementer idIncrementer = new Incrementer();
-        Supplier<SalesOrder> buildDemoOrder = () -> SalesOrder
+        Supplier<Order> buildDemoOrder = () -> Order
                 .builder()
                 .id(idIncrementer.next())
                 .createdDate(NOW)
@@ -218,13 +218,13 @@ public class SalesTests {
                 });
     }
 
-    private void assertGetDemoSalesOrder(SalesOrder order) {
+    private void assertGetDemoSalesOrder(Order order) {
         webClient.get()
                 .uri(SALES_ORDERS_API + order.getId())
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful()
-                .expectBody(SalesOrder.class)
+                .expectBody(Order.class)
                 .isEqualTo(order)
                 .value(o -> assertThat(o)
                     .isNotNull()
