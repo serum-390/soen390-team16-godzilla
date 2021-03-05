@@ -104,9 +104,10 @@ export default function PurchaseOrderForm(props) {
       <div>
         <Snackbar
           open={openAlert}
-          onClose={handleClose}
+          onClose={closeAlert}
           TransitionComponent={Fade}
           message={alertText}
+          autoHideDuration={6000}
         />
       </div>
     );
@@ -115,6 +116,10 @@ export default function PurchaseOrderForm(props) {
   function showAlert(text){
     setAlertText(text);
     setOpenAlert(true);
+  }
+
+  function closeAlert(){
+    setOpenAlert(false);
   }
 
   const totalCostText = useRef("Total Cost: $0");
@@ -176,10 +181,10 @@ export default function PurchaseOrderForm(props) {
 
   return (
     <div>
+      <AlertSnackbar></AlertSnackbar>
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
       {props.initialButton}
       </Button>
-      <AlertSnackbar></AlertSnackbar>
       <Dialog open={open} onClose={handleClose} scroll='paper' aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
         <DialogContent>
