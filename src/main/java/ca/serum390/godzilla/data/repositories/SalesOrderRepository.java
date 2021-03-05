@@ -18,7 +18,7 @@ public interface SalesOrderRepository extends ReactiveCrudRepository<SalesOrder,
             Integer id);
 
     @Override
-    @Query("SELECT ID, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION,ORDER_TYPE, ORDER_TYPE FROM orders WHERE ORDER_TYPE= 'sales'")
+    @Query("SELECT ID, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION,ORDER_TYPE, ORDER_TYPE, ITEMS FROM orders WHERE ORDER_TYPE= 'sales'")
     Flux<SalesOrder> findAll();
 
 }

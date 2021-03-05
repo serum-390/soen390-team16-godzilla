@@ -1,6 +1,7 @@
 package ca.serum390.godzilla.domain.sales;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 import org.springframework.data.annotation.Id;
 
@@ -29,5 +30,6 @@ public class SalesOrder {
     private LocalDate dueDate;
     private String deliveryLocation;
     private String orderType;
+    private HashMap<String,String> items;
 
 }
