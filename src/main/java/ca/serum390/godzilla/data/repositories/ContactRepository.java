@@ -55,6 +55,6 @@ public interface ContactRepository extends ReactiveCrudRepository<Contact, Integ
             String contactName,
             String address,
             String contact,
-            Integer id);
+            String string, Integer id);
 }
 
