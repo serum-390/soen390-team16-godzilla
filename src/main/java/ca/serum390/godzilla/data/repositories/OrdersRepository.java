@@ -11,7 +11,7 @@ import ca.serum390.godzilla.domain.sales.SalesOrder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface SalesOrderRepository extends ReactiveCrudRepository<SalesOrder, Integer> {
+public interface OrdersRepository extends ReactiveCrudRepository<SalesOrder, Integer> {
     @Modifying
     @Query("UPDATE orders SET CREATED_DATE = $1, DUE_DATE = $2, DELIVERY_LOCATION= $3, ORDER_TYPE=$4  WHERE ID = $5")
     Mono<Integer> update(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType,

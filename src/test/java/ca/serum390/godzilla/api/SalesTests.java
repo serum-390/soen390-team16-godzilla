@@ -22,7 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import ca.serum390.godzilla.data.repositories.SalesContactRepository;
-import ca.serum390.godzilla.data.repositories.SalesOrderRepository;
+import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.domain.sales.SalesOrder;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import reactor.core.publisher.Flux;
@@ -43,7 +43,7 @@ public class SalesTests {
     DatabaseClient databaseClient;
 
     @MockBean
-    SalesOrderRepository salesOrderRepository;
+    OrdersRepository salesOrderRepository;
 
     @MockBean
     SalesContactRepository salesContactRepository;

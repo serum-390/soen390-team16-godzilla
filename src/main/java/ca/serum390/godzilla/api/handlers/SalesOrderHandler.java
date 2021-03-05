@@ -9,16 +9,16 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 
-import ca.serum390.godzilla.data.repositories.SalesOrderRepository;
+import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.domain.sales.SalesOrder;
 import reactor.core.publisher.Mono;
 
 @Component
 public class SalesOrderHandler {
 
-    private final SalesOrderRepository salesOrders;
+    private final OrdersRepository salesOrders;
 
-    public SalesOrderHandler(SalesOrderRepository salesOrder) {
+    public SalesOrderHandler(OrdersRepository salesOrder) {
         this.salesOrders = salesOrder;
     }
 
