@@ -155,7 +155,8 @@ export default function CustomerForm(props) {
             id="customer"
             label="Customer Name"
             type="string"
-        
+            defaultValue={props.customerName}
+            
             fullWidth
           />
           <TextField
@@ -164,6 +165,7 @@ export default function CustomerForm(props) {
             id="address"
             label="Address"
             type="string"
+            defaultValue={props.customerAddress}
 
             fullWidth
           />
@@ -174,7 +176,8 @@ export default function CustomerForm(props) {
                 margin="normal"
                 id="city"
                 label="City"
-                type="text" 
+                type="text"
+                defaultValue={props.customerCity} 
               />
             </Grid>
             <Grid item md={3}>
@@ -185,6 +188,7 @@ export default function CustomerForm(props) {
                 label="Postal Code"
                 inputProps={{ maxLength: 6 }}
                 type="text" 
+                defaultValue={props.customerPostal}
               />
             </Grid>
             <Grid item md={3}>
@@ -194,6 +198,9 @@ export default function CustomerForm(props) {
           <PhoneNumberInput/>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            {props.deleteButton}
+          </Button>
           <Button onClick={handleClose} color="primary">
             {props.submitButton}
           </Button>

@@ -102,6 +102,7 @@ const orderColumns = [
             dialogTitle={'Order Information - Order #' + params.getValue('id')}
             dialogContentText={'Data: '}
             submitButton='Cancel Order'
+            TypeName = 'Vendor'
           />
         }
       </div>
