@@ -51,6 +51,7 @@ public class OrderHandler {
                 g.setDueDate(g2.getDueDate());
                 g.setDeliveryLocation(g2.getDeliveryLocation());
                 g.setOrderType(g2.getOrderType());
+                g.setItems(g2.getItems());
             }
             return g;
         }, existed, req.bodyToMono(Order.class)).cast(Order.class)
@@ -59,7 +60,8 @@ public class OrderHandler {
                         salesOrder.getDueDate(),
                         salesOrder.getDeliveryLocation(),
                         salesOrder.getOrderType(),
-                        salesOrder.getId()))
+                        salesOrder.getId(),
+                        salesOrder.getItems()))
                 .flatMap(salesOrder -> noContent().build());
     }
 

@@ -15,15 +15,15 @@ public class OrderRouter {
         return RouterFunctions.route()
                 .path("/sales/", builder -> builder
                         .GET("/", req -> salesHandler.all(req, "sales"))
-                        .POST("/", req -> salesHandler.create(req))
+                        .POST("/", salesHandler::create)
                         .GET(ID, req -> salesHandler.get(req, "sales"))
-                        .PUT(ID, req -> salesHandler.get(req, "sales"))
+                        .PUT(ID, req -> salesHandler.update(req, "sales"))
                         .DELETE(ID, req -> salesHandler.delete(req, "sales")))
                 .path("/purchase/", builder -> builder
                         .GET("/", req -> salesHandler.all(req, "purchase"))
-                        .POST("/", req -> salesHandler.create(req))
+                        .POST("/", salesHandler::create)
                         .GET(ID, req -> salesHandler.get(req, "purchase"))
-                        .PUT(ID, req -> salesHandler.get(req, "purchase"))
+                        .PUT(ID, req -> salesHandler.update(req, "purchase"))
                         .DELETE(ID, req -> salesHandler.delete(req, "purchase")))
                 .build();
     }

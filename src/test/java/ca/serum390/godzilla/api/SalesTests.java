@@ -143,7 +143,8 @@ public class SalesTests {
                 order2.getDueDate(),
                 order2.getDeliveryLocation(),
                 order2.getOrderType(),
-                order2.getId()))
+                order2.getId(),
+                order2.getItems()))
                     .thenReturn(Mono.just(1));
 
         when(salesOrderRepository.findById(order.getId()))
@@ -165,7 +166,8 @@ public class SalesTests {
                 order2.getDueDate(),
                 order2.getDeliveryLocation(),
                 order2.getOrderType(),
-                order2.getId());
+                order2.getId(),
+                order2.getItems());
     }
 
     /**
