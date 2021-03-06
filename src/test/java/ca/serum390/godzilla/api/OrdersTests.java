@@ -23,14 +23,14 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
-import ca.serum390.godzilla.domain.sales.Order;
+import ca.serum390.godzilla.domain.orders.Order;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-public class SalesTests {
+public class OrdersTests {
 
     private final LocalDate NOW = LocalDate.now();
     private static final LocalDate FUTURE_DATE = LocalDate.of(2021, 7, 21);

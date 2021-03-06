@@ -7,7 +7,7 @@ import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-import ca.serum390.godzilla.domain.sales.Order;
+import ca.serum390.godzilla.domain.orders.Order;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

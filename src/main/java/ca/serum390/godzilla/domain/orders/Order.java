@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.domain.sales;
+package ca.serum390.godzilla.domain.orders;
 
 import java.time.LocalDate;
 import java.util.HashMap;

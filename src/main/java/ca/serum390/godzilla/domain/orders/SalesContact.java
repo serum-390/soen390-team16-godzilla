@@ -1,6 +1,4 @@
-package ca.serum390.godzilla.domain.sales;
-
-import java.time.LocalDate;
+package ca.serum390.godzilla.domain.orders;
 
 import org.springframework.data.annotation.Id;
 

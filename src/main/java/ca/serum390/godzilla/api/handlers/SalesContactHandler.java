@@ -10,7 +10,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 
 import ca.serum390.godzilla.data.repositories.SalesContactRepository;
-import ca.serum390.godzilla.domain.sales.SalesContact;
+import ca.serum390.godzilla.domain.orders.SalesContact;
 import reactor.core.publisher.Mono;
 
 @Component

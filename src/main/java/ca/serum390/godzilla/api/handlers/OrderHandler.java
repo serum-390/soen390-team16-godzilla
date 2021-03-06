@@ -1,7 +1,7 @@
 package ca.serum390.godzilla.api.handlers;
 
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
-import ca.serum390.godzilla.domain.sales.Order;
+import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
