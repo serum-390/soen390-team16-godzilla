@@ -19,10 +19,4 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
 
     @Query("SELECT ID, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION,ORDER_TYPE, ORDER_TYPE, ITEMS FROM orders WHERE ORDER_TYPE= $1")
     Flux<Order> findAll(String orderType);
-
-    @Query("SELECT * FROM orders WHERE ID = $1 AND ORDER_TYPE= $2")
-    Mono<Order> findById(Integer integer, String orderType);
-
-    @Query("DELETE FROM orders WHERE ID = $1 AND ORDER_TYPE= $2")
-    Mono<Order> deleteById(Integer integer, String orderType);
 }
