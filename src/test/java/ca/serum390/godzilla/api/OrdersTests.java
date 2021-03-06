@@ -8,6 +8,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -212,6 +213,8 @@ public class OrdersTests {
                 .dueDate(FUTURE_DATE)
                 .deliveryLocation("Godzilla ERP HQ")
                 .orderType("Some really good stuff")
+                .status("new")
+                .items(new HashMap<String,String>())
                 .build();
 
         return Flux.generate(
