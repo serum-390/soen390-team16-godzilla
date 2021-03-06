@@ -144,6 +144,7 @@ public class OrdersTests {
                 order2.getDeliveryLocation(),
                 order2.getOrderType(),
                 order2.getId(),
+                order2.getStatus(),
                 order2.getItems()))
                     .thenReturn(Mono.just(1));
 
@@ -167,6 +168,7 @@ public class OrdersTests {
                 order2.getDeliveryLocation(),
                 order2.getOrderType(),
                 order2.getId(),
+                order2.getStatus(),
                 order2.getItems());
     }
 

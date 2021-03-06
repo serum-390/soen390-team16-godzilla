@@ -30,6 +30,7 @@ public class Order {
     private LocalDate dueDate;
     private String deliveryLocation;
     private String orderType;
+    private String status;
     private HashMap<String,String> items;
 
 }
