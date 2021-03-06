@@ -214,7 +214,7 @@ public class OrdersTests {
                 .deliveryLocation("Godzilla ERP HQ")
                 .orderType("Some really good stuff")
                 .status("new")
-                .items(new HashMap<String,String>())
+                .items(new HashMap<Integer,Integer>())
                 .build();
 
         return Flux.generate(

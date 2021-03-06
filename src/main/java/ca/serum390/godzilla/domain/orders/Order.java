@@ -2,6 +2,7 @@ package ca.serum390.godzilla.domain.orders;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 
@@ -31,6 +32,5 @@ public class Order {
     private String deliveryLocation;
     private String orderType;
     private String status;
-    private HashMap<String,String> items;
-
+    private Map<Integer,Integer> items;
 }

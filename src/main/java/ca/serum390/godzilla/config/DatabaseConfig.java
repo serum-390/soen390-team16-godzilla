@@ -1,9 +1,16 @@
 package ca.serum390.godzilla.config;
 
+import ca.serum390.godzilla.util.JsonToMapConverter;
+import ca.serum390.godzilla.util.MapToJsonConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
+import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.connection.init.CompositeDatabasePopulator;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
@@ -15,10 +22,16 @@ import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Log4j2
 @Configuration
 @EnableR2dbcRepositories
-public class DatabaseConfig {
+@AllArgsConstructor
+public class DatabaseConfig{
+
+    private final ObjectMapper objectMapper;
 
     /**
      * Creates a {@link DatabaseClient DatabaseClient Bean} that can be injected
@@ -32,6 +45,13 @@ public class DatabaseConfig {
                              .build();
     }
 
+    @Bean
+    public R2dbcCustomConversions r2dbcCustomConversions() {
+        List<Converter<?, ?>> converters = new ArrayList<>();
+        converters.add(new JsonToMapConverter(objectMapper));
+        converters.add(new MapToJsonConverter(objectMapper));
+        return new R2dbcCustomConversions(converters);
+    }
     @Bean
     public ConnectionFactory connectionFactory(Environment env) {
 
