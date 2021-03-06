@@ -20,11 +20,16 @@ public class OrderHandler {
         this.ordersRepository = salesOrder;
     }
 
-    // Get All the sales orders
+    // Get All the orders
     public Mono<ServerResponse> all(ServerRequest request) {
         Optional<String> type = request.queryParam("type");
-        if (type.isPresent()) {
-            return ok().body(ordersRepository.findAll(type.get()), Order.class);
+        Optional<String> status = request.queryParam("status");
+        if (type.isPresent() && status.isPresent()) {
+            return ok().body(ordersRepository.findAllBy(type.get(), status.get()), Order.class);
+        } else if (type.isPresent()) {
+            return ok().body(ordersRepository.findAllByType(type.get()), Order.class);
+        } else if (status.isPresent()) {
+            return ok().body(ordersRepository.findAllByStatus(status.get()), Order.class);
         } else {
             return ok().body(ordersRepository.findAll(), Order.class);
         }

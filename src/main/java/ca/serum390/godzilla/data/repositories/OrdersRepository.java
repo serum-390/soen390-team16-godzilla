@@ -16,6 +16,12 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
     Mono<Integer> update(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType,
                          Integer id, String status, HashMap<String, String> items);
 
+    @Query("SELECT * FROM orders WHERE ORDER_TYPE= $1 AND STATUS = $2")
+    Flux<Order> findAllBy(String orderType, String status);
+
     @Query("SELECT * FROM orders WHERE ORDER_TYPE= $1")
-    Flux<Order> findAll(String orderType);
+    Flux<Order> findAllByType(String orderType);
+
+    @Query("SELECT * FROM orders WHERE STATUS= $1")
+    Flux<Order> findAllByStatus(String status);
 }
