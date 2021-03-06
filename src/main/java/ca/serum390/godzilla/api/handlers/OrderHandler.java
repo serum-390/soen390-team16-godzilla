@@ -35,24 +35,24 @@ public class OrderHandler {
         }
     }
 
-    // Create a sales order
+    // Create an order
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Order.class).flatMap(ordersRepository::save).flatMap(id -> noContent().build());
     }
 
-    // Get a sales order
+    // Get an order by id
     public Mono<ServerResponse> get(ServerRequest req) {
         return ordersRepository.findById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(salesOrder -> ok().body(Mono.just(salesOrder), Order.class))
                 .switchIfEmpty(notFound().build());
     }
 
-    // Delete a sales order
+    // Delete an order
     public Mono<ServerResponse> delete(ServerRequest req) {
         return ordersRepository.deleteById(Integer.parseInt(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
     }
 
-    // Update a sales order
+    // Update an order
     public Mono<ServerResponse> update(ServerRequest req) {
         var existed = ordersRepository.findById(Integer.parseInt(req.pathVariable("id")));
         return Mono.zip(data -> {
