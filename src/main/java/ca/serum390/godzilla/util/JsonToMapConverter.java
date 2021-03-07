@@ -20,7 +20,6 @@ public class JsonToMapConverter implements Converter<Json, Map<Integer, Integer>
 
     @Override
     public Map<Integer, Integer> convert(Json json) {
-        System.out.println("Jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
         try {
             return objectMapper.readValue(json.asString(), new TypeReference<>() {
             });

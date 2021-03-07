@@ -37,7 +37,9 @@ public class OrderHandler {
 
     // Create an order
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(Order.class).flatMap(ordersRepository::save).flatMap(id -> noContent().build());
+        return req.bodyToMono(Order.class).flatMap(order -> ordersRepository.save(order.getCreatedDate(),
+                order.getDueDate(), order.getDeliveryLocation(), order.getOrderType(), order.getStatus(), order.getItems()))
+                .flatMap(id -> noContent().build());
     }
 
     // Get an order by id
