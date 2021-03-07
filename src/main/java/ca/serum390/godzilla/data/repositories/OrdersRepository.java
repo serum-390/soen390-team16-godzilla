@@ -8,13 +8,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Map;
 
 public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer> {
     @Modifying
     @Query("UPDATE orders SET CREATED_DATE = $1, DUE_DATE = $2, DELIVERY_LOCATION= $3, ORDER_TYPE=$4 , STATUS = $6 , ITEMS = $7 WHERE ID = $5")
     Mono<Integer> update(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType,
-                         Integer id, String status, HashMap<String, String> items);
+                         Integer id, String status, Map<Integer, Integer> items);
+
+    @Query("INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ($1,$2,$3,$4,$5,$6)")
+    reactor.core.publisher.Mono<Order> save(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType, String status, Map<Integer, Integer> items);
 
     @Query("SELECT * FROM orders WHERE ORDER_TYPE= $1 AND STATUS = $2")
     Flux<Order> findAllBy(String orderType, String status);
