@@ -119,7 +119,7 @@ const orderRows = [
 
 function LoadedView() {
   const [open, setOpen] = React.useState(false);
-
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -151,7 +151,6 @@ function LoadedView() {
           </Button>
           <Button onClick={() => {
             handleClose();
-            AddNewVendor();
           }} color="primary">
             Add Vendor
           </Button>
@@ -169,7 +168,7 @@ function LoadedView() {
           Add New Vendor
         </Button>
         <AddCustomerDialogBox />
-        <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} onRowClick={(newSelection) => { ShowVendorDetail(newSelection); }} />
+        <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} />
       </div>
       <div style={{ height: 600, width: '45%', float: 'right' }}>
         <div>
@@ -181,23 +180,11 @@ function LoadedView() {
             submitButton='Order'
           />
         </div>
-        <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} onRowClick={(newSelection) => { ShowPurchaseOrderDetail(newSelection); }} />
+        <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} />
 
       </div>
     </div>
   );
-}
-
-function AddNewVendor() {
-  alert('clicked');
-}
-
-function ShowVendorDetail({ row }) {
-  //alert('clicked ' + row.id + " " + row.vendorName);
-}
-
-function ShowPurchaseOrderDetail({ row }) {
-  //alert('clicked ' + row.id + " " + row.vendorName);
 }
 
 function Purchase() {

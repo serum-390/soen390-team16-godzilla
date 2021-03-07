@@ -11,6 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Snackbar from '@material-ui/core/Snackbar';
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -94,6 +96,32 @@ export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
   const [vendor, setVendor] = React.useState(1);
 
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [alertText, setAlertText] = React.useState();
+
+  const AlertSnackbar = () => {
+    return (
+      <div>
+        <Snackbar
+          open={openAlert}
+          onClose={closeAlert}
+          TransitionComponent={Fade}
+          message={alertText}
+          autoHideDuration={6000}
+        />
+      </div>
+    );
+  };
+
+  function showAlert(text){
+    setAlertText(text);
+    setOpenAlert(true);
+  }
+
+  function closeAlert(){
+    setOpenAlert(false);
+  }
+
   const totalCostText = useRef("Total Cost: $0");
 
   const handleClickOpen = () => {
@@ -113,10 +141,12 @@ export default function PurchaseOrderForm(props) {
         
         outString += "Item ID:" + key + " --> Qty: " + value + ", Price: " + dict[key][1] + "\n";
     }
-      
-    alert(outString + "Total Cost: " + totalCost);
 
+    showAlert(outString + "Total Cost: " + totalCost)
+
+    //////////////
     // THIS IS WHERE DATABASE FUNCTION WILL TAKE PLACE
+    //////////////
 
     dict = {};  // Clear dictionary
     setOpen(false);
@@ -131,28 +161,31 @@ export default function PurchaseOrderForm(props) {
     //alert(event.target.value);
     setVendor(event.target.value);
 
+    ////////////////////
     // CHANGE INVENTORY ROWS BY FETCHING VENDOR'S INVENTORY FROM DB
+    ////////////////////
   };
 
   const handleTotalCost = () => {
     totalCostText.current.innerHTML = "Total Cost: $" + totalCost;
   };
 
-    function InventoryTable () {
-        const classes = useStyles();
-        return (
-            <FormControl className={classes.formControl}>
-                <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={10} onRowClick={handleTotalCost}/>   
-            </FormControl>
-        );
-    }
+  function InventoryTable () {
+      const classes = useStyles();
+      return (
+          <FormControl className={classes.formControl}>
+              <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={99} hideFooter={true} onRowClick={handleTotalCost}/>   
+          </FormControl>
+      );
+  }
 
   return (
     <div>
+      <AlertSnackbar></AlertSnackbar>
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
       {props.initialButton}
       </Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog open={open} onClose={handleClose} scroll='paper' aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
         <DialogContent>
             <DialogContentText>
