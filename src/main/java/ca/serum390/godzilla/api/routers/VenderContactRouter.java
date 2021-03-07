@@ -6,20 +6,20 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.ContactHandler;
+import ca.serum390.godzilla.api.handlers.VenderContactHandler;
 
 @Configuration
 public class VenderContactRouter {
     @Bean
-    public RouterFunction<ServerResponse> venderContactRouter(ContactHandler contactHandler) {
+    public RouterFunction<ServerResponse> venderContactRoute(VenderContactHandler venderContactHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
                     .path("/vendercontact/",
-                        builder -> builder.GET("/", contactHandler::all)
-                        .POST("/", contactHandler::createVendor)
-                                .GET(ID, contactHandler::getVendor)
-                                .PUT(ID, contactHandler::updateVendor)
-                                .DELETE(ID, contactHandler::delete))
+                        builder -> builder.GET("/", venderContactHandler::all)
+                        .POST("/", venderContactHandler::create)
+                                .GET(ID, venderContactHandler::getVender)
+                                .PUT(ID, venderContactHandler::updateVender)
+                                .DELETE(ID, venderContactHandler::delete))
                 .build();
     }
 }
