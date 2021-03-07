@@ -36,6 +36,7 @@ public class ApiRouter implements WebFluxConfigurer {
             RouterFunction<ServerResponse> inventoryRoute,
             RouterFunction<ServerResponse> bomRoute,
             RouterFunction<ServerResponse> orderRoute,
+            RouterFunction<ServerResponse> plannedProductRoute,
             RouterFunction<ServerResponse> salesContactRoute)
     {
 
@@ -49,6 +50,7 @@ public class ApiRouter implements WebFluxConfigurer {
                     .add(orderRoute)
                     .add(salesContactRoute)
                     .add(bomRoute)
+                        .add(plannedProductRoute)
                     .build())
                 .build();
     }
