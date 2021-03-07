@@ -24,7 +24,7 @@ public class JsonToMapConverter implements Converter<Json, Map<Integer, Integer>
             return objectMapper.readValue(json.asString(), new TypeReference<>() {
             });
         } catch (IOException e) {
-            // log.error("Problem while parsing JSON: {}", json, e);
+             log.error("Problem while parsing JSON: {}", json, e);
         }
         return new HashMap<>();
     }

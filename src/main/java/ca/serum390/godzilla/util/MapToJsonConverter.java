@@ -23,7 +23,7 @@ public class MapToJsonConverter implements Converter<Map<Integer, Integer>, Json
         try {
             return Json.of(objectMapper.writeValueAsString(source));
         } catch (JsonProcessingException e) {
-//            log.error("Error occurred while serializing map to JSON: {}", source, e);
+            log.error("Error occurred while serializing map to JSON: {}", source, e);
         }
         return Json.of("");
     }
