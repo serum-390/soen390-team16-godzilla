@@ -3,24 +3,22 @@ package ca.serum390.godzilla.config;
 import ca.serum390.godzilla.util.JsonToMapConverter;
 import ca.serum390.godzilla.util.MapToJsonConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
+import io.r2dbc.postgresql.PostgresqlConnectionFactory;
+import io.r2dbc.spi.ConnectionFactory;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.connection.init.CompositeDatabasePopulator;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 import org.springframework.r2dbc.core.DatabaseClient;
-
-import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
-import io.r2dbc.postgresql.PostgresqlConnectionFactory;
-import io.r2dbc.spi.ConnectionFactory;
-import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.List;
 @Configuration
 @EnableR2dbcRepositories
 @AllArgsConstructor
-public class DatabaseConfig{
+public class DatabaseConfig {
 
     private final ObjectMapper objectMapper;
 
@@ -40,9 +38,9 @@ public class DatabaseConfig{
     @Bean
     public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
         return DatabaseClient.builder()
-                             .connectionFactory(connectionFactory)
-                             .namedParameters(true)
-                             .build();
+                .connectionFactory(connectionFactory)
+                .namedParameters(true)
+                .build();
     }
 
     @Bean
@@ -52,6 +50,7 @@ public class DatabaseConfig{
         converters.add(new MapToJsonConverter(objectMapper));
         return new R2dbcCustomConversions(converters);
     }
+
     @Bean
     public ConnectionFactory connectionFactory(Environment env) {
 
@@ -67,13 +66,13 @@ public class DatabaseConfig{
         log.info("\nCONNECTING TO DATABASE - HOST = " + host + ", PORT = " + port);
 
         return new PostgresqlConnectionFactory(
-            PostgresqlConnectionConfiguration.builder()
-                                             .host(host)
-                                             .port(port)
-                                             .database("godzilla")
-                                             .username(username)
-                                             .password(password)
-                                             .build()
+                PostgresqlConnectionConfiguration.builder()
+                        .host(host)
+                        .port(port)
+                        .database("godzilla")
+                        .username(username)
+                        .password(password)
+                        .build()
         );
     }
 
@@ -84,7 +83,7 @@ public class DatabaseConfig{
      * @param connectionFactory The {@link ConnectionFactory ConnectionFactory Bean}
      *                          injected by Spring.
      * @return A {@link ConnectionFactoryInitializer} Bean that Spring will use to
-     *         initialize the {@link ConnectionFactory}
+     * initialize the {@link ConnectionFactory}
      */
     @Bean
     public ConnectionFactoryInitializer connectionFactoryInitializer(ConnectionFactory connectionFactory) {
