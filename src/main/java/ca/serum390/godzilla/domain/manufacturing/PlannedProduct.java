@@ -1,6 +1,5 @@
 package ca.serum390.godzilla.domain.manufacturing;
 
-import ca.serum390.godzilla.domain.orders.Order;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
