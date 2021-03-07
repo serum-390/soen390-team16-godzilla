@@ -825,6 +825,10 @@ INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE) VALUES
 --SalesContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
 
+
+--VenderContact
+INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'vender');
+
 --BILL_OF_MATERIAL
 INSERT INTO bill_of_material (item_name, item_needed, quantity) VALUES
     (1,5,1), (1,9,1), (1,13,1), (1,17,2), (2,6,1),
