@@ -1,5 +1,7 @@
 package ca.serum390.godzilla.api.handlers;
 
+import ca.serum390.godzilla.data.repositories.InventoryRepository;
+import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
@@ -10,6 +12,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.*;
 
@@ -20,10 +23,45 @@ public class PlannedProductHandler {
      * {@link ca.serum390.godzilla.data.repositories.PlannedProductsRepository}
      */
     private final PlannedProductsRepository plannedProducts;
+    private final InventoryRepository inventoryRepository;
+    private final OrdersRepository ordersRepository;
 
-    public PlannedProductHandler(PlannedProductsRepository plannedProducts) {
+    public PlannedProductHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
         this.plannedProducts = plannedProducts;
+        this.inventoryRepository = inventoryRepository;
+        this.ordersRepository = ordersRepository;
     }
+
+    // preproduction
+
+    public Mono<ServerResponse> validateProduction(ServerRequest req) {
+        Mono<Order> orderMono = req.bodyToMono(Order.class);
+        AtomicBoolean isOrderReady = new AtomicBoolean(true);
+        orderMono.subscribe(
+                order -> {
+                    System.out.println("Order status is " + order.getStatus());
+                    order.getItems().forEach((id, quantity) -> {
+                        inventoryRepository.findById(id).subscribe(
+                                item -> {
+                                    if (item.getQuantity() <= quantity) {
+                                        // check inventory for finished item
+                                        System.out.println("Item " + item.getItemName() + " is available");
+                                    } else {
+                                        isOrderReady.set(false);
+                                        // check bom for that item
+                                    }
+                                }
+                        );
+                    });
+                    if (isOrderReady.get()) {
+                        ordersRepository.update(order.getCreatedDate(), order.getDueDate(), order.getDeliveryLocation(), order.getOrderType(), order.getId(), "Ready", order.getItems());
+                    }
+                },
+                error -> System.out.println(" error retrieving order")
+        );
+        return noContent().build();
+    }
+
 
     /**
      * Insert into the table

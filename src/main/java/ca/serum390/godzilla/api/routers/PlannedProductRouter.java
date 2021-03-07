@@ -13,9 +13,10 @@ public class PlannedProductRouter {
     public RouterFunction<ServerResponse> plannedProductRoute(PlannedProductHandler plannedProductHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/plannedProducts/", builder -> builder
+                .path("/planning/", builder -> builder
                         .GET("/", plannedProductHandler::getBy)
                         .POST("/", plannedProductHandler::create)
+                        .POST("/validation", plannedProductHandler::validateProduction)
                         .GET(ID, plannedProductHandler::getByID)
                         .PUT(ID, plannedProductHandler::update)
                         .DELETE(ID, plannedProductHandler::delete))
