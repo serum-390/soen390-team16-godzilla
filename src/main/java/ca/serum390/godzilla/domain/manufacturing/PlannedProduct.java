@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @With
 @Builder
 @ToString
-@Table("plannedProducts")
+@Table("planned_products")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 public interface PlannedProductsRepository extends ReactiveCrudRepository<PlannedProduct, Integer> {
     @Modifying
-    @Query("UPDATE plannedProducts SET ORDER_ID = $2, PRODUCTION_DATE = $3, STATUS = $4  WHERE ID = $1")
+    @Query("UPDATE PLANNED_PRODUCTS SET ORDER_ID = $2, PRODUCTION_DATE = $3, STATUS = $4  WHERE ID = $1")
     Mono<Integer> update(Integer id, Integer orderID, LocalDate productionDate, String status);
 
     @Query("Select * FROM plannedProducts WHERE STATUS = $1")
