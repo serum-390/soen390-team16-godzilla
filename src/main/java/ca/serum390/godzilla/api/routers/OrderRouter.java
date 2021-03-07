@@ -1,25 +1,24 @@
 package ca.serum390.godzilla.api.routers;
 
+import ca.serum390.godzilla.api.handlers.OrderHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.SalesOrderHandler;
-
 @Configuration
-public class SalesOrderRouter {
+public class OrderRouter {
     @Bean
-    public RouterFunction<ServerResponse> salesOrderRoute(SalesOrderHandler salesHandler) {
+    public RouterFunction<ServerResponse> orderRoute(OrderHandler orderHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/sales/", builder -> builder
-                    .GET("/", salesHandler::all)
-                    .POST("/", salesHandler::create)
-                    .GET(ID, salesHandler::get)
-                    .PUT(ID, salesHandler::update)
-                    .DELETE(ID, salesHandler::delete))
+                .path("/orders/", builder -> builder
+                        .GET("/", orderHandler::all)
+                        .POST("/", orderHandler::create)
+                        .GET(ID, orderHandler::get)
+                        .PUT(ID, orderHandler::update)
+                        .DELETE(ID, orderHandler::delete))
                 .build();
     }
 }
