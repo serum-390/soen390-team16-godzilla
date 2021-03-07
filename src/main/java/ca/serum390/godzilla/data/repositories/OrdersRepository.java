@@ -17,7 +17,7 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
                          Integer id, String status, Map<Integer, Integer> items);
 
     @Query("INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ($1,$2,$3,$4,$5,$6)")
-    Mono<Integer> save(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType, String status, Map<Integer, Integer> items);
+    reactor.core.publisher.Mono<Order> save(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType, String status, Map<Integer, Integer> items);
 
     @Query("SELECT * FROM orders WHERE ORDER_TYPE= $1 AND STATUS = $2")
     Flux<Order> findAllBy(String orderType, String status);

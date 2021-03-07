@@ -86,7 +86,8 @@ public class OrdersTests {
     @WithMockUser("test")
     void createOrderTest() {
         Order order = buildDemoOrderFlux().blockFirst();
-        when(orderRepository.save(order)).thenReturn(Mono.just(order));
+        when(orderRepository.save(order.getCreatedDate(),order.getDueDate(),order.getDeliveryLocation(),
+                order.getOrderType(),order.getStatus(),order.getItems())).thenReturn(Mono.just(order));
         when(orderRepository.findById(order.getId())).thenReturn(Mono.just(order));
 
         // Send the item
@@ -103,7 +104,8 @@ public class OrdersTests {
         // Retrieve the item
         assertGetDemoOrder(order);
 
-        verify(orderRepository, times(1)).save(order);
+        verify(orderRepository, times(1)).save(order.getCreatedDate(),order.getDueDate(),order.getDeliveryLocation(),
+                order.getOrderType(),order.getStatus(),order.getItems());
         verify(orderRepository, times(1)).findById(order.getId());
     }
 
