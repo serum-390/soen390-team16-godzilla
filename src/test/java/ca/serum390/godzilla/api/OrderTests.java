@@ -31,7 +31,7 @@ import reactor.core.publisher.Mono;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-public class OrdersTests {
+class OrderTests {
 
     private final LocalDate NOW = LocalDate.now();
     private static final LocalDate FUTURE_DATE = LocalDate.of(2021, 7, 21);

@@ -11,15 +11,21 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.ProductionHandler;
-import ca.serum390.godzilla.api.handlers.BomHandler;
-import ca.serum390.godzilla.api.handlers.InventoryHandler;
-import ca.serum390.godzilla.api.handlers.OrderHandler;
+import lombok.AllArgsConstructor;
 
 @Configuration
+@AllArgsConstructor
 public class ApiRouter implements WebFluxConfigurer {
 
 
     public static final String ALL_GOOD_IN_THE_HOOD = "All good in the hood";
+
+    private ProductionHandler productionHandler;
+    private RouterFunction<ServerResponse> goodsRoute;
+    private RouterFunction<ServerResponse> inventoryRoute;
+    private RouterFunction<ServerResponse> bomRoute;
+    private RouterFunction<ServerResponse> orderRoute;
+    private RouterFunction<ServerResponse> salesContactRoute;
 
     /**
      * Router using the functional endpoints Spring WebFlux API
@@ -27,18 +33,7 @@ public class ApiRouter implements WebFluxConfigurer {
      * @return A router function bound to the application's RESTful APIs.
      */
     @Bean
-    public RouterFunction<ServerResponse> route(
-            OrderHandler salesHandler,
-            InventoryHandler inventoryHandler,
-            BomHandler bomHandler,
-            ProductionHandler productionHandler,
-            RouterFunction<ServerResponse> goodsRoute,
-            RouterFunction<ServerResponse> inventoryRoute,
-            RouterFunction<ServerResponse> bomRoute,
-            RouterFunction<ServerResponse> orderRoute,
-            RouterFunction<ServerResponse> salesContactRoute)
-    {
-
+    public RouterFunction<ServerResponse> route() {
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
                     .GET("/materials", productionHandler::demoMaterials)
@@ -58,7 +53,10 @@ public class ApiRouter implements WebFluxConfigurer {
          */
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/resources/**").addResourceLocations("/public", "classpath:/static/",
-                                "classpath:/static/resources/");
+                registry.addResourceHandler("/resources/**")
+                        .addResourceLocations(
+                            "/public",
+                            "classpath:/static/",
+                            "classpath:/static/resources/");
         }
 }
