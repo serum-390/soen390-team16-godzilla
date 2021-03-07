@@ -1,8 +1,8 @@
-import {Box, makeStyles} from '@material-ui/core';
-import React, {Fragment, useEffect, useState} from 'react';
+import {makeStyles} from '@material-ui/core';
+import React, {useState} from 'react';
 import {DataGrid} from "@material-ui/data-grid";
 import axios from "axios";
-import { SpinBeforeLoading } from './inventory/Inventory';
+import {SpinBeforeLoading} from './inventory/Inventory';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,11 +29,10 @@ const updateItem = async data => {
 
 const inventoryCols = [
   {field: 'id', headerName: 'ID', width: 100},
-  {field: 'CreatedDate', headerName: 'Created Date', width: 130},
-  {field: 'DueDate', headerName: 'Due Date', width: 100},
-  {field: 'DeliveryLocation', headerName: 'Delivery Location', width: 130},
-  {field: 'Status', headerName: 'Status', width: 130},
-  {field: 'Items', headerName: 'Items', width: 100},
+  {field: 'createdDate', headerName: 'Created Date', width: 170},
+  {field: 'dueDate', headerName: 'Due Date', width: 170},
+  {field: 'deliveryLocation', headerName: 'Delivery Location', width: 170},
+  {field: 'items', headerName: 'Items', width: 300},
 ];
 
 
@@ -46,15 +45,20 @@ const getSalesOrder = async () => {
 
 const FilledSalesOrderView = ({SalesOrders}) => {
   let orders = [];
-
-  SalesOrders.map(order => (
+  let items = "";
+  SalesOrders.map(order => {
+    // console.log(Object.keys(order.items));
+    for(const [key,value] of Object.entries(order.items)){
+      items+= key+":"+value+", ";
+    }
     orders.push({
       id: order.id,
       createdDate: order.createdDate,
       dueDate: order.dueDate,
       deliveryLocation: order.deliveryLocation,
-      items: order.items
-    })));
+      items: items
+    })
+  });
 
   return (
     <DataGrid rows={orders} columns={inventoryCols} pageSize={9}/>
