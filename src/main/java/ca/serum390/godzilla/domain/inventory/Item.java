@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.domain.Inventory;
+package ca.serum390.godzilla.domain.inventory;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -29,4 +29,3 @@ public class Item {
     private String location;
     private boolean billOfMaterial;
 }
-

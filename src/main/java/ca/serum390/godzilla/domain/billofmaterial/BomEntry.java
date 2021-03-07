@@ -1,6 +1,7 @@
-package ca.serum390.godzilla.domain.billOfMaterial;
+package ca.serum390.godzilla.domain.billofmaterial;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,9 +20,9 @@ import lombok.ToString;
 @AllArgsConstructor
 
 public class BomEntry {
-    
+
     @Id
-    private Integer item_name;
-    private Integer item_needed;
+    @Column("item_name") private Integer itemName;
+    @Column("item_needed") private Integer itemNeeded;
     private Integer quantity;
 }

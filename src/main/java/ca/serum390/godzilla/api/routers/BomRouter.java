@@ -1,9 +1,10 @@
 package ca.serum390.godzilla.api.routers;
 
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.BomHandler;
@@ -16,7 +17,7 @@ public class BomRouter {
         return route()
                 .path("/bom/", builder -> builder
                     .GET("/", bomHandler::getAll)
-                    .GET("/{item_name}", bomHandler::findAllByID)
+                    .GET("/{itemName}", bomHandler::findAllByID)
                     .POST("/", bomHandler::insert))
                 .build();
     }

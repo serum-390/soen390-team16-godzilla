@@ -1,13 +1,10 @@
 package ca.serum390.godzilla.config;
 
-import ca.serum390.godzilla.util.JsonToMapConverter;
-import ca.serum390.godzilla.util.MapToJsonConverter;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
-import io.r2dbc.postgresql.PostgresqlConnectionFactory;
-import io.r2dbc.spi.ConnectionFactory;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -20,8 +17,13 @@ import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 import org.springframework.r2dbc.core.DatabaseClient;
 
-import java.util.ArrayList;
-import java.util.List;
+import ca.serum390.godzilla.util.JsonToMapConverter;
+import ca.serum390.godzilla.util.MapToJsonConverter;
+import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
+import io.r2dbc.postgresql.PostgresqlConnectionFactory;
+import io.r2dbc.spi.ConnectionFactory;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Configuration
@@ -67,12 +69,12 @@ public class DatabaseConfig {
 
         return new PostgresqlConnectionFactory(
                 PostgresqlConnectionConfiguration.builder()
-                        .host(host)
-                        .port(port)
-                        .database("godzilla")
-                        .username(username)
-                        .password(password)
-                        .build()
+                    .host(host)
+                    .port(port)
+                    .database("godzilla")
+                    .username(username)
+                    .password(password)
+                    .build()
         );
     }
 

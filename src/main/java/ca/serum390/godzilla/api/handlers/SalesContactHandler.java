@@ -28,13 +28,16 @@ public class SalesContactHandler {
 
     // Create a sales contact
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(SalesContact.class).flatMap(salesContacts::save).flatMap(id -> noContent().build());
+        return req.bodyToMono(SalesContact.class)
+                .flatMap(salesContacts::save)
+                .flatMap(id -> noContent().build());
     }
 
     // Get a sales contact
     public Mono<ServerResponse> get(ServerRequest req) {
         return salesContacts.findById(Integer.parseInt(req.pathVariable("id")))
-                .flatMap(salesContact -> ok().body(Mono.just(salesContact), SalesContact.class))
+                .flatMap(salesContact ->
+                    ok().body(Mono.just(salesContact), SalesContact.class))
                 .switchIfEmpty(notFound().build());
     }
 

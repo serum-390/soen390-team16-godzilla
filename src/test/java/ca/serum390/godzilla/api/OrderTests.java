@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,10 +23,8 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.domain.orders.Order;
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -45,9 +44,6 @@ class OrderTests {
 
     @MockBean
     OrdersRepository orderRepository;
-
-    @MockBean
-    SalesContactRepository salesContactRepository;
 
     /**
      * Tests: GET /api/orders/

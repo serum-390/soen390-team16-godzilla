@@ -14,12 +14,12 @@ public class SalesContactRouter {
     public RouterFunction<ServerResponse> salesContactRoute(SalesContactHandler salesContactHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/salescontact/",
-                        builder -> builder.GET("/", salesContactHandler::all)
-                        .POST("/", salesContactHandler::create)
-                                .GET(ID, salesContactHandler::get)
-                                .PUT(ID, salesContactHandler::update)
-                                .DELETE(ID, salesContactHandler::delete))
+                .path("/salescontact/", builder -> builder
+                    .GET("/", salesContactHandler::all)
+                    .POST("/", salesContactHandler::create)
+                    .GET(ID, salesContactHandler::get)
+                    .PUT(ID, salesContactHandler::update)
+                    .DELETE(ID, salesContactHandler::delete))
                 .build();
     }
 }

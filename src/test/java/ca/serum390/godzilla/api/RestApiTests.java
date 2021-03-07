@@ -18,7 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.domain.Inventory.Item;
+import ca.serum390.godzilla.domain.inventory.Item;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
