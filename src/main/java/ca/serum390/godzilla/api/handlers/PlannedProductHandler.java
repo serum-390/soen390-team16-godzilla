@@ -1,5 +1,6 @@
 package ca.serum390.godzilla.api.handlers;
 
+import ca.serum390.godzilla.data.repositories.BomRepository;
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
@@ -11,6 +12,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -25,11 +27,13 @@ public class PlannedProductHandler {
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
+    private final BomRepository bomRepository;
 
-    public PlannedProductHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
+    public PlannedProductHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository, BomRepository bomRepository) {
         this.plannedProducts = plannedProducts;
         this.inventoryRepository = inventoryRepository;
         this.ordersRepository = ordersRepository;
+        this.bomRepository = bomRepository;
     }
 
     // preproduction
@@ -45,16 +49,20 @@ public class PlannedProductHandler {
                                 item -> {
                                     if (quantity <= item.getQuantity()) {
                                         // check inventory for finished item
+                                        int newQuantity = item.getQuantity()-quantity;
                                         System.out.println("Item " + item.getItemName() + " is available");
+                                        inventoryRepository.update(id, newQuantity).subscribe(num -> System.out.println("inventory updated"));;
+
                                     } else {
                                         isOrderReady.set(false);
                                         // check bom for that item
+                                        System.out.println("Item " + item.getItemName() + " is not available");
                                     }
                                 }
                         );
                     });
                     if (isOrderReady.get()) {
-                        ordersRepository.update(order.getId(), "Ready").subscribe();
+                        ordersRepository.update(order.getId(), "Ready").subscribe(num -> System.out.println("order status updated"));
                     }
                 },
                 error -> System.out.println(" error retrieving order")

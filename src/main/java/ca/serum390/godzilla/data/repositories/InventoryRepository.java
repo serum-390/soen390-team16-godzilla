@@ -23,4 +23,8 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
     @Modifying
     @Query("UPDATE inventory SET ITEM_NAME = $1, LOCATION = $2, BUY_PRICE = $4, GOOD_TYPE = $5, QUANTITY =$6, SELL_PRICE = $7, BILL_OF_MATERIAL = $8  WHERE ID = $3")
     Mono<Integer> update(String name, String location, Integer id, float buyPrice, int goodType, int quantity, float sellPrice, boolean hasBOM);
+
+    @Modifying
+    @Query("UPDATE inventory SET QUANTITY =$2 WHERE ID = $1")
+    Mono<Integer> update(Integer id,int quantity);
 }
