@@ -41,10 +41,9 @@ public class PlannedProductHandler {
                 order -> {
                     System.out.println("Order status is " + order.getStatus());
                     order.getItems().forEach((id, quantity) -> {
-                        System.out.println(" id is " + id +":"+quantity);
                         inventoryRepository.findById(id).subscribe(
                                 item -> {
-                                    if (quantity <= item.getQuantity() ) {
+                                    if (quantity <= item.getQuantity()) {
                                         // check inventory for finished item
                                         System.out.println("Item " + item.getItemName() + " is available");
                                     } else {
@@ -54,10 +53,8 @@ public class PlannedProductHandler {
                                 }
                         );
                     });
-                    System.out.println("Hellllllo-------------------------------");
                     if (isOrderReady.get()) {
-                        System.out.println("gggggggggggHellllllo-------------------------------");
-                        ordersRepository.update(order.getCreatedDate(), order.getDueDate(), order.getDeliveryLocation(), order.getOrderType(), order.getId(), "Ready", order.getItems());
+                        ordersRepository.update(order.getId(), "Ready").subscribe();
                     }
                 },
                 error -> System.out.println(" error retrieving order")

@@ -16,6 +16,10 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
     Mono<Integer> update(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType,
                          Integer id, String status, Map<Integer, Integer> items);
 
+    @Modifying
+    @Query("UPDATE orders SET STATUS = $2 WHERE ID = $1")
+    Mono<Integer> update(Integer id, String status);
+
     @Query("INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ($1,$2,$3,$4,$5,$6)")
     reactor.core.publisher.Mono<Order> save(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType, String status, Map<Integer, Integer> items);
 
