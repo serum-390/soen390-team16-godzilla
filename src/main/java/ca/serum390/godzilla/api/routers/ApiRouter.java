@@ -14,7 +14,7 @@ import ca.serum390.godzilla.api.handlers.ProductionHandler;
 import ca.serum390.godzilla.api.handlers.BomHandler;
 import ca.serum390.godzilla.api.handlers.InventoryHandler;
 import ca.serum390.godzilla.api.handlers.SalesOrderHandler;
-import ca.serum390.godzilla.api.handlers.VenderContactHandler;
+import ca.serum390.godzilla.api.handlers.VendorContactHandler;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
@@ -33,13 +33,13 @@ public class ApiRouter implements WebFluxConfigurer {
             InventoryHandler inventoryHandler,
             BomHandler bomHandler,
             ProductionHandler productionHandler,
-            VenderContactHandler venderContactHandler,
+            VendorContactHandler vendorContactHandler,
             RouterFunction<ServerResponse> goodsRoute,
             RouterFunction<ServerResponse> inventoryRoute,
             RouterFunction<ServerResponse> bomRoute,
             RouterFunction<ServerResponse> salesOrderRoute,
             RouterFunction<ServerResponse> salesContactRoute,
-            RouterFunction<ServerResponse> venderContactRoute)
+            RouterFunction<ServerResponse> vendorContactRoute)
     {
 
         return RouterFunctions.route()
@@ -52,7 +52,7 @@ public class ApiRouter implements WebFluxConfigurer {
                     .add(salesOrderRoute)
                     .add(salesContactRoute)
                     .add(bomRoute)
-                    .add(venderContactRoute)
+                    .add(vendorContactRoute)
                     .build())
                 .build();
     }

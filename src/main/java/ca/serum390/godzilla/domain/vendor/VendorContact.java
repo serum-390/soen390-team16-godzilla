@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.domain.vender;
+package ca.serum390.godzilla.domain.vendor;
 
 import java.time.LocalDate;
 
@@ -21,7 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class VenderContact {
+public class VendorContact {
     @Id
     private Integer id;
     private String companyName;
