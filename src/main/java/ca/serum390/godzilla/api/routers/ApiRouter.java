@@ -9,10 +9,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.ProductionHandler;
-import ca.serum390.godzilla.api.handlers.BomHandler;
-import ca.serum390.godzilla.api.handlers.InventoryHandler;
-import ca.serum390.godzilla.api.handlers.OrderHandler;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
@@ -28,7 +25,6 @@ public class ApiRouter implements WebFluxConfigurer {
     @Bean
     public RouterFunction<ServerResponse> route(
             ProductionHandler productionHandler,
-            VendorContactHandler vendorContactHandler,
             RouterFunction<ServerResponse> goodsRoute,
             RouterFunction<ServerResponse> inventoryRoute,
             RouterFunction<ServerResponse> orderRoute,
