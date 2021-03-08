@@ -9,6 +9,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Calendar from './planning/Calendar';
+import Snackbar from '@material-ui/core/Snackbar';
+import Fade from '@material-ui/core/Fade';
 import { useState, useRef } from "react";
 
 const useStyles = makeStyles(theme => ({
@@ -47,6 +49,32 @@ const LoadedView = (classes) => {
   const activityTableRef = useRef();
   //className={classes.invisible}
 
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [alertText, setAlertText] = React.useState();
+
+  const AlertSnackbar = () => {
+    return (
+      <div>
+        <Snackbar
+          open={openAlert}
+          onClose={closeAlert}
+          TransitionComponent={Fade}
+          message={alertText}
+          autoHideDuration={6000}
+        />
+      </div>
+    );
+  };
+
+  function showAlert(text){
+    setAlertText(text);
+    setOpenAlert(true);
+  }
+
+  function closeAlert(){
+    setOpenAlert(false);
+  }
+
   const changeDay = (d, m, y, aName, aDesc, freq, oName) => {
     m = (Number.parseInt(m, 10) +1);
     //let day = new Date(m + "/" + d + "/" + y);
@@ -69,7 +97,7 @@ const LoadedView = (classes) => {
   ];
 
   function SavePlanning() {
-    alert("Now saving planning...\n" 
+    showAlert("Now saving planning...\n" 
           + [date] + "\n"
           + [activityName] + "\n"
           + [activityDesc] + "\n"
@@ -145,6 +173,7 @@ const LoadedView = (classes) => {
 
   return (
     <div style={{ height: 600, width: '100%' }}>
+      <AlertSnackbar></AlertSnackbar>
       <h1 style={{ textAlign: "center" }}>Planning Department</h1>
       <div style={{ height: 600, width: '55%', float: 'left' }}>
         {<Calendar changeDay={changeDay}></Calendar>}

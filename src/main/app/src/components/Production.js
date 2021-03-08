@@ -24,7 +24,7 @@ const getMaterials = async () => {
 
   return json.materials.map(materials => {
     materials.allMaterials = {
-      onClick: () => alert(`Test: ${materials.material}`),
+      onClick: () => {},
     };
     return materials;
   });
@@ -39,7 +39,7 @@ const getProducts = async () => {
 
   return json.products.map(products => {
     products.allProducts = {
-      onClick: () => alert(`Test: ${products.product}`),
+      onClick: () => {},
     };
     return products;
   });

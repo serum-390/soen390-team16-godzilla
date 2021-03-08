@@ -1,18 +1,11 @@
-package ca.serum390.godzilla.domain.sales;
+package ca.serum390.godzilla.domain.orders;
 
-import java.time.LocalDate;
-
+import lombok.*;
 import org.springframework.data.annotation.Id;
-
 import org.springframework.data.relational.core.mapping.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.With;
+import java.time.LocalDate;
+import java.util.Map;
 
 @Data
 @With
@@ -22,12 +15,13 @@ import lombok.With;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SalesOrder {
+public class Order {
     @Id
     private Integer id;
     private LocalDate createdDate;
     private LocalDate dueDate;
     private String deliveryLocation;
     private String orderType;
-
+    private String status;
+    private Map<Integer, Integer> items;
 }

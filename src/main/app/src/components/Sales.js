@@ -55,7 +55,7 @@ const getSales = async () => {
 
   return json.sales.map(sale => {
     sale.salesOrders = {
-      onClick: () => alert(`Test: ${sale.customerName}`),
+      onClick: () => {},
     };
     return sale;
   });
