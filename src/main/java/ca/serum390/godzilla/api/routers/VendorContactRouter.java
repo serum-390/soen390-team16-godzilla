@@ -11,7 +11,7 @@ import ca.serum390.godzilla.api.handlers.VendorContactHandler;
 @Configuration
 public class VendorContactRouter {
     @Bean
-    public RouterFunction<ServerResponse> venderContactRoute(VendorContactHandler vendorContactHandler) {
+    public RouterFunction<ServerResponse> vendorContactRoute(VendorContactHandler vendorContactHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
                     .path("/vendorcontact/",
