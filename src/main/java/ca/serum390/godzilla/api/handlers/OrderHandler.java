@@ -66,7 +66,7 @@ public class OrderHandler {
                 g.setDeliveryLocation(g2.getDeliveryLocation());
                 g.setOrderType(g2.getOrderType());
                 g.setItems(g2.getItems());
-                g.setStatus(g.getStatus());
+                g.setStatus(g2.getStatus());
             }
             return g;
         }, existed, req.bodyToMono(Order.class)).cast(Order.class)

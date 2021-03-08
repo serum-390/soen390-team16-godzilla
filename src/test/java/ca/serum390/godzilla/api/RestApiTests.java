@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -99,7 +100,7 @@ class RestApiTests {
                    .buyPrice(467)
                    .sellPrice(555)
                    .location("Montreal, Quebec")
-                   .billOfMaterial(false)
+                   .billOfMaterial(new HashMap<Integer,Integer>())
                    .build();
     }
 }

@@ -1,7 +1,6 @@
 package ca.serum390.godzilla.api.routers;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
+import ca.serum390.godzilla.api.handlers.ProductionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
@@ -10,11 +9,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.ProductionHandler;
-import ca.serum390.godzilla.api.handlers.VendorContactHandler;
-import ca.serum390.godzilla.api.handlers.BomHandler;
-import ca.serum390.godzilla.api.handlers.InventoryHandler;
-import ca.serum390.godzilla.api.handlers.OrderHandler;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Configuration
 public class ApiRouter implements WebFluxConfigurer {
@@ -29,41 +24,34 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route(
-            OrderHandler salesHandler,
-            InventoryHandler inventoryHandler,
-            BomHandler bomHandler,
             ProductionHandler productionHandler,
-            VendorContactHandler vendorContactHandler,
             RouterFunction<ServerResponse> goodsRoute,
             RouterFunction<ServerResponse> inventoryRoute,
-            RouterFunction<ServerResponse> bomRoute,
             RouterFunction<ServerResponse> orderRoute,
             RouterFunction<ServerResponse> salesContactRoute,
-            RouterFunction<ServerResponse> vendorContactRoute)
-    {
+            RouterFunction<ServerResponse> vendorContactRoute) {
 
 
         return RouterFunctions.route()
                 .path("/api", apiBuilder -> apiBuilder
-                    .GET("/materials", productionHandler::demoMaterials)
-                    .GET("/products", productionHandler::demoProducts)
-                    .GET("/healthcheck", req -> ok().bodyValue(ALL_GOOD_IN_THE_HOOD))
-                    .add(goodsRoute)
-                    .add(inventoryRoute)
-                    .add(orderRoute)
-                    .add(salesContactRoute)
-                    .add(bomRoute)
-                    .add(vendorContactRoute)
-                    .build())
+                        .GET("/materials", productionHandler::demoMaterials)
+                        .GET("/products", productionHandler::demoProducts)
+                        .GET("/healthcheck", req -> ok().bodyValue(ALL_GOOD_IN_THE_HOOD))
+                        .add(goodsRoute)
+                        .add(inventoryRoute)
+                        .add(orderRoute)
+                        .add(salesContactRoute)
+                        .add(vendorContactRoute)
+                        .build())
                 .build();
     }
 
-        /**
-         * Serve some static resources via /resources/<my_resource>
-         */
-        @Override
-        public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/resources/**").addResourceLocations("/public", "classpath:/static/",
-                                "classpath:/static/resources/");
-        }
+    /**
+     * Serve some static resources via /resources/<my_resource>
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/public", "classpath:/static/",
+                "classpath:/static/resources/");
+    }
 }
