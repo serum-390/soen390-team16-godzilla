@@ -6,8 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export default function InventoryForm(props) {
   const item = props.onSubmit(null, false);
@@ -37,7 +35,7 @@ export default function InventoryForm(props) {
       sellPrice: sellPrice,
       buyPrice: buyPrice,
       location: location,
-      billOfMaterial:{}
+      billOfMaterial: {}
     };
     props.onSubmit(data, true);
     setOpen(false);
