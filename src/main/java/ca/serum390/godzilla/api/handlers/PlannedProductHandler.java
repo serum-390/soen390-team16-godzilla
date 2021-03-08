@@ -35,34 +35,36 @@ public class PlannedProductHandler {
     // preproduction
 
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
-        Mono<Order> orderMono = req.bodyToMono(Order.class);
+        Order order = req.bodyToMono(Order.class).block();
         AtomicBoolean isOrderReady = new AtomicBoolean(true);
-        orderMono.subscribe(
-                order -> {
-                    System.out.println("Order status is " + order.getStatus());
-                    order.getItems().forEach((id, quantity) -> {
-                        inventoryRepository.findById(id).subscribe(
-                                item -> {
-                                    if (quantity <= item.getQuantity()) {
-                                        // check inventory for finished item
-                                        int newQuantity = item.getQuantity()-quantity;
-                                        System.out.println("Item " + item.getItemName() + " is available");
-                                        inventoryRepository.update(id, newQuantity).subscribe(num -> System.out.println("inventory updated"));;
+        System.out.println("Order status is " + order.getStatus());
 
-                                    } else {
-                                        isOrderReady.set(false);
-                                        // check bom for that item
-                                        System.out.println("Item " + item.getItemName() + " is not available");
-                                    }
-                                }
-                        );
-                    });
-                    if (isOrderReady.get()) {
-                        ordersRepository.update(order.getId(), "Ready").subscribe(num -> System.out.println("order status updated"));
-                    }
-                },
-                error -> System.out.println(" error retrieving order")
-        );
+        order.getItems().forEach((id, quantity) -> {
+            Item item = inventoryRepository.findById(id).block();
+            if (quantity <= item.getQuantity()) {
+                // check inventory for finished item
+                int newQuantity = item.getQuantity() - quantity;
+                System.out.println("Item " + item.getItemName() + " is available");
+                inventoryRepository.update(id, newQuantity).subscribe(num -> System.out.println("inventory updated"));
+
+            } else {
+                isOrderReady.set(false);
+                // check bom for that item
+                System.out.println("Item " + item.getItemName() + " is not available");
+                item.getBillOfMaterial().forEach((id2, quantity2) -> {
+                            Item item2 = inventoryRepository.findById(id2).block();
+                            if (quantity2 <= item2.getQuantity()) {
+                                // check inventory for finished item
+                                int newQuantity = item2.getQuantity() - quantity2;
+                                System.out.println("Item " + item2.getItemName() + " is available");
+                                inventoryRepository.update(id2, newQuantity).subscribe(num -> System.out.println("inventory updated for bom"));
+                            } else {
+                                System.out.println("Item " + item2.getItemName() + " is not available");
+                            }
+                        }
+                );
+            }
+        });
         return noContent().build();
     }
 

@@ -44,7 +44,7 @@ INSERT INTO inventory (id, item_name, good_type, quantity, sell_price, LOCATION,
                 good_type
             WHERE
                 type = 'fnmt'
-            LIMIT 1), 10, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2, "6":1}');
+            LIMIT 1), 1, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2, "6":1}');
 
 INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
     VALUES (2,'SuperSpeed BICYCLE', (
@@ -54,7 +54,7 @@ INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION, 
                 good_type
             WHERE
                 type = 'fnmt'
-            LIMIT 1), 10, 299.99, 'MONTREAL CONCORDIA','{"3":1, "4":1, "5":2, "6":1}');
+            LIMIT 1), 1, 299.99, 'MONTREAL CONCORDIA','{"3":1, "4":1, "5":2, "6":1}');
 
 -- Semi-final self-product
 INSERT INTO inventory (id,item_name, good_type, quantity, LOCATION)
@@ -98,12 +98,12 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
                 good_type
             WHERE
                 type = 'smbp'
-            LIMIT 1), 356, 29.99, 'MONTREAL CONCORDIA');
+            LIMIT 1), 10, 29.99, 'MONTREAL CONCORDIA');
 
 
 
 --SalesOrder 
-INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (1,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 1, "2" : 1}');
+INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (1,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 2}');
 INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (2,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 15, "2" : 15}');
 INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (3,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 4, "2" : 2}');
 --SalesContact
