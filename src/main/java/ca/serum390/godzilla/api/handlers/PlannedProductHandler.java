@@ -1,6 +1,5 @@
 package ca.serum390.godzilla.api.handlers;
 
-import ca.serum390.godzilla.data.repositories.BomRepository;
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
@@ -12,7 +11,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,13 +25,11 @@ public class PlannedProductHandler {
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
-    private final BomRepository bomRepository;
 
-    public PlannedProductHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository, BomRepository bomRepository) {
+    public PlannedProductHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
         this.plannedProducts = plannedProducts;
         this.inventoryRepository = inventoryRepository;
         this.ordersRepository = ordersRepository;
-        this.bomRepository = bomRepository;
     }
 
     // preproduction
