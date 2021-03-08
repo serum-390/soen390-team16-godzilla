@@ -46,7 +46,7 @@ INSERT INTO inventory (id, item_name, good_type, quantity, sell_price, LOCATION,
                 type = 'fnmt'
             LIMIT 1), 10, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2, "6":1}');
 
-INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
     VALUES (2,'SuperSpeed BICYCLE', (
             SELECT
                 id
@@ -103,8 +103,9 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
 
 
 --SalesOrder 
-INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "300" : 10, "198" : 33}');
-
+INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (1,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 1, "2" : 1}');
+INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (2,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 15, "2" : 15}');
+INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (3,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 4, "2" : 2}');
 --SalesContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
 
