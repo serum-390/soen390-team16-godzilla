@@ -15,7 +15,7 @@ INSERT INTO inventory (id, item_name, good_type, quantity, sell_price, LOCATION,
                 good_type
             WHERE
                 type = 'fnmt'
-            LIMIT 1), 10, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2}');
+            LIMIT 1), 10, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2, "6":1}');
 
 INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION)
     VALUES (2,'SuperSpeed BICYCLE', (
@@ -25,7 +25,7 @@ INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION)
                 good_type
             WHERE
                 type = 'fnmt'
-            LIMIT 1), 10, 299.99, 'MONTREAL CONCORDIA','{"3":1, "4":1, "5":2}');
+            LIMIT 1), 10, 299.99, 'MONTREAL CONCORDIA','{"3":1, "4":1, "5":2, "6":1}');
 
 -- Semi-final self-product
 INSERT INTO inventory (id,item_name, good_type, quantity, LOCATION)
@@ -61,8 +61,8 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
 
 --Semi-final buy-product = raw material
 
-INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
-    VALUES ('Skill Brake', (
+INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
+    VALUES (6,'Skill Brake', (
             SELECT
                 id
             FROM
