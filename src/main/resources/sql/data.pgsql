@@ -5,6 +5,35 @@ DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
 
+--insert data for good_type
+INSERT INTO good_type (id,type, description)
+    VALUES (1,'fnmt', 'final product')
+    ON CONFLICT (type) DO NOTHING;
+
+INSERT INTO good_type (id,type, description)
+    VALUES (2,'smsp', 'semi-final self-product')
+    ON CONFLICT (type) DO NOTHING;
+
+
+INSERT INTO good_type (id,type, description)
+    VALUES (3,'smbs', 'semi-final buy or self-product')
+    ON CONFLICT (type) DO NOTHING;
+
+
+INSERT INTO good_type (id,type, description)
+    VALUES (4,'smbp', 'semi-final buy-product')
+    ON CONFLICT (type) DO NOTHING;
+
+
+INSERT INTO good_type (id,type, description)
+    VALUES (5,'rawm', 'raw material')
+    ON CONFLICT (type) DO NOTHING;
+
+
+INSERT INTO good_type (id,type, description)
+    VALUES (6,'accp', 'accessories')
+    ON CONFLICT(type) DO NOTHING;
+
 -- insert test data into the inventory table
 -- Final product
 INSERT INTO inventory (id, item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
