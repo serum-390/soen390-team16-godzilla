@@ -4,7 +4,6 @@ DELETE FROM contact;
 DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
-DELETE FROM bill_of_material;
 
 INSERT INTO goods (name, description)
     VALUES ('SuperSpeed Bicycle', 'A really fast bike, fun for the whole family');
@@ -76,7 +75,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             LIMIT 1), 82, 249.99, 'MONTREAL CONCORDIA');
 
 -- Semi-final self-product
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
     VALUES ('frame speed 1', (
             SELECT
                 id
@@ -126,7 +125,7 @@ INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
                 type = 'smsp'
             LIMIT 1), 123, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
     VALUES ('Speed Transmission 2', (
             SELECT
                 id
@@ -136,7 +135,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smsp'
             LIMIT 1), 245, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
     VALUES ('Skill Transmission 1', (
             SELECT
                 id
@@ -146,7 +145,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smsp'
             LIMIT 1), 83, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
     VALUES ('Skill Transmission 2', (
             SELECT
                 id
@@ -157,7 +156,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             LIMIT 1), 96, 'MONTREAL CONCORDIA');
 
 --Semi-final buy or self-product
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Control 1', (
             SELECT
                 id
@@ -167,7 +166,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 64, 32.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Control 2', (
             SELECT
                 id
@@ -177,7 +176,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 82, 39.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Control 1', (
             SELECT
                 id
@@ -187,7 +186,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 72, 29.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Control 2', (
             SELECT
                 id
@@ -197,7 +196,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 33, 35.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Wheel 1', (
             SELECT
                 id
@@ -207,7 +206,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 200, 19.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Wheel 2', (
             SELECT
                 id
@@ -217,7 +216,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 256, 29.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Cheel 1', (
             SELECT
                 id
@@ -227,7 +226,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 188, 24.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Wheel 2', (
             SELECT
                 id
@@ -238,7 +237,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             LIMIT 1), 300, 22.99, 'MONTREAL CONCORDIA');
 
 --Semi-final buy-product = raw material
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Brake 1', (
             SELECT
                 id
@@ -248,7 +247,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbp'
             LIMIT 1), 402, 32.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Brake 2', (
             SELECT
                 id
@@ -258,7 +257,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbp'
             LIMIT 1), 288, 39.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Brake 1', (
             SELECT
                 id
@@ -268,7 +267,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbp'
             LIMIT 1), 356, 29.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Brake 2', (
             SELECT
                 id
@@ -278,7 +277,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
                 type = 'smbp' LIMIT 1 ), 350, 35.99, 'MONTREAL CONCORDIA');
 
 --5 material
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed frame base 1', (
             SELECT
                 id
@@ -287,7 +286,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed frame base 2', (
             SELECT
                 id
@@ -296,7 +295,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill frame base 1', (
             SELECT
                 id
@@ -305,7 +304,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill frame base 2', (
             SELECT
                 id
@@ -314,7 +313,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed fork 1', (
             SELECT
                 id
@@ -323,7 +322,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed fork 2', (
             SELECT
                 id
@@ -332,7 +331,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill fork 1', (
             SELECT
                 id
@@ -341,7 +340,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill fork 2', (
             SELECT
                 id
@@ -350,7 +349,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Steams 1', (
             SELECT
                 id
@@ -359,7 +358,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Steams 2', (
             SELECT
                 id
@@ -368,7 +367,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Steams 1', (
             SELECT
                 id
@@ -377,7 +376,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Steams 2', (
             SELECT
                 id
@@ -386,7 +385,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Head 1', (
             SELECT
                 id
@@ -395,7 +394,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Head 2', (
             SELECT
                 id
@@ -404,7 +403,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Head 1', (
             SELECT
                 id
@@ -413,7 +412,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Head 2', (
             SELECT
                 id
@@ -422,7 +421,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Crank 1', (
             SELECT
                 id
@@ -431,7 +430,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Crank 2', (
             SELECT
                 id
@@ -440,7 +439,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Crank 1', (
             SELECT
                 id
@@ -449,7 +448,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Crank 2', (
             SELECT
                 id
@@ -458,7 +457,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Chain Wheel 1', (
             SELECT
                 id
@@ -467,7 +466,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Chain Wheel 2', (
             SELECT
                 id
@@ -476,7 +475,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Chain Wheel 1', (
             SELECT
                 id
@@ -485,7 +484,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Chain Wheel 2', (
             SELECT
                 id
@@ -494,7 +493,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Pedal 1', (
             SELECT
                 id
@@ -503,7 +502,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Pedal 2', (
             SELECT
                 id
@@ -512,7 +511,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Pedal 1', (
             SELECT
                 id
@@ -521,7 +520,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Pedal 2', (
             SELECT
                 id
@@ -530,7 +529,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Chain 1', (
             SELECT
                 id
@@ -539,7 +538,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Chain 2', (
             SELECT
                 id
@@ -548,7 +547,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Chain 1', (
             SELECT
                 id
@@ -557,7 +556,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Chain 2', (
             SELECT
                 id
@@ -566,7 +565,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Freewheel 1', (
             SELECT
                 id
@@ -575,7 +574,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Freewheel 2', (
             SELECT
                 id
@@ -584,7 +583,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Freewheel 1', (
             SELECT
                 id
@@ -593,7 +592,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Freewheel 2', (
             SELECT
                 id
@@ -602,7 +601,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 382, 7.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Derailleur 1', (
             SELECT
                 id
@@ -611,7 +610,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 251, 5.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Speed Derailleur 2', (
             SELECT
                 id
@@ -620,7 +619,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 192, 6.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Derailleur 1', (
             SELECT
                 id
@@ -629,7 +628,7 @@ INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
             WHERE
                 type = 'rawm' LIMIT 1 ), 285, 4.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION)
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Derailleur 2', (
             SELECT
                 id
