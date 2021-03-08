@@ -29,7 +29,7 @@ public class InventoryHandler {
      */
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Item.class)
-                .flatMap(items::save)
+                .flatMap(item -> items.save(item.getItemName(), item.getLocation(), item.getBuyPrice(), item.getGoodType(), item.getQuantity(), item.getSellPrice(), item.getBillOfMaterial()))
                 .flatMap(id -> noContent().build());
     }
 
