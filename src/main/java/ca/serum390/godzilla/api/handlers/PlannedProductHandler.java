@@ -11,8 +11,11 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.*;
 
@@ -37,7 +40,16 @@ public class PlannedProductHandler {
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
         Order order = req.bodyToMono(Order.class).block();
         AtomicBoolean isOrderReady = new AtomicBoolean(true);
+        AtomicBoolean isOrderBlocked = new AtomicBoolean(false);
         System.out.println("Order status is " + order.getStatus());
+        Order purchaseOrder = new Order();
+        purchaseOrder.setItems(new HashMap<>());
+        purchaseOrder.setOrderType("purchase");
+        purchaseOrder.setStatus("new");
+        purchaseOrder.setCreatedDate(LocalDate.of(2021,1,1));
+        purchaseOrder.setDueDate(LocalDate.of(2021,1,1));
+        purchaseOrder.setDeliveryLocation("Montreal");
+
 
         order.getItems().forEach((id, quantity) -> {
             Item item = inventoryRepository.findById(id).block();
@@ -49,20 +61,43 @@ public class PlannedProductHandler {
 
             } else {
                 isOrderReady.set(false);
+                quantity = quantity - item.getQuantity();
+                inventoryRepository.update(id, 0).subscribe(num -> System.out.println("inventory updated with 0"));
                 // check bom for that item
                 System.out.println("Item " + item.getItemName() + " is not available");
+                Integer finalQuantity = quantity;
                 item.getBillOfMaterial().forEach((id2, quantity2) -> {
                             Item item2 = inventoryRepository.findById(id2).block();
-                            if (quantity2 <= item2.getQuantity()) {
+                            int total_quantity = quantity2 * finalQuantity;
+                            if (total_quantity <= item2.getQuantity()) {
                                 // check inventory for finished item
-                                int newQuantity = item2.getQuantity() - quantity2;
+                                int newQuantity = item2.getQuantity() - total_quantity;
                                 System.out.println("Item " + item2.getItemName() + " is available");
                                 inventoryRepository.update(id2, newQuantity).subscribe(num -> System.out.println("inventory updated for bom"));
                             } else {
-                                System.out.println("Item " + item2.getItemName() + " is not available");
+                                total_quantity = total_quantity - item2.getQuantity();
+                                isOrderBlocked.set(true);
+                                //update inventory
+                                inventoryRepository.update(id2, 0).subscribe(num -> System.out.println("inventory updated with 0 for bom"));
+                                // create purchase order this bom item with the number = total-quantity
+                                purchaseOrder.getItems().put(id2, total_quantity);
+                                System.out.println("purchase order updated");
                             }
                         }
                 );
+
+                ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation()
+                        , purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems()).subscribe
+                        (Order -> System.out.println("order is saved"));
+                if(isOrderReady.get()){
+                    ordersRepository.update(id,"Ready").subscribe(num -> System.out.println("order status updated"));
+                }
+                else if(isOrderBlocked.get()) {
+                    ordersRepository.update(id,"blocked").subscribe(num -> System.out.println("order status updated"));
+                }
+                else{
+                    ordersRepository.update(id,"processing").subscribe(num -> System.out.println("order status updated"));
+                }
             }
         });
         return noContent().build();

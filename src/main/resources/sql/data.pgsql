@@ -103,7 +103,7 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
 
 
 --SalesOrder 
-INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (1,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 2}');
+INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (1,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 7}');
 INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (2,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 15, "2" : 15}');
 INSERT INTO orders(id, CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES (3,'2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 4, "2" : 2}');
 --SalesContact
