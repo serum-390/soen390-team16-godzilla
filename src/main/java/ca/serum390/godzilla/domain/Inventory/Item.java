@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import java.util.Map;
 
 @Data
 @Builder
@@ -27,6 +28,6 @@ public class Item {
     private float buyPrice;
     private float sellPrice;
     private String location;
-    private boolean billOfMaterial;
+    private Map<Integer,Integer> billOfMaterial;
 }
 

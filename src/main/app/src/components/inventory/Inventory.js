@@ -65,7 +65,6 @@ const inventoryCols = [
   {field: 'SellPrice', headerName: 'Sell Price', width: 130},
   {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
   {field: 'Location', headerName: 'Location', width: 130},
-  {field: 'BillOfMaterial', headerName: 'BOM', width: 100},
   {
     field: 'modify',
     headerName: 'Modify',
@@ -120,7 +119,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
         sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
         buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
         location: updatedItem.location === "" ? item.location : updatedItem.location,
-        billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
+        billOfMaterial:  item.billOfMaterial
       })
     }
     return item;
@@ -134,7 +133,6 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
       SellPrice: item.sellPrice,
       BuyPrice: item.buyPrice,
       Location: item.location,
-      BillOfMaterial: item.billOfMaterial,
       modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
       delete: () => deleteItem(item.id)
     })));

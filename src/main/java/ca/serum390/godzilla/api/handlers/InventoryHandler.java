@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -30,7 +29,7 @@ public class InventoryHandler {
      */
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Item.class)
-                .flatMap(items::save)
+                .flatMap(item -> items.save(item.getItemName(), item.getLocation(), item.getBuyPrice(), item.getGoodType(), item.getQuantity(), item.getSellPrice(), item.getBillOfMaterial()))
                 .flatMap(id -> noContent().build());
     }
 
@@ -62,6 +61,7 @@ public class InventoryHandler {
 
     /**
      * updates the items in inventory
+     *
      * @param req
      * @return
      */
@@ -72,7 +72,7 @@ public class InventoryHandler {
                     Item original = (Item) data[0];
                     Item updated = (Item) data[1];
                     if (updated != null) {
-                        original.setBillOfMaterial(updated.isBillOfMaterial());
+                        original.setBillOfMaterial(updated.getBillOfMaterial());
                         original.setGoodType(updated.getGoodType());
                         original.setBuyPrice(updated.getBuyPrice());
                         original.setLocation(updated.getLocation());
@@ -85,7 +85,7 @@ public class InventoryHandler {
                 existed,
                 req.bodyToMono(Item.class)
         ).cast(Item.class)
-                .flatMap(item -> items.update(item.getItemName(), item.getLocation(), item.getId(), item.getBuyPrice(), item.getGoodType(), item.getQuantity(), item.getSellPrice(), item.isBillOfMaterial()))
+                .flatMap(item -> items.update(item.getItemName(), item.getLocation(), item.getId(), item.getBuyPrice(), item.getGoodType(), item.getQuantity(), item.getSellPrice(), item.getBillOfMaterial()))
                 .flatMap(item -> noContent().build());
     }
 

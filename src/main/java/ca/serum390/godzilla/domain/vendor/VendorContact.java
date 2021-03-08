@@ -1,6 +1,9 @@
-package ca.serum390.godzilla.domain.billOfMaterial;
+package ca.serum390.godzilla.domain.vendor;
+
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
+
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,15 +16,17 @@ import lombok.ToString;
 @Data
 @Builder
 @ToString
-@Table("bill_of_material")
+@Table("contact")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class BomEntry {
-    
+public class VendorContact {
     @Id
-    private Integer item_name;
-    private Integer item_needed;
-    private Integer quantity;
+    private Integer id;
+    private String companyName;
+    private String contactName;
+    private String address;
+    private String contact;
+    private String contactType;
 }
