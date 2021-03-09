@@ -12,17 +12,11 @@ logging:
     io.r2dbc.postgresql.QUERY: DEBUG
     io.r2dbc.postgresql.PARAM: DEBUG
     org.springframework.http.server.reactive: DEBUG
-springdoc:
-  swagger-ui:
-    path: /api/docs/
 ---
 spring:
   config:
     activate:
       on-profile: prod
-springdoc:
-  swagger-ui:
-    path: /api/docs/
 ---
 spring:
   config:
@@ -30,6 +24,3 @@ spring:
       on-profile: test
   r2dbc:
     url: "r2dbc:h2:mem:///testdb"
-springdoc:
-  swagger-ui:
-    path: /api/docs/

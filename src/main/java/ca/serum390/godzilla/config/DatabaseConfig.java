@@ -33,6 +33,8 @@ import lombok.extern.log4j.Log4j2;
  * <li><code>DB_USERNAME:</code> The username for an account with access to the
  * <code>godzilla</code> database</li>
  * <li><code>DB_PASSWORD:</code> The password of the account</li>
+ * <li><code>SKIP_POPULATING_DATABASE:</code> Prevent the database from being
+ * populated with test data</li>
  * </ol>
  */
 @Log4j2

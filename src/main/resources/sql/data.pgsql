@@ -818,7 +818,7 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, sell_price, LO
             WHERE
                 type = 'accp'), 251, 5.99, 5.99, 'MONTREAL CONCORDIA');
 
---SalesOrder 
+--SalesOrder
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "300" : 10, "198" : 33}');
 
 --SalesContact

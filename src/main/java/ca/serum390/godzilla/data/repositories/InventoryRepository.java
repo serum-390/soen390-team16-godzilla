@@ -1,6 +1,6 @@
 package ca.serum390.godzilla.data.repositories;
 
-import ca.serum390.godzilla.domain.Inventory.Item;
+import ca.serum390.godzilla.domain.inventory.Item;
 import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;

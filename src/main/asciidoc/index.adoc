@@ -1,0 +1,353 @@
+= Godzilla ERP API Guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:current-version: 1.1
+
+[source,json]
+----
+{"id":123,"itemName":"item","goodType":666,"quantity":89,"buyPrice":467.0,"sellPrice":555.0,"location":"Montreal, Quebec","billOfMaterial":null}
+----
+
+
+[[overview]]
+= Overview
+
+[[overview_http_verbs]]
+== HTTP verbs
+
+Godzilla ERP tries to adhere as closely as possible to standard HTTP and REST
+conventions in its use of HTTP verbs.
+
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PATCH`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete an existing resource
+|===
+
+[[overview_http_status_codes]]
+== HTTP status codes
+
+Godzilla ERP tries to adhere as closely as possible to standard HTTP and REST
+conventions in its use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available
+from the response's `Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `302 Found`
+| Indicates that the resource requested has been temporarily moved to the URL
+given by the Location header
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing
+further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
+[[overview_errors]]
+== Errors
+
+In version {current-version}, Godzilla ERP is not enforcing a specific error
+response format. Errors will be reported with status codes >= 400. A specific
+error response format is planned for a future release of Godzilla ERP.
+
+=== Status Codes
+++++
+<table style="font-weight: bold; max-width: fit-content; border: 0px;">
+  <tr>
+    <td style="color: green; text-align: right;">GOOD: </td>
+    <td> < 400</td>
+  </tr>
+  <tr style="background-color: transparent;">
+    <td style="color: red; text-align: right;"> BAD: </td>
+    <td> >= 400 </td>
+  </tr>
+</table>
+++++
+
+
+// !!! BELOW IS AN EXAMPLE OF WHAT THE ERROR DOC SHOULD IDEALLY LOOK LIKE
+// Whenever an error response (status code >= 400) is returned, the body will
+// contain a JSON object that describes the problem. The error object has the
+// following structure:
+
+// include::{snippets}/error-example/response-fields.adoc[]
+
+// For example, a request that attempts to apply a non-existent tag to a note will produce a
+// `400 Bad Request` response:
+
+// include::{snippets}/error-example/http-response.adoc[]
+
+[[overview_hypermedia]]
+== Hypermedia
+
+Hypermedia is an important part of a mature RESTful API. Version
+{current-version} of the Godzilla ERP Rest APIs does not support hypermedia,
+though the project _is_ using the appropriate HTTP verbs for each of their
+respective semantics (e.g.: `GET` for obtaining data about a resource, `POST`
+for adding to a resource, etc.)
+
+In terms of the
+link:https://en.wikipedia.org/wiki/Richardson_Maturity_Model[Richardson Maturity Model (RMM)],
+our current APIs would be *LEVEL 2*: HTTP verbs, but no hypermedia. Hypermedia
+support (*LEVEL 3* REST APIs) will be coming up in a future release of Godzilla
+ERP.
+
+// Godzilla ERP uses hypermedia and resources include links to other resources in
+// their responses. Responses are in
+// https://github.com/mikekelly/hal_specification[Hypertext Application Language
+// (HAL)] format. Links can be found beneath the `_links` key. Users of the API
+// should not create URIs themselves, instead they should use the above-described
+// links to navigate from resource to resource.
+
+---
+
+[[resources]]
+= Resources
+
+
+[[resources_login]]
+== Login
+
+Godzilla ERP v{current-version} implements HTTP basic authentication with a very
+simple login page that looks like:
+
+image::/api/docs/login-page.png[Login Page, width=30%, align="center"]
+
+Upon login, this page will return an authentication token in the form of a
+session cookie.
+
+=== Logging In - `POST /login`
+
+Authenticates with Godzilla ERP using HTTP basic.
+
+// ??? The raw request and response are included to obscure the demo username //
+// ??? and passwords used in testing. (though these are included in plaintext in
+// ??? the project repository)
+
+==== HTTP request
+
+Send form data for fields: `username`, and `password`
+
+[source,http,options="nowrap"]
+----
+POST /login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Content-Length: 27
+Host: localhost:8080
+
+username=MyUsername&password=MyPassword
+----
+
+==== Example response
+
+[source,http,options="nowrap"]
+----
+HTTP/1.1 302 Found
+Location: /
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1 ; mode=block
+Referrer-Policy: no-referrer
+Set-Cookie: SESSION=1a7c9831-801d-4962-9e71-b161935fcea9; Path=/; HttpOnly; SameSite=Lax
+----
+
+==== Example request
+
+[source,bash]
+----
+$ curl 'http://localhost:8080/login' -i -X POST \
+    -H 'Content-Type: application/x-www-form-urlencoded;charset=UTF-8' \
+    -d 'username=MyUsername&password=MyPassword'
+----
+
+
+
+[[resources_healthcheck]]
+== Healthcheck
+
+Responds with a brief message and good error code if the app is healthy, and a
+bad error code otherwise
+
+=== Checking app health - `GET /api/healthcheck`
+
+operation::api/healthcheck[snippets='http-request,http-response,curl-request']
+
+
+// !!! ============================ INVENTORY ==================================
+
+[[resources_inventory]]
+== Inventory
+
+The inventory subsytem contains APIs for managing inventory items that are
+tracked by Godzilla ERP.
+
+=== Retrieving items - `GET /api/inventory/`
+
+Retrieve items from the inventory. Accepts query parameters `name` and `id`,
+upon which the API returns a single item from the inventory. If no query
+parameter is given, all items in the inventory are returned.
+
+
+*Query Parameters:*
+
+[Query Parameters]
+|===
+|Param  |Value Type |Example
+
+|name
+|String
+|`/api/inventory/?name=<name>`
+
+|id
+|Integer
+|`/api/inventory/?id=<id>`
+
+|===
+
+
+operation::api/inventory/all_GET[snippets='http-request,http-response,curl-request']
+
+
+=== Creating items - `POST /api/inventory/`
+
+Create an item by POST-ing to the inventory route. The request should contain
+JSON containing the fields of the item that you want to create.
+
+// TODO: Insert create item operation
+
+
+=== Deleting items - `DELETE /api/inventory/{id}`
+
+Delete an item from the inventory by DELETE-ing on the inventory route and
+specifying the `{id}` as a path parameter.
+
+// TODO: Insert delete item operation
+
+
+=== Updating items - `PUT /api/inventory/{id}`
+
+Update an item by PUT-ing to the inventory route and specifying the `{id}` as a
+path parameter.
+
+// TODO: Insert update item operation
+
+
+
+
+// !!! ============================= ORDERS =====================================
+
+[[resources_orders]]
+== Orders
+
+
+=== Retrieving orders - `GET /api/orders/`
+
+operation::api/orders/all_GET[snippets='http-request,http-response,curl-request']
+
+
+
+=== Creating orders - `POST /api/inventory/`
+
+Create an order by POST-ing to the orders route. The request should contain
+JSON containing the fields of the order that you want to create.
+
+// TODO: Insert create item operation
+
+
+
+=== Deleting orders - `DELETE /api/inventory/{id}`
+
+Delete an order from the inventory by DELETE-ing on the orders route and
+specifying the `{id}` as a path parameter.
+
+// TODO: Insert delete item operation
+
+
+
+=== Updating orders - `PUT /api/inventory/{id}`
+
+Update an order by PUT-ing to the orders route and specifying the `{id}` as a
+path parameter.
+
+// TODO: Insert update item operation
+
+
+
+
+// !!! ============================= MATERIALS ==================================
+
+[[resources_materials]]
+== Materials
+
+// TODO
+
+
+
+
+// !!! ============================= PRODUCTS ==================================
+
+[[resources_products]]
+== Products
+
+// TODO
+
+
+
+
+// !!! ============================= GOODS =====================================
+
+[[resources_goods]]
+== Goods
+
+// TODO
+
+
+
+
+// !!! ============================= SALES =====================================
+
+[[resources_salescontact]]
+== Sales Contacts
+
+// TODO
+
+
+
+
+// !!! ============================= VENDORS ==================================
+
+[[resources_vendorcontact]]
+== Vendor Contacts
+
+// TODO
