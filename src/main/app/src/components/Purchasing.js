@@ -28,11 +28,12 @@ const useStyles = makeStyles(theme => ({
 
 const vendorColumns = [
   { field: 'id', headerName: 'ID', width: 130 },
+  { field: 'companyName', headerName: 'Company Name', width: 130 },
   { field: 'contactName', headerName: 'Vendor', width: 130 },
-  { field: 'vendorAddress', headerName: 'Address', width: 130 },
-  { field: 'vendorPhone', headerName: 'Contact #', width: 130 },
+  { field: 'address', headerName: 'Address', width: 130 },
+  { field: 'contact', headerName: 'Contact #', width: 130 },
   {
-    field: 'vendorDetails',
+    field: 'modify',
     headerName: 'Modify',
     width: 130,
     renderCell: params => (
@@ -45,12 +46,9 @@ const vendorColumns = [
            */
 
           <VendorDetailsForm
-            vendorID={params.getValue('id') || ''}
-            vendorName={params.getValue('vendorName') || ''}
-            vendorAddress={params.getValue('vendorAddress') || ''}
-            vendorPhone={params.getValue('vendorPhone') || ''}
+            onSubmit={params.value}
             initialButton='Edit'
-            dialogTitle={'Vendor Information - (' + params.getValue('id') + ") " + params.getValue('vendorName')}
+            dialogTitle={'Vendor Information - (' + params.getValue('id') + ") " + params.getValue('contactName')}
             dialogContentText='Please enter any information you would like to modify: '
             submitButton='Update'
           />
@@ -59,23 +57,25 @@ const vendorColumns = [
     ),
   },
   {
-    field: 'deleteVendor',
+    field: 'delete',
     headerName: 'Delete',
     width: 130,
     renderCell: params => (
-      <DeleteButton
+      // RE-ADD THIS LATER
+      /*<DeleteButton
         vendorName={params.getValue('vendorName') || ''}
-      />
+      />*/
+      
+      <div style={{margin: 'auto'}}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
+          Delete
+        </Button>
+      </div>
     ),
   },
 
 
 
-];
-
-const vendorRows = [
-  { id: 1, vendorName: 'Vendor1', vendorAddress: '????', vendorPhone: "123-456-7890" },
-  { id: 2, vendorName: 'Vendor2', vendorAddress: '????', vendorPhone: "123-456-7890" }
 ];
 
 const orderColumns = [
@@ -127,7 +127,7 @@ const getVendors = async () => {
 
 const updateVendor = async data => {
   try {
-    const api = `/api/vendor/${data.id}`;
+    const api = `/api/vendorcontact/${data.id}`;
     const updated = await axios.put(api, data);
     console.log(`STATUS CODE: ${updated.status}`);
     console.log(`DATA: ${updated.data || "Nothing"}`);
@@ -139,7 +139,7 @@ const updateVendor = async data => {
 
 const insertVendor = async data => {
   try {
-    const api = `/api/vendor/`;
+    const api = `/api/vendorcontact/`;
     const inserted = await axios.post(api, data);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
@@ -151,7 +151,7 @@ const insertVendor = async data => {
 
 const deleteVendor = async id => {
   try {
-    const api = `/api/vendor/${id}`;
+    const api = `/api/vendorcontact/${id}`;
     const inserted = await axios.delete(api);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
@@ -168,6 +168,7 @@ const FilledVendorView = ({vendors}) => {
     if (toUpdate) {
       updateVendor({
         id: item.id,
+        companyName: updatedItem.companyName === "" ? item.companyName : updatedItem.companyName,
         contactName: updatedItem.contactName === "" ? item.contactName : updatedItem.contactName,
         address: updatedItem.address === "" ? item.address : updatedItem.address,
         contact: updatedItem.contact === "" ? item.contact : updatedItem.contact
@@ -175,12 +176,17 @@ const FilledVendorView = ({vendors}) => {
     }
     return item;
   };
+
+
   vendors.map(item => (
     contacts.push({
       id: item.id,
+      companyName: item.companyName,
       contactName: item.contactName,
       address: item.address,
-      contact: item.contact
+      contact: item.contact,
+      modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
+      delete: () => deleteVendor(item.id)
     })));
 
   return (

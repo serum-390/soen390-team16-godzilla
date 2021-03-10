@@ -98,43 +98,46 @@ TextMaskCustom.propTypes = {
   inputRef: PropTypes.func.isRequired,
 };
 
-function PhoneNumberInput() {
-  const [values, setValues] = React.useState({
-    textmask: '(1  )    -    ',
-  });
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  return (
-    <div>
-      <FormControl>
-        <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
-        <Input
-          value={values.textmask}
-          onChange={handleChange}
-          name="textmask"
-          id="formatted-text-mask-input"
-          inputComponent={TextMaskCustom}
-        />
-      </FormControl>
-    </div>
-  );
-}
 
 export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
+  const vendor = props.onSubmit(null, false);
+  const [companyName, setCompanyName] = React.useState("");
+  const [contactName, setContactName] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [contact, setContact] = React.useState("");
 
-  const [location, setLocation] = React.useState("");
-  const [itemName, setItemName] = React.useState("");
-  const [sellPrice, setSellPrice] = React.useState("");
-  const [buyPrice, setBuyPrice] = React.useState("");
-  const [quantity, setQuantity] = React.useState("");
-  const [goodType, setGoodType] = React.useState("");
+  function PhoneNumberInput({defaultNumber}) {
+    const [values, setValues] = React.useState({
+      textmask: '(1  )    -    ',
+    });
+  
+    const handleChange = (event) => {
+      setValues({
+        ...values,
+        [event.target.name]: event.target.value,
+      });
+
+      setContact(event.target.value);
+    };
+  
+    return (
+      <div>
+        <FormControl>
+          <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
+          <Input
+            value={values.textmask}
+            onChange={handleChange}
+            name="textmask"
+            defaultValue={defaultNumber}
+            id="formatted-text-mask-input"
+            inputComponent={TextMaskCustom}
+          />
+        </FormControl>
+      </div>
+    );
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -147,13 +150,10 @@ export default function PurchaseOrderForm(props) {
   const handleSubmit = () => {
     let data = {
       id: "",
-      itemName: itemName,
-      goodType: goodType,
-      quantity: quantity,
-      sellPrice: sellPrice,
-      buyPrice: buyPrice,
-      location: location,
-      billOfMaterial: {}
+      companyName: companyName,
+      contactName: contactName,
+      address: address,
+      contact: contact
     };
     props.onSubmit(data, true);
     setOpen(false);
@@ -166,8 +166,7 @@ export default function PurchaseOrderForm(props) {
       {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
-        
+        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>   
         <DialogContent>
           <DialogContentText>
             {props.dialogContentText}
@@ -175,10 +174,21 @@ export default function PurchaseOrderForm(props) {
           <TextField
             autoFocus
             margin="dense"
+            id="company"
+            label="Company Name"
+            type="string"
+            defaultValue={vendor.companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
             id="customer"
             label="Vendor Name"
             type="string"
-            defaultValue={props.vendorName}
+            defaultValue={vendor.contactName}
+            onChange={(event) => setContactName(event.target.value)}
             fullWidth
           />
           <TextField
@@ -187,7 +197,8 @@ export default function PurchaseOrderForm(props) {
             id="address"
             label="Address"
             type="string"
-            defaultValue={props.vendorAddress}
+            defaultValue={vendor.address}
+            onChange={(event) => setAddress(event.target.value)}
             fullWidth
           />
           <Grid container spacing={2}>
@@ -214,7 +225,7 @@ export default function PurchaseOrderForm(props) {
             <ProvinceOptions/>
             </Grid>
           </Grid>
-          <PhoneNumberInput/>
+          <PhoneNumberInput defaultValue={vendor.contact}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">
