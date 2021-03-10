@@ -129,12 +129,35 @@ function PhoneNumberInput() {
 export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
 
+  const [location, setLocation] = React.useState("");
+  const [itemName, setItemName] = React.useState("");
+  const [sellPrice, setSellPrice] = React.useState("");
+  const [buyPrice, setBuyPrice] = React.useState("");
+  const [quantity, setQuantity] = React.useState("");
+  const [goodType, setGoodType] = React.useState("");
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleSubmit = () => {
+    let data = {
+      id: "",
+      itemName: itemName,
+      goodType: goodType,
+      quantity: quantity,
+      sellPrice: sellPrice,
+      buyPrice: buyPrice,
+      location: location,
+      billOfMaterial: {}
+    };
+    props.onSubmit(data, true);
+    setOpen(false);
+    // want to update the table after clicking this
   };
 
   return (
@@ -194,7 +217,7 @@ export default function PurchaseOrderForm(props) {
           <PhoneNumberInput/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             {props.submitButton}
           </Button>
           <Button onClick={handleClose} color="primary">

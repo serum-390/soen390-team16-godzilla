@@ -14,12 +14,12 @@ public class VendorContactRouter {
     public RouterFunction<ServerResponse> vendorContactRoute(VendorContactHandler vendorContactHandler) {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                    .path("/vendorcontact/",
-                        builder -> builder.GET("/", vendorContactHandler::all)
+                    .path("/vendorcontact/", builder -> builder
+                        .GET("/", vendorContactHandler::all)
                         .POST("/", vendorContactHandler::create)
-                                .GET(ID, vendorContactHandler::getVendor)
-                                .PUT(ID, vendorContactHandler::updateVendor)
-                                .DELETE(ID, vendorContactHandler::delete))
+                        .GET(ID, vendorContactHandler::getVendor)
+                        .PUT(ID, vendorContactHandler::updateVendor)
+                        .DELETE(ID, vendorContactHandler::delete))
                 .build();
     }
 }

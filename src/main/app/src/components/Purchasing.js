@@ -1,6 +1,6 @@
 import { Button, Dialog, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -13,6 +13,7 @@ import VendorDetailsForm from "../Forms/VendorDetailsForm";
 import NewPurchaseOrderForm from "../Forms/NewPurchaseOrderForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
 import DeleteButton from "./forms/DeleteButton";
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 const vendorColumns = [
   { field: 'id', headerName: 'ID', width: 130 },
-  { field: 'vendorName', headerName: 'Vendor', width: 130 },
+  { field: 'contactName', headerName: 'Vendor', width: 130 },
   { field: 'vendorAddress', headerName: 'Address', width: 130 },
   { field: 'vendorPhone', headerName: 'Contact #', width: 130 },
   {
@@ -117,9 +118,79 @@ const orderRows = [
   { id: 5, vendorName: 'Vendor1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Ongoing" }
 ];
 
-function LoadedView() {
+const getVendors = async () => {
+  const api = '/api/vendorcontact/';
+  const got = await fetch(api);
+  const json = await got.json();
+  return json || [];
+};
+
+const updateVendor = async data => {
+  try {
+    const api = `/api/vendor/${data.id}`;
+    const updated = await axios.put(api, data);
+    console.log(`STATUS CODE: ${updated.status}`);
+    console.log(`DATA: ${updated.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+const insertVendor = async data => {
+  try {
+    const api = `/api/vendor/`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+const deleteVendor = async id => {
+  try {
+    const api = `/api/vendor/${id}`;
+    const inserted = await axios.delete(api);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+const FilledVendorView = ({vendors}) => {
+  let contacts = [];
+
+  let updateRow = (item, updatedItem, toUpdate) => {
+    if (toUpdate) {
+      updateVendor({
+        id: item.id,
+        contactName: updatedItem.contactName === "" ? item.contactName : updatedItem.contactName,
+        address: updatedItem.address === "" ? item.address : updatedItem.address,
+        contact: updatedItem.contact === "" ? item.contact : updatedItem.contact
+      })
+    }
+    return item;
+  };
+  vendors.map(item => (
+    contacts.push({
+      id: item.id,
+      contactName: item.contactName,
+      address: item.address,
+      contact: item.contact
+    })));
+
+  return (
+    <DataGrid rows={contacts} columns={vendorColumns} pageSize={9} />
+  );
+};
+
+function LoadedView({classes, vendors}) {
   const [open, setOpen] = React.useState(false);
-  
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -168,7 +239,9 @@ function LoadedView() {
           Add New Vendor
         </Button>
         <AddCustomerDialogBox />
-        <DataGrid rows={vendorRows} columns={vendorColumns} pageSize={4} />
+        <FilledVendorView
+          vendors={vendors}
+        />
       </div>
       <div style={{ height: 600, width: '45%', float: 'right' }}>
         <div>
@@ -189,10 +262,12 @@ function LoadedView() {
 
 function Purchase() {
   const classes = useStyles();
+  const [vendors, setVendors] = useState([]);
+  const waitForGetRequest = async () => getVendors().then(ven => setVendors(ven));
 
   return (
-    <SpinBeforeLoading minLoadingTime={700}>
-      <LoadedView classes={classes} />
+    <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
+      <LoadedView classes={classes} vendors={vendors}/>
     </SpinBeforeLoading>
   );
 }

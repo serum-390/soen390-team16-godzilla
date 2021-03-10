@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import ca.serum390.godzilla.domain.vendor.VendorContact;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Repository
 public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer>{
@@ -14,16 +15,14 @@ public interface VendorContactRepository extends ReactiveCrudRepository<VendorCo
     /**
      * Get all vendor
      */
-    @Modifying
     @Query("SELECT * FROM contact WHERE contact_type = 'vendor'")
-    Mono<Integer> findAllVendor();
+    Flux<VendorContact> findAllVendor();
 
     /**
      * Find by id where contact_type = customer
      */
-    @Modifying
     @Query("SELECT * FROM contact WHERE ID = $1 AND contact_type = 'vendor'")
-    Mono<Integer> findByIdVendor(int id);    
+    Mono<VendorContact> findByIdVendor(int id);    
 
     /**
      * Update sales contact where contact_type = vendor
