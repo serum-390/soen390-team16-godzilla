@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const vendorColumns = [
-  { field: 'id', headerName: 'ID', width: 130 },
+  { field: 'id', headerName: 'ID', width: 70 },
   { field: 'companyName', headerName: 'Company Name', width: 130 },
   { field: 'contactName', headerName: 'Vendor', width: 130 },
   { field: 'address', headerName: 'Address', width: 130 },
@@ -35,7 +35,7 @@ const vendorColumns = [
   {
     field: 'modify',
     headerName: 'Modify',
-    width: 130,
+    width: 100,
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
@@ -59,7 +59,7 @@ const vendorColumns = [
   {
     field: 'delete',
     headerName: 'Delete',
-    width: 130,
+    width: 120,
     renderCell: params => (
       // RE-ADD THIS LATER
       /*<DeleteButton
@@ -241,10 +241,13 @@ function LoadedView({classes, vendors}) {
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
       <div style={{ height: 600, width: '45%', float: 'left' }}>
         <h2 style={{ float: 'left' }}>Vendors</h2>
-        <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
-          Add New Vendor
-        </Button>
-        <AddCustomerDialogBox />
+        <VendorDetailsForm
+            onSubmit={(data) => insertVendor(data)}
+            initialButton='Add New Vendor'
+            dialogTitle='Add New Vendor'
+            dialogContentText='Please enter any information you would like to add: '
+            submitButton='Confirm'
+          />
         <FilledVendorView
           vendors={vendors}
         />

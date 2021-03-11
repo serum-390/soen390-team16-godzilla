@@ -153,7 +153,8 @@ export default function PurchaseOrderForm(props) {
       companyName: companyName,
       contactName: contactName,
       address: address,
-      contact: contact
+      contact: contact,
+      contactType: "vendor"
     };
     props.onSubmit(data, true);
     setOpen(false);
