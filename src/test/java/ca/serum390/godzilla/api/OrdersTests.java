@@ -1,16 +1,9 @@
 package ca.serum390.godzilla.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import ca.serum390.godzilla.data.repositories.OrdersRepository;
+import ca.serum390.godzilla.data.repositories.SalesContactRepository;
+import ca.serum390.godzilla.domain.orders.Order;
+import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,13 +14,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import ca.serum390.godzilla.data.repositories.SalesContactRepository;
-import ca.serum390.godzilla.data.repositories.OrdersRepository;
-import ca.serum390.godzilla.domain.orders.Order;
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -59,8 +56,8 @@ public class OrdersTests {
         List<Order> ordersCollection = new ArrayList<>();
         when(orderRepository.findAll()).thenReturn(
                 buildDemoOrderFlux()
-                    .doOnNext(ordersCollection::add)
-                    .take(numberOfDemoOrders));
+                        .doOnNext(ordersCollection::add)
+                        .take(numberOfDemoOrders));
 
         webClient.get()
                 .uri(ORDERS_API)
@@ -86,8 +83,8 @@ public class OrdersTests {
     @WithMockUser("test")
     void createOrderTest() {
         Order order = buildDemoOrderFlux().blockFirst();
-        when(orderRepository.save(order.getCreatedDate(),order.getDueDate(),order.getDeliveryLocation(),
-                order.getOrderType(),order.getStatus(),order.getItems())).thenReturn(Mono.just(order));
+        when(orderRepository.save(order.getCreatedDate(), order.getDueDate(), order.getDeliveryLocation(),
+                order.getOrderType(), order.getStatus(), order.getItems(), order.getProductionID())).thenReturn(Mono.just(order));
         when(orderRepository.findById(order.getId())).thenReturn(Mono.just(order));
 
         // Send the item
@@ -104,8 +101,8 @@ public class OrdersTests {
         // Retrieve the item
         assertGetDemoOrder(order);
 
-        verify(orderRepository, times(1)).save(order.getCreatedDate(),order.getDueDate(),order.getDeliveryLocation(),
-                order.getOrderType(),order.getStatus(),order.getItems());
+        verify(orderRepository, times(1)).save(order.getCreatedDate(), order.getDueDate(), order.getDeliveryLocation(),
+                order.getOrderType(), order.getStatus(), order.getItems(), order.getProductionID());
         verify(orderRepository, times(1)).findById(order.getId());
     }
 
@@ -148,8 +145,9 @@ public class OrdersTests {
                 order2.getOrderType(),
                 order2.getId(),
                 order2.getStatus(),
-                order2.getItems()))
-                    .thenReturn(Mono.just(1));
+                order2.getItems(),
+                order2.getProductionID()))
+                .thenReturn(Mono.just(1));
 
         when(orderRepository.findById(order.getId()))
                 .thenReturn(Mono.just(order));
@@ -172,7 +170,8 @@ public class OrdersTests {
                 order2.getOrderType(),
                 order2.getId(),
                 order2.getStatus(),
-                order2.getItems());
+                order2.getItems(),
+                order2.getProductionID());
     }
 
     /**
@@ -204,7 +203,10 @@ public class OrdersTests {
     private Flux<Order> buildDemoOrderFlux() {
         class Incrementer {
             int val = 1;
-            int next() { return val++; }
+
+            int next() {
+                return val++;
+            }
         }
 
         Incrementer idIncrementer = new Incrementer();
@@ -216,7 +218,7 @@ public class OrdersTests {
                 .deliveryLocation("Godzilla ERP HQ")
                 .orderType("Some really good stuff")
                 .status("new")
-                .items(new HashMap<Integer,Integer>())
+                .items(new HashMap<Integer, Integer>())
                 .build();
 
         return Flux.generate(
@@ -236,11 +238,11 @@ public class OrdersTests {
                 .expectBody(Order.class)
                 .isEqualTo(order)
                 .value(o -> assertThat(o)
-                    .isNotNull()
-                    .hasNoNullFieldsOrProperties()
-                    .hasFieldOrPropertyWithValue("createdDate", NOW)
-                    .hasFieldOrPropertyWithValue("dueDate", FUTURE_DATE)
-                    .hasSameHashCodeAs(order)
-                    .hasToString(order.toString()));
+                        .isNotNull()
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("createdDate", NOW)
+                        .hasFieldOrPropertyWithValue("dueDate", FUTURE_DATE)
+                        .hasSameHashCodeAs(order)
+                        .hasToString(order.toString()));
     }
 }
