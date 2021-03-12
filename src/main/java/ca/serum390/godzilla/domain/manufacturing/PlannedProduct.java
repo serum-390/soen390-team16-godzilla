@@ -21,4 +21,10 @@ public class PlannedProduct {
     private LocalDate productionDate;
     private Integer orderID;
     private String status;
+
+    public PlannedProduct(LocalDate productionDate, Integer orderID) {
+        this.productionDate = productionDate;
+        this.orderID = orderID;
+        this.status = "new";
+    }
 }

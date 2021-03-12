@@ -12,9 +12,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 
@@ -25,6 +24,10 @@ public class ProductionManagerHandler {
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
 
+    private Order order = null;
+    private Order purchaseOrder = null;
+    private LocalDate productionDate;
+
     public ProductionManagerHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
         this.plannedProducts = plannedProducts;
         this.inventoryRepository = inventoryRepository;
@@ -33,87 +36,102 @@ public class ProductionManagerHandler {
 
     // preproduction  \=month?day?year?
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
-        Order order = req.bodyToMono(Order.class).block();
-        AtomicBoolean isOrderReady = new AtomicBoolean(true);
-        AtomicBoolean isOrderBlocked = new AtomicBoolean(false);
-        Order purchaseOrder = new Order();
-        purchaseOrder.setItems(new HashMap<>());
-        purchaseOrder.setOrderType("purchase");
-        purchaseOrder.setStatus("new");
-        purchaseOrder.setCreatedDate(LocalDate.of(2021, 1, 1));
-        purchaseOrder.setDueDate(LocalDate.of(2021, 1, 1));
-        purchaseOrder.setDeliveryLocation("Montreal");
-        AtomicReference<Integer> productionID = new AtomicReference<>(0);
-        AtomicReference<PlannedProduct> plannedProduct = new AtomicReference<>(new PlannedProduct());
-        int year = 1, month = 1, day = 1;
-        LocalDate productionDate = LocalDate.of(year, month, day);
+        setup(req);
+
+        boolean isOrderReady = true;
+        boolean isOrderBlocked = false;
+        PlannedProduct plannedProduct;
 
 
-        order.getItems().forEach((itemID, quantity) -> {
-            Item item = inventoryRepository.findById(itemID).block();
-            if (quantity <= item.getQuantity()) {
-                // check inventory for finished item
-                int newQuantity = item.getQuantity() - quantity;
-                System.out.println("Item " + item.getItemName() + " is available");
-                inventoryRepository.update(itemID, newQuantity).block();
-                System.out.println("inventory updated");
+        // Analyze the items in the order item list and the inventory
+        if (order != null && productionDate != null) {
 
-            } else {
-                isOrderReady.set(false);
-                plannedProduct.set(new PlannedProduct());
-                plannedProduct.get().setProductionDate(productionDate);
-                plannedProduct.get().setStatus("new");
-                plannedProduct.get().setOrderID(order.getId());
+            plannedProduct = new PlannedProduct(productionDate, order.getId());
 
-                quantity = quantity - item.getQuantity();
-                inventoryRepository.update(itemID, 0).block();
-                System.out.println("inventory updated with 0");
-                // check bom for that item
-                System.out.println("Item " + item.getItemName() + " is not available");
-                Integer finalQuantity = quantity;
-                item.getBillOfMaterial().forEach((id2, quantity2) -> {
-                            Item item2 = inventoryRepository.findById(id2).block();
-                            int total_quantity = quantity2 * finalQuantity;
-                            if (total_quantity <= item2.getQuantity()) {
-                                // check inventory for finished item
-                                int newQuantity = item2.getQuantity() - total_quantity;
-                                System.out.println("Item " + item2.getItemName() + " is available");
-                                inventoryRepository.update(id2, newQuantity).block();
-                                System.out.println("inventory updated for bom");
-                            } else {
-                                total_quantity = total_quantity - item2.getQuantity();
-                                isOrderBlocked.set(true);
-                                //update inventory
-                                inventoryRepository.update(id2, 0).block();
-                                System.out.println("inventory updated with 0 for bom");
-                                // create purchase order this bom item with the number = total-quantity
-                                purchaseOrder.getItems().put(id2, total_quantity);
-                                System.out.println("purchase order updated");
-                            }
+            for (Map.Entry<Integer, Integer> orderEntry : order.getItems().entrySet()) {
+
+                Integer orderItemID = orderEntry.getKey();
+                Integer orderItemQuantity = orderEntry.getValue();
+                // get item from inventory
+                Item orderItem = inventoryRepository.findById(orderItemID).block();
+
+                if (orderItemQuantity <= orderItem.getQuantity()) {
+                    inventoryRepository.update(orderItemID, orderItem.getQuantity() - orderItemQuantity).block();
+
+                } else {
+                    isOrderReady = false;
+
+                    // get the quantity available from inventory
+                    orderItemQuantity = orderItemQuantity - orderItem.getQuantity();
+                    inventoryRepository.update(orderItemID, 0).block();
+
+                    // check bom for that item
+                    for (Map.Entry<Integer, Integer> bomEntry : orderItem.getBillOfMaterial().entrySet()) {
+                        Integer bomItemID = bomEntry.getKey();
+                        Integer bomItemQuantity = bomEntry.getValue();
+
+                        Item bomItem = inventoryRepository.findById(bomItemID).block();
+
+                        int total_quantity = bomItemQuantity * orderItemQuantity;
+                        if (total_quantity <= bomItem.getQuantity()) {
+                            inventoryRepository.update(bomItemID, bomItem.getQuantity() - total_quantity).block();
+                        } else {
+                            isOrderBlocked = true;
+                            total_quantity = total_quantity - bomItem.getQuantity();
+                            //update inventory
+                            inventoryRepository.update(bomItemID, 0).block();
+                            // create purchase order this bom item with the number = total-quantity
+                            purchaseOrder.getItems().put(bomItemID, total_quantity);
                         }
-                );
+                    }
+                }
             }
-        });
+            updateDB(isOrderReady, isOrderBlocked, plannedProduct);
+        }
+        return noContent().build();
+    }
 
-        if (isOrderReady.get()) {
+
+    private void setup(ServerRequest req) {
+        Optional<String> orderID = req.queryParam("id");
+        Optional<String> productionDateReq = req.queryParam("date");
+
+        purchaseOrder = new Order(LocalDate.of(2021, 1, 1),
+                LocalDate.of(2021, 1, 1), "Montreal", "purchase");
+
+        // get the sales order object
+        if (orderID.isPresent()) {
+            order = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
+        }
+
+        // Production Date setup
+        if (productionDateReq.isPresent()) {
+            productionDate = LocalDate.parse(productionDateReq.get());
+        } else {
+            productionDate = LocalDate.of(1, 1, 1);
+        }
+
+    }
+
+    private void updateDB(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
+        if (isOrderReady) {
             ordersRepository.update(order.getId(), "Ready")
                     .subscribe(num -> System.out.println("order status updated"));
         } else {
-            ordersRepository.update(order.getId(), isOrderBlocked.get() ? "blocked" : "processing")
+            ordersRepository.update(order.getId(), isOrderBlocked ? "blocked" : "processing")
                     .subscribe(num -> System.out.println("order status updated"));
-            plannedProducts.save(plannedProduct.get()).subscribe(product ->
-            {
-                System.out.println("production is saved");
-                productionID.set(product.getId());
-                if (isOrderBlocked.get()) {
-                    ordersRepository
-                            .save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation()
-                                    , purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), productionID.get())
-                            .subscribe(Order -> System.out.println("order is saved"));
-                }
-            });
+
+            plannedProducts.save(plannedProduct)
+                    .subscribe(product -> {
+                        System.out.println("production is saved");
+                        if (isOrderBlocked) {
+                            ordersRepository
+                                    .save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation()
+                                            , purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), product.getId())
+                                    .subscribe(Order -> System.out.println("order is saved"));
+                        }
+                    });
         }
-        return noContent().build();
     }
 
 }

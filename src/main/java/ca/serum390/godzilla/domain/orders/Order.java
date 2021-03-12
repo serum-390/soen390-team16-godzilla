@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -25,4 +26,13 @@ public class Order {
     private String status;
     private Map<Integer, Integer> items;
     private Integer productionID;
+
+    public Order(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType){
+        this.createdDate = createdDate;
+        this.dueDate = dueDate;
+        this.deliveryLocation = deliveryLocation;
+        this.orderType = orderType;
+        this.status = "new";
+        items = new HashMap<>();
+    }
 }
