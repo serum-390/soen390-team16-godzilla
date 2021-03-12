@@ -24,4 +24,5 @@ public class Order {
     private String orderType;
     private String status;
     private Map<Integer, Integer> items;
+    private Integer productionID;
 }

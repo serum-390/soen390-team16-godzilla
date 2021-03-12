@@ -38,7 +38,7 @@ public class OrderHandler {
     // Create an order
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Order.class).flatMap(order -> ordersRepository.save(order.getCreatedDate(),
-                order.getDueDate(), order.getDeliveryLocation(), order.getOrderType(), order.getStatus(), order.getItems()))
+                order.getDueDate(), order.getDeliveryLocation(), order.getOrderType(), order.getStatus(), order.getItems(), order.getProductionID()))
                 .flatMap(id -> noContent().build());
     }
 
@@ -67,6 +67,7 @@ public class OrderHandler {
                 g.setOrderType(g2.getOrderType());
                 g.setItems(g2.getItems());
                 g.setStatus(g2.getStatus());
+                g.setProductionID(g2.getProductionID());
             }
             return g;
         }, existed, req.bodyToMono(Order.class)).cast(Order.class)
@@ -77,7 +78,8 @@ public class OrderHandler {
                         salesOrder.getOrderType(),
                         salesOrder.getId(),
                         salesOrder.getStatus(),
-                        salesOrder.getItems()))
+                        salesOrder.getItems(),
+                        salesOrder.getProductionID()))
                 .flatMap(salesOrder -> noContent().build());
     }
 
