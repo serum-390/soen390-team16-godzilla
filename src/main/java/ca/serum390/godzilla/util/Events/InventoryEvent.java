@@ -1,4 +1,10 @@
 package ca.serum390.godzilla.util.Events;
 
-public class InventoryEvent extends ERPEvent{
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class InventoryEvent extends ERPEvent {
+    private Integer productionID;
 }
