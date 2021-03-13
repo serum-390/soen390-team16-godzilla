@@ -21,7 +21,12 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 public class ProductionManagerHandler {
 
     //TODO allow cancelling the production
-    // allow editing production date ? or just cancell
+    // allow editing production date ? or just cancel
+    //TODO to cancel -> cancel all the purchase orders, -> return everything taken from inventory
+    // phase 1) processing production [no purchase order] phase 2) blocked production [purchase orders]
+    // phase 1 cancel ) return all the items in item taken to inventory -> remove production
+    // phase 2 cancel ) cancel the purchase orders [ remove them]  -> return all the items in taken to inventory
+
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
