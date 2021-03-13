@@ -20,6 +20,8 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 @Component
 public class ProductionManagerHandler {
 
+    //TODO allow cancelling the production
+    // allow editing production date ? or just cancell
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
@@ -81,6 +83,10 @@ public class ProductionManagerHandler {
                             //update inventory
                             inventoryRepository.update(bomItemID, 0).block();
                             // create purchase order this bom item with the number = total-quantity
+                            if (purchaseOrder.getItems().containsKey(bomItemID)) {
+                                total_quantity += purchaseOrder.getItems().get(bomItemID);
+                            }
+
                             purchaseOrder.getItems().put(bomItemID, total_quantity);
                         }
                     }
@@ -114,6 +120,7 @@ public class ProductionManagerHandler {
     }
 
     private void updateDB(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
+        //TODO create timed events for purchase order and production order
         if (isOrderReady) {
             ordersRepository.update(order.getId(), "Ready")
                     .subscribe(num -> System.out.println("order status updated"));
@@ -121,9 +128,12 @@ public class ProductionManagerHandler {
             ordersRepository.update(order.getId(), isOrderBlocked ? "blocked" : "processing")
                     .subscribe(num -> System.out.println("order status updated"));
 
+            // save the planned production
             plannedProducts.save(plannedProduct)
                     .subscribe(product -> {
                         System.out.println("production is saved");
+
+                        // save the purchase order for this planned production
                         if (isOrderBlocked) {
                             ordersRepository
                                     .save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation()
