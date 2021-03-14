@@ -31,6 +31,11 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
     reactor.core.publisher.Mono<Order> save(String name, String location, float buyPrice, int goodType, int quantity, float sellPrice, Map<Integer, Integer> BOM);
 
     @Modifying
-    @Query("UPDATE inventory SET QUANTITY =$2 WHERE ID = $1")
+    @Query("UPDATE inventory SET QUANTITY = QUANTITY + $2 WHERE ID = $1")
+    Mono<Integer> updateAdd(Integer id,int quantity);
+
+    @Modifying
+    @Query("UPDATE inventory SET QUANTITY = $2 WHERE ID = $1")
     Mono<Integer> update(Integer id,int quantity);
+
 }

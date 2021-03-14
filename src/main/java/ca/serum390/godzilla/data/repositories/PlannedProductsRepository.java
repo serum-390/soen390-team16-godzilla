@@ -13,6 +13,10 @@ public interface PlannedProductsRepository extends ReactiveCrudRepository<Planne
     @Query("UPDATE PLANNED_PRODUCTS SET ORDER_ID = $2, PRODUCTION_DATE = $3, STATUS = $4  WHERE ID = $1")
     Mono<Integer> update(Integer id, Integer orderID, LocalDate productionDate, String status);
 
+    @Modifying
+    @Query("UPDATE PLANNED_PRODUCTS SET  STATUS = $2 WHERE ID = $1")
+    Mono<Integer> update(Integer id, String status);
+
     @Query("Select * FROM plannedProducts WHERE STATUS = $1")
     Mono<Integer> findAllByStatus(String status);
 }
