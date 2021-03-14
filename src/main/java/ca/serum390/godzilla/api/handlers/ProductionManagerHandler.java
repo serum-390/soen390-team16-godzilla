@@ -6,8 +6,8 @@ import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
-import ca.serum390.godzilla.util.Events.ERPEventPublisher;
 import ca.serum390.godzilla.util.Events.PurchaseOrderEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -22,6 +22,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 @Component
 public class ProductionManagerHandler {
 
+    //BUGs -> save(object) -> jsonb field is null , save(parameters) -> returns empty mono
     //TODO allow cancelling the production
     // allow editing production date ? or just cancel
     //TODO to cancel -> cancel all the purchase orders, -> return everything taken from inventory
@@ -29,6 +30,7 @@ public class ProductionManagerHandler {
     // phase 1 cancel ) return all the items in item taken to inventory -> remove production
     // phase 2 cancel ) cancel the purchase orders [ remove them]  -> return all the items in taken to inventory
 
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
@@ -37,7 +39,8 @@ public class ProductionManagerHandler {
     private Order purchaseOrder = null;
     private LocalDate productionDate;
 
-    public ProductionManagerHandler(PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
+    public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher, PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
+        this.applicationEventPublisher = applicationEventPublisher;
         this.plannedProducts = plannedProducts;
         this.inventoryRepository = inventoryRepository;
         this.ordersRepository = ordersRepository;
@@ -141,9 +144,8 @@ public class ProductionManagerHandler {
                 Order order = ordersRepository.save(purchaseOrder).block();
                 ordersRepository.update(order.getId(), purchaseOrder.getItems()).block();
                 System.out.println("event fired");
-                ERPEventPublisher erpEventPublisher = new ERPEventPublisher();
                 PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
-                erpEventPublisher.publishEvent(purchaseOrderEvent);
+                applicationEventPublisher.publishEvent(purchaseOrderEvent);
             }
         }
     }
