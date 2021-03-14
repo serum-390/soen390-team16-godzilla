@@ -8,15 +8,21 @@ import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
 import ca.serum390.godzilla.util.Events.PurchaseOrderEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -38,11 +44,12 @@ public class ProductionManagerHandler {
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
+    private TaskScheduler scheduler;
 
     private Order salesOrder = null;
     private Order purchaseOrder = null;
     private LocalDate productionDate;
-    Logger logger;
+    private Logger logger;
 
     public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher, PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -153,11 +160,14 @@ public class ProductionManagerHandler {
 
     }
 
+
+
+
+
+
     private void updateDB(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
-        //TODO create timed events for purchase order and production order
         if (isOrderReady) {
             ordersRepository.update(salesOrder.getId(), "Ready").block();
-            System.out.println("order status updated");
         } else {
             ordersRepository.update(salesOrder.getId(), isOrderBlocked ? "blocked" : "processing").block();
 
@@ -167,9 +177,14 @@ public class ProductionManagerHandler {
                 //     Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
                 Order order = ordersRepository.save(purchaseOrder).block();
                 ordersRepository.update(order.getId(), purchaseOrder.getItems()).block();
-                System.out.println("event fired");
+
+                // TODO set timer
                 PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
-                applicationEventPublisher.publishEvent(purchaseOrderEvent);
+                logger.info("purchase order "+order.getId()+" is created");
+                Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
+                ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+                scheduler = new ConcurrentTaskScheduler(localExecutor);
+                scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis()+120000));
             }
         }
     }

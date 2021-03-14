@@ -6,10 +6,15 @@ import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -21,6 +26,7 @@ public class InventoryEventHandler {
     private final OrdersRepository ordersRepository;
     private final InventoryRepository inventoryRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private TaskScheduler scheduler;
 
     public InventoryEventHandler(PlannedProductsRepository plannedProductsRepository, OrdersRepository ordersRepository, InventoryRepository inventoryRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.plannedProductsRepository = plannedProductsRepository;
@@ -31,7 +37,7 @@ public class InventoryEventHandler {
 
     @EventListener
     public void handleInventoryEvent(InventoryEvent event){
-        Logger.getLogger("EventLog").info("order for production " + event.getProductionID() +"  has arrived in inventory");
+        Logger.getLogger("EventLog").info("production " + event.getProductionID() +" is unblocked and scheduled");
         Integer productionID = event.getProductionID();
         Integer purchaseID = event.getPurchaseOrderID();
         //TODO update the production status
@@ -46,6 +52,11 @@ public class InventoryEventHandler {
                 inventoryRepository.updateAdd(itemID,-itemQuantity).subscribe();
         }
         ProductionEvent productionEvent = new ProductionEvent(productionID);
-        applicationEventPublisher.publishEvent(productionEvent);
+
+        //TODO set timer
+        Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
+        ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduler = new ConcurrentTaskScheduler(localExecutor);
+        scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis()+120000));
     }
 }
