@@ -7,4 +7,5 @@ import lombok.Getter;
 @Getter
 public class InventoryEvent extends ERPEvent {
     private Integer productionID;
+    private Integer purchaseOrderID;
 }

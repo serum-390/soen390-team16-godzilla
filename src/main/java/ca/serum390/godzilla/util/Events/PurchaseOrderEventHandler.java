@@ -7,7 +7,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 @Component
 public class PurchaseOrderEventHandler {
@@ -29,15 +33,15 @@ public class PurchaseOrderEventHandler {
         for (Map.Entry<Integer, Integer> orderEntry : purchaseOrder.getItems().entrySet()) {
             Integer itemID = orderEntry.getKey();
             Integer itemQuantity = orderEntry.getValue();
-            inventoryRepository.updateAdd(itemID,itemQuantity).subscribe();
+            inventoryRepository.updateAdd(itemID, itemQuantity).subscribe();
         }
 
-        System.out.println("Order "+orderID+" is received in the inventory");
-        ordersRepository.update(purchaseOrder.getId(),"completed").subscribe();
+        Logger.getLogger("EventLog").info("Order " + orderID + " is received in the inventory");
+        ordersRepository.update(purchaseOrder.getId(), "completed").subscribe();
 
-        InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID());
+        InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID(), purchaseOrder.getId());
         applicationEventPublisher.publishEvent(inventoryEvent);
-        System.out.println("inventory event is fired");
+        Logger.getLogger("EventLog").info("inventory event is fired");
     }
 
 }

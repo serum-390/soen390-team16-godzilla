@@ -13,9 +13,13 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 
@@ -38,12 +42,32 @@ public class ProductionManagerHandler {
     private Order salesOrder = null;
     private Order purchaseOrder = null;
     private LocalDate productionDate;
+    Logger logger;
 
     public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher, PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.plannedProducts = plannedProducts;
         this.inventoryRepository = inventoryRepository;
         this.ordersRepository = ordersRepository;
+
+        logger = Logger.getLogger("EventLog");
+        FileHandler fh;
+
+        try {
+
+            // This block configure the logger with handler and formatter
+            fh = new FileHandler("C:/Users/yasam/Desktop/ERP/src/main/java/ca/serum390/godzilla/util/Events/eventsLog.log");
+            logger.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+            // the following statement is used to log any messages
+            logger.info("My first log");
+
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // preproduction  \=month?day?year?
