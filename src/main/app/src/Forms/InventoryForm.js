@@ -6,8 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export default function InventoryForm(props) {
   const item = props.onSubmit(null, false);
@@ -18,7 +16,6 @@ export default function InventoryForm(props) {
   const [buyPrice, setBuyPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const [goodType, setGoodType] = React.useState("");
-  const [billOfMaterial, setBillOfMaterial] = React.useState(item.billOfMaterial);
 
 
   const handleClickOpen = () => {
@@ -38,7 +35,7 @@ export default function InventoryForm(props) {
       sellPrice: sellPrice,
       buyPrice: buyPrice,
       location: location,
-      billOfMaterial: billOfMaterial
+      billOfMaterial: {}
     };
     props.onSubmit(data, true);
     setOpen(false);
@@ -119,17 +116,6 @@ export default function InventoryForm(props) {
             type="number"
             defaultValue={item.goodType}
             InputProps={{inputProps: {min: 1, max: 6}}}
-          />
-          <FormControlLabel
-            control={<Checkbox
-              autoFocus
-              margin="dense"
-              id="billOfMaterial"
-              checked={billOfMaterial}
-              onChange={(event) => setBillOfMaterial(event.target.checked)}
-              fullWidth
-            />}
-            label="Bill of Material"
           />
         </DialogContent>
         <DialogActions>
