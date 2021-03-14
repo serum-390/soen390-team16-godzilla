@@ -6,6 +6,8 @@ import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
+import ca.serum390.godzilla.util.Events.ERPEventPublisher;
+import ca.serum390.godzilla.util.Events.PurchaseOrderEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -31,7 +33,7 @@ public class ProductionManagerHandler {
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
 
-    private Order order = null;
+    private Order salesOrder = null;
     private Order purchaseOrder = null;
     private LocalDate productionDate;
 
@@ -51,11 +53,11 @@ public class ProductionManagerHandler {
 
 
         // Analyze the items in the order item list and the inventory
-        if (order != null && productionDate != null) {
+        if (salesOrder != null && productionDate != null) {
 
-            plannedProduct = new PlannedProduct(productionDate, order.getId());
+            plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
 
-            for (Map.Entry<Integer, Integer> orderEntry : order.getItems().entrySet()) {
+            for (Map.Entry<Integer, Integer> orderEntry : salesOrder.getItems().entrySet()) {
 
                 Integer orderItemID = orderEntry.getKey();
                 Integer orderItemQuantity = orderEntry.getValue();
@@ -112,7 +114,7 @@ public class ProductionManagerHandler {
 
         // get the sales order object
         if (orderID.isPresent()) {
-            order = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
+            salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
         }
 
         // Production Date setup
@@ -127,26 +129,22 @@ public class ProductionManagerHandler {
     private void updateDB(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
         //TODO create timed events for purchase order and production order
         if (isOrderReady) {
-            ordersRepository.update(order.getId(), "Ready")
-                    .subscribe(num -> System.out.println("order status updated"));
+            ordersRepository.update(salesOrder.getId(), "Ready").block();
+            System.out.println("order status updated");
         } else {
-            ordersRepository.update(order.getId(), isOrderBlocked ? "blocked" : "processing")
-                    .subscribe(num -> System.out.println("order status updated"));
+            ordersRepository.update(salesOrder.getId(), isOrderBlocked ? "blocked" : "processing").block();
 
-            // save the planned production
-            plannedProducts.save(plannedProduct)
-                    .subscribe(product -> {
-                        System.out.println("production is saved");
-
-                        // save the purchase order for this planned production
-                        if (isOrderBlocked) {
-                            ordersRepository
-                                    .save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation()
-                                            , purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), product.getId())
-                                    .subscribe(Order -> System.out.println("order is saved"));
-                        }
-                    });
+            PlannedProduct product = plannedProducts.save(plannedProduct).block();
+            purchaseOrder.setProductionID(product.getId());
+            if (isOrderBlocked) {
+                //     Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
+                Order order = ordersRepository.save(purchaseOrder).block();
+                ordersRepository.update(order.getId(), purchaseOrder.getItems()).block();
+                System.out.println("event fired");
+                ERPEventPublisher erpEventPublisher = new ERPEventPublisher();
+                PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
+                erpEventPublisher.publishEvent(purchaseOrderEvent);
+            }
         }
     }
-
 }

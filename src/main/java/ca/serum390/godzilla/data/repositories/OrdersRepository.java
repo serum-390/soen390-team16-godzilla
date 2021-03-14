@@ -4,6 +4,7 @@ import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,11 +16,14 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
     @Query("UPDATE orders SET CREATED_DATE = $1, DUE_DATE = $2, DELIVERY_LOCATION= $3, ORDER_TYPE=$4 , STATUS = $6 , ITEMS = $7, PRODUCTION_ID = $8 WHERE ID = $5")
     Mono<Integer> update(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType,
                          Integer id, String status, Map<Integer, Integer> items, Integer productionID);
-
+    @Modifying
+    @Query("UPDATE orders SET ITEMS = $2 WHERE ID = $1")
+    Mono<Integer> update(Integer id, Map<Integer, Integer> items);
     @Modifying
     @Query("UPDATE orders SET STATUS = $2 WHERE ID = $1")
     Mono<Integer> update(Integer id, String status);
 
+    @Transactional
     @Query("INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS, PRODUCTION_ID) VALUES ($1,$2,$3,$4,$5,$6,$7)")
     Mono<Order> save(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType, String status, Map<Integer, Integer> items, Integer productionID);
 
@@ -31,4 +35,5 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
 
     @Query("SELECT * FROM orders WHERE STATUS= $1")
     Flux<Order> findAllByStatus(String status);
+
 }
