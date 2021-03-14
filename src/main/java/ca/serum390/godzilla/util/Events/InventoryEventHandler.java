@@ -2,6 +2,7 @@ package ca.serum390.godzilla.util.Events;
 
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +16,7 @@ public class InventoryEventHandler {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @EventListener
     public void handleInventoryEvent(InventoryEvent event){
         System.out.println("order for production " + event.getProductionID() +"  has arrived in inventory");
         Integer productionID = event.getProductionID();

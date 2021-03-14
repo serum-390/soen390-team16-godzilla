@@ -33,7 +33,7 @@ public class PurchaseOrderEventHandler {
         }
 
         System.out.println("Order "+orderID+" is received in the inventory");
-        ordersRepository.update(purchaseOrder.getId(),"completed");
+        ordersRepository.update(purchaseOrder.getId(),"completed").subscribe();
 
         InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID());
         applicationEventPublisher.publishEvent(inventoryEvent);
