@@ -47,12 +47,18 @@ public class InventoryEventHandler {
             for (Map.Entry<Integer, Integer> entry : purchaseOrder.getItems().entrySet()) {
                 Integer itemID = entry.getKey();
                 Integer itemQuantity = entry.getValue();
+                Integer inventoryQuantity = inventoryRepository.findById(itemID).block().getQuantity();
+                if (inventoryQuantity < itemQuantity) {
+                    Logger.getLogger("EventLog").info("production cannot get the required items from inventory");
+                    // TODO cancel production -> return all the received items to inventory, update the status of sales order to new
+                    return;
+                }
                 inventoryRepository.addToQuantity(itemID, -itemQuantity).subscribe();
             }
             ProductionEvent productionEvent = new ProductionEvent(productionID);
             Logger.getLogger("EventLog").info("production " + productionID + " is unblocked and scheduled");
 
-            //TODO set timer
+            //TODO set real time
             Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
             ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
             scheduler = new ConcurrentTaskScheduler(localExecutor);

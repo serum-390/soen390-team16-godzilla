@@ -23,6 +23,9 @@ public class PurchaseOrderEventHandler {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    //TODO possible issue : before the product handler gets the item from inventory, another order gets it
+    // sol1 : directly handle the purchase event in the inventory handler
+    // sol2 : handle this error in the inventory event handler by checking the availability of items
     @EventListener
     public void handlePurchaseOrderEvent(PurchaseOrderEvent event) {
         Integer orderID = event.getOrderID();

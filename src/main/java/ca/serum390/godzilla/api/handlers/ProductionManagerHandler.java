@@ -39,8 +39,8 @@ public class ProductionManagerHandler {
     // allow editing production date
     // to cancel -> cancel all the purchase orders, -> return everything taken from inventory
     // phase 1) scheduled production [no purchase order] phase 2) blocked production [purchase orders]
-    // phase 1 cancel ) return all the items in item taken to inventory -> remove production/ cancel scheduler
-    // phase 2 cancel ) cancel the purchase orders [ remove them]  -> return all the items in taken to inventory
+    // phase 1 cancel ) return all the items in item taken to inventory -> remove production/ cancel scheduler -> set the status of sales order to new
+    // phase 2 cancel ) cancel the purchase orders [ remove them]  -> return all the items in taken to inventory -> set the status of sales order to new
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final PlannedProductsRepository plannedProducts;
@@ -69,11 +69,11 @@ public class ProductionManagerHandler {
     private void setup(ServerRequest req) {
         Optional<String> orderID = req.queryParam("id");
         Optional<String> productionDateReq = req.queryParam("date");
-//        salesOrder = null;
-//        purchaseOrder = null;
-//        productionDate = LocalDate.now().plusDays(1);
-//        isOrderReady = true;
-//        isOrderBlocked = false;
+        salesOrder = null;
+        purchaseOrder = null;
+        productionDate = LocalDate.now().plusDays(1);
+        isOrderReady = true;
+        isOrderBlocked = false;
 
         // get the sales order object
         if (orderID.isPresent()) {
@@ -191,6 +191,7 @@ public class ProductionManagerHandler {
         scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
     }
 
+    //TODO test wih real time scheduling
     // schedules the production event
     private void scheduleProduction(Integer productionID) {
         ProductionEvent productionEvent = new ProductionEvent(productionID);
@@ -201,11 +202,10 @@ public class ProductionManagerHandler {
     }
 
 
+    // Setup event logger
     private void setupLogger() {
-        // Setup event logger
         logger = Logger.getLogger("EventLog");
         FileHandler fh;
-
         try {
             File dest = new File("src/main/java/ca/serum390/godzilla/util/Events/eventsLog.log");
             fh = new FileHandler(dest.getAbsolutePath());
