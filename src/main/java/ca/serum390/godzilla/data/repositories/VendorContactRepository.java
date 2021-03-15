@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer>{
+public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer> {
 
     /**
      * Get all vendor
@@ -24,6 +24,7 @@ public interface VendorContactRepository extends ReactiveCrudRepository<VendorCo
     @Query("SELECT * FROM contact WHERE ID = $1 AND contact_type = 'vendor'")
     Mono<VendorContact> findByIdVendor(int id);    
 
+
     /**
      * Update sales contact where contact_type = vendor
      */
@@ -35,4 +36,3 @@ public interface VendorContactRepository extends ReactiveCrudRepository<VendorCo
             String address,
             String contact, Integer id);
 }
-

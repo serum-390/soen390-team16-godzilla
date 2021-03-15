@@ -7,6 +7,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 
 import java.net.URI;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -41,31 +42,41 @@ public class GoodsHandler {
     }
 
     public Mono<ServerResponse> get(ServerRequest req) {
-        return goods.findById(UUID.fromString(req.pathVariable("id")))
-                .flatMap(good -> ok().body(Mono.just(good), Good.class)).switchIfEmpty(notFound().build());
+        return goods.findById(UUID
+                .fromString(req.pathVariable("id")))
+                .flatMap(good -> ok()
+                    .body(Mono.just(good), Good.class))
+                .switchIfEmpty(notFound().build());
     }
 
     public Mono<ServerResponse> update(ServerRequest req) {
         var existed = goods.findById(UUID.fromString(req.pathVariable("id")));
-        return Mono.zip(data -> {
-            Good g = (Good) data[0];
-            Good g2 = (Good) data[1];
-            if (g2 != null && StringUtils.hasText(g2.getName())) {
-                g.setName(g2.getName());
-            }
-            if (g2 != null && StringUtils.hasText(g2.getDescription())) {
-                g.setDescription(g2.getDescription());
-            }
-            return g;
-        }, existed, req.bodyToMono(Good.class)).cast(Good.class)
-                .flatMap(good -> goods.update(
-                    good.getName(), good.getDescription(), good.getId()))
+
+        Function<Good, Mono<Integer>> databaseUpdater = good ->
+                goods.update(good.getName(), good.getDescription(), good.getId());
+
+        return Mono
+                .zip(this::combineGoods, existed, req.bodyToMono(Good.class))
+                .cast(Good.class)
+                .flatMap(databaseUpdater::apply)
                 .flatMap(good -> noContent().build());
     }
 
+    private Good combineGoods(Object[] goods) {
+        Good g = (Good) goods[0];
+        Good g2 = (Good) goods[1];
+        if (g2 != null && StringUtils.hasText(g2.getName())) {
+            g.setName(g2.getName());
+        }
+        if (g2 != null && StringUtils.hasText(g2.getDescription())) {
+            g.setDescription(g2.getDescription());
+        }
+        return g;
+    }
+
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return goods.deleteById(UUID.fromString(req.pathVariable("id")))
-            .flatMap(deleted -> noContent()
-                     .build());
+        return goods.deleteById(UUID
+                .fromString(req.pathVariable("id")))
+                .flatMap(deleted -> noContent().build());
     }
 }
