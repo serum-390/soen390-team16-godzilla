@@ -7,12 +7,16 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.GoodsHandler;
+import lombok.AllArgsConstructor;
 
 @Configuration
+@AllArgsConstructor
 public class GoodsRouter {
 
+    GoodsHandler goodsHandler;
+
     @Bean
-    public RouterFunction<ServerResponse> goodsRoute(GoodsHandler goodsHandler) {
+    public RouterFunction<ServerResponse> goodsRoute() {
         final String ID = "/{id}";
         return RouterFunctions.route()
                 .path("/goods/", builder -> builder
