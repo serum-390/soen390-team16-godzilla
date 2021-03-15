@@ -29,7 +29,7 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
     @Query("UPDATE inventory SET QUANTITY = QUANTITY + $2 WHERE ID = $1")
     Mono<Integer> addToQuantity(Integer id, int quantity);
 
-    @Query("INSERT INTO inventory(ITEM_NAME, LOCATION, BUY_PRICE, GOOD_TYPE, QUANTITY, SELL_PRICE, BILL_OF_MATERIAL) VALUES ($1,$2,$3,$4,$5,$6,$7)")
+    @Query("INSERT INTO inventory(ITEM_NAME, LOCATION, BUY_PRICE, GOOD_TYPE, QUANTITY, SELL_PRICE, BILL_OF_MATERIAL) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *")
     Mono<Order> save(String name, String location, float buyPrice, int goodType, int quantity, float sellPrice, Map<Integer, Integer> BOM);
 
 }

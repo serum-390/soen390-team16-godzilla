@@ -33,8 +33,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 @Component
 public class ProductionManagerHandler {
 
-    //TODO fix BUGs -> save(object) -> jsonb field is null , save(parameters) -> returns empty mono
-
     //TODO allow cancelling the production
     // allow editing production date
     // to cancel -> cancel all the purchase orders, -> return everything taken from inventory
@@ -191,10 +189,7 @@ public class ProductionManagerHandler {
 
     //schedules the purchase order event
     private void schedulePurchaseOrder() {
-        // Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
-        Order order = ordersRepository.save(purchaseOrder).block();
-        ordersRepository.updateItems(order.getId(), purchaseOrder.getItems()).block();
-
+         Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
         // schedule purchase order
         PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
         logger.info("purchase order " + order.getId() + " is created");
