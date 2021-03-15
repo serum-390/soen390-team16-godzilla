@@ -26,13 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProvinceOptions() {
+function ProvinceOptions({province, setProvince, defaultValue}) {
   const classes = useStyles();
-  const [province, setprovince] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
-    setprovince(event.target.value);
+    setProvince(event.target.value);
   };
 
   const handleClose = () => {
@@ -54,25 +53,58 @@ function ProvinceOptions() {
           onClose={handleClose}
           onOpen={handleOpen}
           value={province}
+          defaultValue={defaultValue}
           onChange={handleChange}
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={1}>AB</MenuItem>
-          <MenuItem value={2}>BC</MenuItem>
-          <MenuItem value={3}>MB</MenuItem>
-          <MenuItem value={4}>NB</MenuItem>
-          <MenuItem value={5}>NL</MenuItem>
-          <MenuItem value={6}>NT</MenuItem>
-          <MenuItem value={7}>NS</MenuItem>
-          <MenuItem value={8}>NU</MenuItem>
-          <MenuItem value={9}>ON</MenuItem>
-          <MenuItem value={10}>PE</MenuItem>
-          <MenuItem value={11}>QC</MenuItem>
-          <MenuItem value={12}>SK</MenuItem>
-          <MenuItem value={13}>YT</MenuItem>
+          <MenuItem value='AB'>AB</MenuItem>
+          <MenuItem value='BC'>BC</MenuItem>
+          <MenuItem value='MB'>MB</MenuItem>
+          <MenuItem value='NB'>NB</MenuItem>
+          <MenuItem value='NL'>NL</MenuItem>
+          <MenuItem value='NT'>NT</MenuItem>
+          <MenuItem value='NS'>NS</MenuItem>
+          <MenuItem value='NU'>NU</MenuItem>
+          <MenuItem value='ON'>ON</MenuItem>
+          <MenuItem value='PE'>PE</MenuItem>
+          <MenuItem value='QC'>QC</MenuItem>
+          <MenuItem value='SK'>SK</MenuItem>
+          <MenuItem value='YT'>YT</MenuItem>
         </Select>
+      </FormControl>
+    </div>
+  );
+}
+
+function PhoneNumberInput({contact, setContact, defaultValue}) {
+  const [values, setValues] = React.useState({
+    textmask: '(1  )    -    ',
+  });
+
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+
+    setContact(event.target.value);
+  };
+
+  return (
+    <div>
+      <FormControl>
+        <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
+        <Input
+          value={values.textmask}
+          onChange={handleChange}
+          name="textmask"
+          inputComponent={TextMaskCustom}
+          defaultValue={defaultValue}
+          id="formatted-text-mask-input"
+          
+        />
       </FormControl>
     </div>
   );
@@ -98,46 +130,16 @@ TextMaskCustom.propTypes = {
   inputRef: PropTypes.func.isRequired,
 };
 
-
-
 export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
   const vendor = props.onSubmit(null, false);
   const [companyName, setCompanyName] = React.useState("");
   const [contactName, setContactName] = React.useState("");
-  const [address, setAddress] = React.useState("");
+  const [address, setAddress] = React.useState(props.splitAddress);
+  const [city, setCity] = React.useState(props.splitCity);
+  const [postal, setPostal] = React.useState(props.splitPostal);
+  const [province, setProvince] = React.useState(props.splitProvince);
   const [contact, setContact] = React.useState("");
-
-  function PhoneNumberInput({defaultNumber}) {
-    const [values, setValues] = React.useState({
-      textmask: '(1  )    -    ',
-    });
-  
-    const handleChange = (event) => {
-      setValues({
-        ...values,
-        [event.target.name]: event.target.value,
-      });
-
-      setContact(event.target.value);
-    };
-  
-    return (
-      <div>
-        <FormControl>
-          <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
-          <Input
-            value={values.textmask}
-            onChange={handleChange}
-            name="textmask"
-            defaultValue={defaultNumber}
-            id="formatted-text-mask-input"
-            inputComponent={TextMaskCustom}
-          />
-        </FormControl>
-      </div>
-    );
-  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -152,7 +154,7 @@ export default function PurchaseOrderForm(props) {
       id: "",
       companyName: companyName,
       contactName: contactName,
-      address: address,
+      address: address+","+city+","+postal+","+province,
       contact: contact,
       contactType: "vendor"
     };
@@ -198,7 +200,7 @@ export default function PurchaseOrderForm(props) {
             id="address"
             label="Address"
             type="string"
-            defaultValue={vendor.address}
+            defaultValue={props.splitAddress}
             onChange={(event) => setAddress(event.target.value)}
             fullWidth
           />
@@ -209,7 +211,9 @@ export default function PurchaseOrderForm(props) {
                 margin="normal"
                 id="city"
                 label="City"
-                type="text" 
+                type="text"
+                defaultValue={props.splitCity}
+                onChange={(event) => setCity(event.target.value)} 
               />
             </Grid>
             <Grid item md={3}>
@@ -220,13 +224,15 @@ export default function PurchaseOrderForm(props) {
                 label="Postal Code"
                 inputProps={{ maxLength: 6 }}
                 type="text" 
+                defaultValue={props.splitPostal}
+                onChange={(event) => setPostal(event.target.value)} 
               />
             </Grid>
             <Grid item md={3}>
-            <ProvinceOptions/>
+            <ProvinceOptions province={province} setProvince={setProvince} defaultValue={props.splitProvince}/>
             </Grid>
           </Grid>
-          <PhoneNumberInput defaultValue={vendor.contact}/>
+          <PhoneNumberInput contact={contact} setContact={setContact} defaultValue={vendor.contact}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">

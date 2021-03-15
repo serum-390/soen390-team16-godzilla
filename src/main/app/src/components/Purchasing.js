@@ -47,6 +47,10 @@ const vendorColumns = [
 
           <VendorDetailsForm
             onSubmit={params.value}
+            splitAddress={params.getValue('address').split(",")[0] || ''}
+            splitCity={params.getValue('address').split(",")[1] || ''}
+            splitPostal={params.getValue('address').split(",")[2] || ''}
+            splitProvince ={params.getValue('address').split(",")[3] || ''}
             initialButton='Edit'
             dialogTitle={'Vendor Information - (' + params.getValue('id') + ") " + params.getValue('contactName')}
             dialogContentText='Please enter any information you would like to modify: '
