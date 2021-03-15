@@ -175,7 +175,7 @@ public class ProductionManagerHandler {
         } else {
             ordersRepository.updateStatus(salesOrder.getId(), Order.PROCESSING).block();
             plannedProduct.setStatus(isOrderBlocked ? PlannedProduct.BLOCKED : PlannedProduct.SCHEDULED);
-            PlannedProduct product = plannedProducts.save(plannedProduct).block();
+            PlannedProduct product = plannedProducts.save(plannedProduct.getOrderID(), plannedProduct.getProductionDate(), plannedProduct.getStatus(), plannedProduct.getUsedItems()).block();
             purchaseOrder.setProductionID(product.getId());
 
             if (isOrderBlocked) {
@@ -189,7 +189,7 @@ public class ProductionManagerHandler {
 
     //schedules the purchase order event
     private void schedulePurchaseOrder() {
-         Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
+        Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
         // schedule purchase order
         PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
         logger.info("purchase order " + order.getId() + " is created");
