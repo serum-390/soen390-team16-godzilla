@@ -7,12 +7,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
-import AddressInput from '../components/forms/AddressInput';
-import PhoneInput from '../components/forms/PhoneInput';
+import AddressInput from '../Forms/AddressInput';
+import PhoneInput from '../Forms/PhoneInput';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
 import NewPurchaseOrderForm from "../Forms/NewPurchaseOrderForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
-import DeleteButton from "./forms/DeleteButton";
+import DeleteButton from "../Forms/DeleteButton";
 
 const useStyles = makeStyles(theme => ({
   root: {

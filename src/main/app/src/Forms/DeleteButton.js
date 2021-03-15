@@ -3,7 +3,7 @@ import { Button, Dialog, DialogContentText } from '@material-ui/core';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import useBooleanState from '../../util/hooks';
+import useBooleanState from '../util/hooks';
 
 function DeleteButton(props) {
     const [open, handleOpen, handleClose] = useBooleanState(false);

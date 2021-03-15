@@ -1,4 +1,3 @@
-import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import { useState } from 'react';
 import useSalesPageStyles from "../styles/salesPageStyles";
