@@ -30,7 +30,7 @@ public class PlannedProductHandler {
      */
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(PlannedProduct.class)
-                .flatMap(plannedProducts::save)
+                .flatMap(product -> plannedProducts.save(product.getOrderID(), product.getProductionDate(), product.getStatus(), product.getUsedItems()))
                 .flatMap(id -> noContent().build());
     }
 
@@ -78,7 +78,7 @@ public class PlannedProductHandler {
                 existed,
                 req.bodyToMono(Item.class)
         ).cast(PlannedProduct.class)
-                .flatMap(plannedProduct -> plannedProducts.update(plannedProduct.getId(), plannedProduct.getOrderID(), plannedProduct.getProductionDate(), plannedProduct.getStatus()))
+                .flatMap(plannedProduct -> plannedProducts.update(plannedProduct.getId(), plannedProduct.getOrderID(), plannedProduct.getProductionDate(), plannedProduct.getStatus(), plannedProduct.getUsedItems()))
                 .flatMap(item -> noContent().build());
     }
 

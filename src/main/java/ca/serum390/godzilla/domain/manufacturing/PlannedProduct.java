@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @With
@@ -27,10 +29,12 @@ public class PlannedProduct {
     private LocalDate productionDate;
     private Integer orderID;
     private String status;
+    private Map<Integer, Integer> usedItems;
 
     public PlannedProduct(LocalDate productionDate, Integer orderID) {
         this.productionDate = productionDate;
         this.orderID = orderID;
-        this.status = "new";
+        this.status = NEW;
+        usedItems = new HashMap<>();
     }
 }

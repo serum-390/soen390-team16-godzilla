@@ -50,6 +50,7 @@ public class ProductionManagerHandler {
     private TaskScheduler scheduler;
     private Order salesOrder = null;
     private Order purchaseOrder = null;
+    private PlannedProduct plannedProduct = null;
     private LocalDate productionDate = LocalDate.now().plusDays(1);
     private Logger logger;
     private boolean isOrderReady = true;
@@ -69,6 +70,7 @@ public class ProductionManagerHandler {
     private void setup(ServerRequest req) {
         Optional<String> orderID = req.queryParam("id");
         Optional<String> productionDateReq = req.queryParam("date");
+        plannedProduct = null;
         salesOrder = null;
         purchaseOrder = null;
         productionDate = LocalDate.now().plusDays(1);
@@ -96,11 +98,12 @@ public class ProductionManagerHandler {
     // validates the order for production
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
         setup(req);
-        PlannedProduct plannedProduct;
+
 
         // Analyze the items in the order item list and the inventory
         if (salesOrder != null && salesOrder.getStatus().equals(Order.NEW)) {
 
+            plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
             for (Map.Entry<Integer, Integer> orderEntry : salesOrder.getItems().entrySet()) {
 
                 Integer orderItemID = orderEntry.getKey();
@@ -111,9 +114,12 @@ public class ProductionManagerHandler {
 
                 if (orderItemQuantity <= orderItem.getQuantity()) {
                     inventoryRepository.updateQuantity(orderItemID, orderItem.getQuantity() - orderItemQuantity).block();
-
+                    plannedProduct.getUsedItems().put(orderItemID, orderItemQuantity);
                 } else {
                     isOrderReady = false;
+                    if (orderItem.getQuantity() > 0) {
+                        plannedProduct.getUsedItems().put(orderItemID, orderItem.getQuantity());
+                    }
 
                     // get the quantity available from inventory
                     orderItemQuantity = orderItemQuantity - orderItem.getQuantity();
@@ -121,11 +127,9 @@ public class ProductionManagerHandler {
 
                     // check bom for that item
                     getBOMItems(orderItem, orderItemQuantity);
-
                 }
             }
-            plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
-            processOrder(plannedProduct);
+            processOrder();
         } else {
             logger.info("The order ID is invalid or it is already in pipeline");
         }
@@ -143,8 +147,17 @@ public class ProductionManagerHandler {
             int total_quantity = bomItemQuantity * orderItemQuantity;
             if (total_quantity <= bomItem.getQuantity()) {
                 inventoryRepository.updateQuantity(bomItemID, bomItem.getQuantity() - total_quantity).block();
+                plannedProduct.getUsedItems().put(bomItemID, total_quantity);
+
             } else {
                 isOrderBlocked = true;
+                if (bomItem.getQuantity() > 0) {
+                    int used_quantity = bomItem.getQuantity();
+                    if (plannedProduct.getUsedItems().containsKey(bomItemID)) {
+                        used_quantity += plannedProduct.getUsedItems().get(bomItemID);
+                    }
+                    plannedProduct.getUsedItems().put(bomItemID, used_quantity);
+                }
                 total_quantity = total_quantity - bomItem.getQuantity();
                 //update inventory
                 inventoryRepository.updateQuantity(bomItemID, 0).block();
@@ -158,7 +171,7 @@ public class ProductionManagerHandler {
         }
     }
 
-    private void processOrder(PlannedProduct plannedProduct) {
+    private void processOrder() {
         if (isOrderReady) {
             ordersRepository.updateStatus(salesOrder.getId(), Order.READY).block();
         } else {
