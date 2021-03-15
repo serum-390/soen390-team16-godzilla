@@ -145,10 +145,6 @@ const salesRows = [
 ];
 
 
-function AddNewSaleOrder() {
-  alert('clicked');
-}
-
 function Sales() {
   const classes = useSalesPageStyles();
   const [rows, setRows] = useState([]);
