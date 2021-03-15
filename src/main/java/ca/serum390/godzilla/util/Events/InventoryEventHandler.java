@@ -42,7 +42,7 @@ public class InventoryEventHandler {
         Order purchaseOrder = ordersRepository.findById(purchaseID).block();
 
         if (plannedProduct != null && purchaseOrder != null) {
-            plannedProductsRepository.updateStatus(productionID, "scheduled").subscribe();
+            plannedProductsRepository.updateStatus(productionID, PlannedProduct.SCHEDULED).subscribe();
 
             for (Map.Entry<Integer, Integer> entry : purchaseOrder.getItems().entrySet()) {
                 Integer itemID = entry.getKey();

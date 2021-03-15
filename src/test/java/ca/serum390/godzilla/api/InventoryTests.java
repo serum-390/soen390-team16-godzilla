@@ -46,8 +46,8 @@ class InventoryTests {
     /**
      * Configure the WebTestClient for use with Spring REST Docs
      *
-     * @param context           {@link ApplicationContext} to use
-     * @param restDocumentation
+     * @param context {@link ApplicationContext} to use
+     * @param restDocProvider
      */
     @BeforeEach
     void setUp(ApplicationContext context, RestDocumentationContextProvider restDocProvider) {

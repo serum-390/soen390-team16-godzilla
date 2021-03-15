@@ -17,6 +17,12 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
+
+    // Status values
+    public static final String READY = "ready";
+    public static final String NEW = "new";
+    public static final String PROCESSING = "processing";
+    public static final String COMPLETED = "completed";
     @Id
     private Integer id;
     private LocalDate createdDate;
@@ -27,13 +33,12 @@ public class Order {
     private Map<Integer, Integer> items;
     private Integer productionID;
 
-    //TODO use enum for status : new , processing, ready, completed
-    public Order(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType){
+    public Order(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType) {
         this.createdDate = createdDate;
         this.dueDate = dueDate;
         this.deliveryLocation = deliveryLocation;
         this.orderType = orderType;
-        this.status = "new";
+        this.status = NEW;
         items = new HashMap<>();
     }
 }

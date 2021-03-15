@@ -33,7 +33,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 @Component
 public class ProductionManagerHandler {
 
-    //TODO check the order status before starting production
     //TODO fix BUGs -> save(object) -> jsonb field is null , save(parameters) -> returns empty mono
 
     //TODO allow cancelling the production
@@ -47,8 +46,8 @@ public class ProductionManagerHandler {
     private final PlannedProductsRepository plannedProducts;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
-    private TaskScheduler scheduler;
 
+    private TaskScheduler scheduler;
     private Order salesOrder = null;
     private Order purchaseOrder = null;
     private LocalDate productionDate = LocalDate.now().plusDays(1);
@@ -70,6 +69,11 @@ public class ProductionManagerHandler {
     private void setup(ServerRequest req) {
         Optional<String> orderID = req.queryParam("id");
         Optional<String> productionDateReq = req.queryParam("date");
+//        salesOrder = null;
+//        purchaseOrder = null;
+//        productionDate = LocalDate.now().plusDays(1);
+//        isOrderReady = true;
+//        isOrderBlocked = false;
 
         // get the sales order object
         if (orderID.isPresent()) {
@@ -86,8 +90,7 @@ public class ProductionManagerHandler {
             }
         }
 
-        //TODO for now the due date of purchase order is one day before the production.
-        purchaseOrder = new Order(LocalDate.now(), productionDate.minusDays(1), "Montreal", "purchase");
+        purchaseOrder = new Order(LocalDate.now(), LocalDate.now(), "Montreal", "purchase");
     }
 
     // validates the order for production
@@ -96,7 +99,7 @@ public class ProductionManagerHandler {
         PlannedProduct plannedProduct;
 
         // Analyze the items in the order item list and the inventory
-        if (salesOrder != null && salesOrder.getStatus().equals("new")) {
+        if (salesOrder != null && salesOrder.getStatus().equals(Order.NEW)) {
 
             for (Map.Entry<Integer, Integer> orderEntry : salesOrder.getItems().entrySet()) {
 
@@ -157,10 +160,10 @@ public class ProductionManagerHandler {
 
     private void processOrder(PlannedProduct plannedProduct) {
         if (isOrderReady) {
-            ordersRepository.updateStatus(salesOrder.getId(), "ready").block();
+            ordersRepository.updateStatus(salesOrder.getId(), Order.READY).block();
         } else {
-            ordersRepository.updateStatus(salesOrder.getId(), "processing").block();
-            plannedProduct.setStatus(isOrderBlocked?"blocked":"scheduled");
+            ordersRepository.updateStatus(salesOrder.getId(), Order.PROCESSING).block();
+            plannedProduct.setStatus(isOrderBlocked ? PlannedProduct.BLOCKED : PlannedProduct.SCHEDULED);
             PlannedProduct product = plannedProducts.save(plannedProduct).block();
             purchaseOrder.setProductionID(product.getId());
 
@@ -186,14 +189,11 @@ public class ProductionManagerHandler {
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
         scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
-//                scheduler.schedule(purchaseTask, Date.from(productionDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     // schedules the production event
     private void scheduleProduction(Integer productionID) {
         ProductionEvent productionEvent = new ProductionEvent(productionID);
-
-        //TODO set timer
         Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);

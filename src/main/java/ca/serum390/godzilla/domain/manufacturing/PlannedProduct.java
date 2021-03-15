@@ -16,13 +16,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PlannedProduct {
 
+    // Status values
+    public static final String BLOCKED = "blocked";
+    public static final String NEW = "new";
+    public static final String SCHEDULED = "scheduled";
+    public static final String COMPLETED = "completed";
+
     @Id
     private Integer id;
     private LocalDate productionDate;
     private Integer orderID;
     private String status;
 
-    //TODO use enum for status : new , processing, blocked , completed
     public PlannedProduct(LocalDate productionDate, Integer orderID) {
         this.productionDate = productionDate;
         this.orderID = orderID;
