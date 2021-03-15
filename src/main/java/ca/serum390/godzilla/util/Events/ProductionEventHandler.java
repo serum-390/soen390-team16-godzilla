@@ -22,9 +22,13 @@ public class ProductionEventHandler {
     @EventListener
     public void handleProductionEvent(ProductionEvent event) {
         Integer productionID = event.getProductionID();
-        Logger.getLogger("EventLog").info("production " + productionID + " completed");
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
-        plannedProductsRepository.updateStatus(productionID, "completed").subscribe();
-        ordersRepository.updateStatus(plannedProduct.getOrderID(), "completed").subscribe();
+        if (plannedProduct != null) {
+            Logger.getLogger("EventLog").info("production " + productionID + " completed");
+            plannedProductsRepository.updateStatus(productionID, "completed").subscribe();
+            ordersRepository.updateStatus(plannedProduct.getOrderID(), "completed").subscribe();
+        } else {
+            Logger.getLogger("EventLog").info("production " + productionID + " cannot be completed");
+        }
     }
 }

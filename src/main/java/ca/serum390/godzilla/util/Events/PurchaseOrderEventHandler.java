@@ -27,16 +27,20 @@ public class PurchaseOrderEventHandler {
     public void handlePurchaseOrderEvent(PurchaseOrderEvent event) {
         Integer orderID = event.getOrderID();
         Order purchaseOrder = ordersRepository.findById(orderID).block();
-        for (Map.Entry<Integer, Integer> orderEntry : purchaseOrder.getItems().entrySet()) {
-            Integer itemID = orderEntry.getKey();
-            Integer itemQuantity = orderEntry.getValue();
-            inventoryRepository.addToQuantity(itemID, itemQuantity).subscribe();
-        }
+        if (purchaseOrder != null) {
+            for (Map.Entry<Integer, Integer> orderEntry : purchaseOrder.getItems().entrySet()) {
+                Integer itemID = orderEntry.getKey();
+                Integer itemQuantity = orderEntry.getValue();
+                inventoryRepository.addToQuantity(itemID, itemQuantity).subscribe();
+            }
 
-        Logger.getLogger("EventLog").info("Order " + orderID + " is received in the inventory");
-        ordersRepository.updateStatus(purchaseOrder.getId(), "completed").subscribe();
-        InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID(), purchaseOrder.getId());
-        applicationEventPublisher.publishEvent(inventoryEvent);
+            Logger.getLogger("EventLog").info("Purchase order " + orderID + " is received in the inventory");
+            ordersRepository.updateStatus(purchaseOrder.getId(), "completed").subscribe();
+            InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID(), purchaseOrder.getId());
+            applicationEventPublisher.publishEvent(inventoryEvent);
+        } else {
+            Logger.getLogger("EventLog").info("Purchase order " + orderID + " is invalid");
+        }
     }
 
 }

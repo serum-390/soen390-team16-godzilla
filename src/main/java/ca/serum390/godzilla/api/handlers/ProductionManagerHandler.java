@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
@@ -60,21 +61,7 @@ public class ProductionManagerHandler {
         this.plannedProducts = plannedProducts;
         this.inventoryRepository = inventoryRepository;
         this.ordersRepository = ordersRepository;
-
-        // Setup event logger
-        logger = Logger.getLogger("EventLog");
-        FileHandler fh;
-
-        try {
-            // TODO use relative path
-            fh = new FileHandler("ca/serum390/godzilla/../Events/eventsLog.log");
-            logger.addHandler(fh);
-            SimpleFormatter formatter = new SimpleFormatter();
-            fh.setFormatter(formatter);
-
-        } catch (SecurityException | IOException e) {
-            e.printStackTrace();
-        }
+        setupLogger();
     }
 
 
@@ -94,6 +81,8 @@ public class ProductionManagerHandler {
             LocalDate input = LocalDate.parse(productionDateReq.get());
             if (input.compareTo(LocalDate.now()) < 0) {
                 logger.info("invalid production date is entered");
+            } else {
+                productionDate = input;
             }
         }
 
@@ -107,7 +96,7 @@ public class ProductionManagerHandler {
         PlannedProduct plannedProduct;
 
         // Analyze the items in the order item list and the inventory
-        if (salesOrder != null) {
+        if (salesOrder != null && !salesOrder.getStatus().equals("new")) {
 
             for (Map.Entry<Integer, Integer> orderEntry : salesOrder.getItems().entrySet()) {
 
@@ -135,7 +124,7 @@ public class ProductionManagerHandler {
             plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
             processOrder(plannedProduct);
         } else {
-            logger.info("The orderID is invalid");
+            logger.info("The order ID is invalid or it is already in pipeline");
         }
         return noContent().build();
     }
@@ -171,6 +160,7 @@ public class ProductionManagerHandler {
             ordersRepository.updateStatus(salesOrder.getId(), "ready").block();
         } else {
             ordersRepository.updateStatus(salesOrder.getId(), "processing").block();
+            plannedProduct.setStatus(isOrderBlocked?"blocked":"scheduled");
             PlannedProduct product = plannedProducts.save(plannedProduct).block();
             purchaseOrder.setProductionID(product.getId());
 
@@ -208,5 +198,23 @@ public class ProductionManagerHandler {
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
         scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis() + 120000));
+    }
+
+
+    private void setupLogger() {
+        // Setup event logger
+        logger = Logger.getLogger("EventLog");
+        FileHandler fh;
+
+        try {
+            File dest = new File("../../util/Events/eventsLog.log");
+            fh = new FileHandler(dest.getName());
+            logger.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+
+        } catch (SecurityException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
