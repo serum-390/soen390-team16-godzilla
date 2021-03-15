@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
 @Repository
-public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer>{
+public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer> {
 
     /**
      * Get all vendor
@@ -35,4 +35,3 @@ public interface VendorContactRepository extends ReactiveCrudRepository<VendorCo
             String address,
             String contact, Integer id);
 }
-
