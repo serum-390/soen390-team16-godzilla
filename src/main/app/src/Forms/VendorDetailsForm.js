@@ -78,7 +78,7 @@ function ProvinceOptions({province, setProvince, defaultValue}) {
   );
 }
 
-function PhoneNumberInput({contact, setContact, defaultValue}) {
+function PhoneNumberInput({contact, setContact}) {
   const [values, setValues] = React.useState({
     textmask: '(1  )    -    ',
   });
@@ -97,13 +97,13 @@ function PhoneNumberInput({contact, setContact, defaultValue}) {
       <FormControl>
         <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
         <Input
-          value={values.textmask}
+          value={
+            (contact !== undefined) ? contact : values.textmask
+          }
           onChange={handleChange}
           name="textmask"
-          inputComponent={TextMaskCustom}
-          defaultValue={defaultValue}
           id="formatted-text-mask-input"
-          
+          inputComponent={TextMaskCustom}
         />
       </FormControl>
     </div>
@@ -139,7 +139,7 @@ export default function PurchaseOrderForm(props) {
   const [city, setCity] = React.useState(props.splitCity);
   const [postal, setPostal] = React.useState(props.splitPostal);
   const [province, setProvince] = React.useState(props.splitProvince);
-  const [contact, setContact] = React.useState("");
+  const [contact, setContact] = React.useState(vendor.contact);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -232,7 +232,7 @@ export default function PurchaseOrderForm(props) {
             <ProvinceOptions province={province} setProvince={setProvince} defaultValue={props.splitProvince}/>
             </Grid>
           </Grid>
-          <PhoneNumberInput contact={contact} setContact={setContact} defaultValue={vendor.contact}/>
+          <PhoneNumberInput contact={contact} setContact={setContact}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">

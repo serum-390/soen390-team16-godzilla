@@ -1,18 +1,11 @@
-import { Button, Dialog, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import AddressInput from '../components/forms/AddressInput';
-import PhoneInput from '../components/forms/PhoneInput';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
 import NewPurchaseOrderForm from "../Forms/NewPurchaseOrderForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
-import DeleteButton from "./forms/DeleteButton";
+/*import DeleteButton from "./forms/DeleteButton";*/
 import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
@@ -199,47 +192,6 @@ const FilledVendorView = ({vendors}) => {
 };
 
 function LoadedView({classes, vendors}) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const AddCustomerDialogBox = () => {
-    return (
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
-        <DialogTitle>Add New Vendor</DialogTitle>
-        <DialogContent>
-          <InputLabel>Vendor Name</InputLabel>
-          <TextField
-            required
-            autoFocuss
-            margin="dense"
-            id="name"
-            label="Required"
-            type="text"
-          />
-          <AddressInput />
-          <PhoneInput />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => {
-            handleClose();
-          }} color="primary">
-            Add Vendor
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
