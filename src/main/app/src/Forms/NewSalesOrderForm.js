@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -134,8 +134,7 @@ export default function NewSalesOrderForm(props) {
                 </Select>
           </FormControl>  
           <InventoryTable/>
-          <Button  variant="contained" onClick={handleClose} color="primary" onClick={displayTotal} 
-          style={{float: 'right',marginRight: 15}} >
+          <Button  variant="contained" color="primary" onClick={displayTotal} style={{float: 'right',marginRight: 15}} >
                   Calculate Total
           </Button>
       </DialogContent>
@@ -147,7 +146,7 @@ export default function NewSalesOrderForm(props) {
               id="total"
               label="Total Cost"
               type="number"
-              defaultValue={0}
+              defaultValue="0"
               variant="outlined"
             />
           </div>
