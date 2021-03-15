@@ -11,15 +11,11 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 @Component
 public class InventoryEventHandler {
@@ -43,7 +39,7 @@ public class InventoryEventHandler {
         Integer productionID = event.getProductionID();
         Integer purchaseID = event.getPurchaseOrderID();
         //TODO update the production status
-        plannedProductsRepository.update(productionID,"processing").subscribe();
+        plannedProductsRepository.updateStatus(productionID,"processing").subscribe();
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
         //TODO take the items from inventory
         Order purchaseOrder = ordersRepository.findById(purchaseID).block();
@@ -51,7 +47,7 @@ public class InventoryEventHandler {
         for(Map.Entry<Integer,Integer> entry : purchaseOrder.getItems().entrySet()){
                 Integer itemID = entry.getKey();
                 Integer itemQuantity = entry.getValue();
-                inventoryRepository.updateAdd(itemID,-itemQuantity).subscribe();
+                inventoryRepository.addToQuantity(itemID,-itemQuantity).subscribe();
         }
         ProductionEvent productionEvent = new ProductionEvent(productionID);
 

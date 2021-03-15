@@ -18,10 +18,11 @@ public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer>
                          Integer id, String status, Map<Integer, Integer> items, Integer productionID);
     @Modifying
     @Query("UPDATE orders SET ITEMS = $2 WHERE ID = $1")
-    Mono<Integer> update(Integer id, Map<Integer, Integer> items);
+    Mono<Integer> updateItems(Integer id, Map<Integer, Integer> items);
+
     @Modifying
     @Query("UPDATE orders SET STATUS = $2 WHERE ID = $1")
-    Mono<Integer> update(Integer id, String status);
+    Mono<Integer> updateStatus(Integer id, String status);
 
     @Transactional
     @Query("INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS, PRODUCTION_ID) VALUES ($1,$2,$3,$4,$5,$6,$7)")

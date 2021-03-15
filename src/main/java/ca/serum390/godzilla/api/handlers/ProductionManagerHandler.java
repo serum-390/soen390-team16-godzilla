@@ -6,6 +6,7 @@ import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
+import ca.serum390.godzilla.util.Events.ProductionEvent;
 import ca.serum390.godzilla.util.Events.PurchaseOrderEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
@@ -33,11 +34,12 @@ public class ProductionManagerHandler {
 
     //TODO check the order status before starting production
     //TODO fix BUGs -> save(object) -> jsonb field is null , save(parameters) -> returns empty mono
+
     //TODO allow cancelling the production
-    // allow editing production date ? or just cancel
-    //TODO to cancel -> cancel all the purchase orders, -> return everything taken from inventory
-    // phase 1) processing production [no purchase order] phase 2) blocked production [purchase orders]
-    // phase 1 cancel ) return all the items in item taken to inventory -> remove production
+    // allow editing production date
+    // to cancel -> cancel all the purchase orders, -> return everything taken from inventory
+    // phase 1) scheduled production [no purchase order] phase 2) blocked production [purchase orders]
+    // phase 1 cancel ) return all the items in item taken to inventory -> remove production/ cancel scheduler
     // phase 2 cancel ) cancel the purchase orders [ remove them]  -> return all the items in taken to inventory
 
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -50,6 +52,8 @@ public class ProductionManagerHandler {
     private Order purchaseOrder = null;
     private LocalDate productionDate = LocalDate.now().plusDays(1);
     private Logger logger;
+    private boolean isOrderReady = true;
+    private boolean isOrderBlocked = false;
 
     public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher, PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -63,7 +67,7 @@ public class ProductionManagerHandler {
 
         try {
             // TODO use relative path
-            fh = new FileHandler("C:/Users/yasam/Desktop/ERP/src/main/java/ca/serum390/godzilla/util/Events/eventsLog.log");
+            fh = new FileHandler("ca/serum390/godzilla/../Events/eventsLog.log");
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
@@ -100,8 +104,6 @@ public class ProductionManagerHandler {
     // validates the order for production
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
         setup(req);
-        boolean isOrderReady = true;
-        boolean isOrderBlocked = false;
         PlannedProduct plannedProduct;
 
         // Analyze the items in the order item list and the inventory
@@ -116,43 +118,22 @@ public class ProductionManagerHandler {
                 Item orderItem = inventoryRepository.findById(orderItemID).block();
 
                 if (orderItemQuantity <= orderItem.getQuantity()) {
-                    inventoryRepository.update(orderItemID, orderItem.getQuantity() - orderItemQuantity).block();
+                    inventoryRepository.updateQuantity(orderItemID, orderItem.getQuantity() - orderItemQuantity).block();
 
                 } else {
                     isOrderReady = false;
 
                     // get the quantity available from inventory
                     orderItemQuantity = orderItemQuantity - orderItem.getQuantity();
-                    inventoryRepository.update(orderItemID, 0).block();
+                    inventoryRepository.updateQuantity(orderItemID, 0).block();
 
                     // check bom for that item
-                    for (Map.Entry<Integer, Integer> bomEntry : orderItem.getBillOfMaterial().entrySet()) {
-                        Integer bomItemID = bomEntry.getKey();
-                        Integer bomItemQuantity = bomEntry.getValue();
+                    getBOMItems(orderItem, orderItemQuantity);
 
-                        Item bomItem = inventoryRepository.findById(bomItemID).block();
-
-                        int total_quantity = bomItemQuantity * orderItemQuantity;
-                        if (total_quantity <= bomItem.getQuantity()) {
-                            inventoryRepository.update(bomItemID, bomItem.getQuantity() - total_quantity).block();
-                        } else {
-                            isOrderBlocked = true;
-                            total_quantity = total_quantity - bomItem.getQuantity();
-                            //update inventory
-                            inventoryRepository.update(bomItemID, 0).block();
-
-                            // create purchase order this bom item with the number = total-quantity
-                            if (purchaseOrder.getItems().containsKey(bomItemID)) {
-                                total_quantity += purchaseOrder.getItems().get(bomItemID);
-                            }
-
-                            purchaseOrder.getItems().put(bomItemID, total_quantity);
-                        }
-                    }
                 }
             }
             plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
-            processOrder(isOrderReady, isOrderBlocked, plannedProduct);
+            processOrder(plannedProduct);
         } else {
             logger.info("The orderID is invalid");
         }
@@ -160,31 +141,72 @@ public class ProductionManagerHandler {
     }
 
 
-    private void processOrder(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
+    private void getBOMItems(Item orderItem, int orderItemQuantity) {
+        for (Map.Entry<Integer, Integer> bomEntry : orderItem.getBillOfMaterial().entrySet()) {
+            Integer bomItemID = bomEntry.getKey();
+            Integer bomItemQuantity = bomEntry.getValue();
+
+            Item bomItem = inventoryRepository.findById(bomItemID).block();
+
+            int total_quantity = bomItemQuantity * orderItemQuantity;
+            if (total_quantity <= bomItem.getQuantity()) {
+                inventoryRepository.updateQuantity(bomItemID, bomItem.getQuantity() - total_quantity).block();
+            } else {
+                isOrderBlocked = true;
+                total_quantity = total_quantity - bomItem.getQuantity();
+                //update inventory
+                inventoryRepository.updateQuantity(bomItemID, 0).block();
+
+                // create purchase order this bom item with the number = total-quantity
+                if (purchaseOrder.getItems().containsKey(bomItemID)) {
+                    total_quantity += purchaseOrder.getItems().get(bomItemID);
+                }
+                purchaseOrder.getItems().put(bomItemID, total_quantity);
+            }
+        }
+    }
+
+    private void processOrder(PlannedProduct plannedProduct) {
         if (isOrderReady) {
-            ordersRepository.update(salesOrder.getId(), "ready").block();
+            ordersRepository.updateStatus(salesOrder.getId(), "ready").block();
         } else {
-            ordersRepository.update(salesOrder.getId(), "processing").block();
+            ordersRepository.updateStatus(salesOrder.getId(), "processing").block();
             PlannedProduct product = plannedProducts.save(plannedProduct).block();
             purchaseOrder.setProductionID(product.getId());
 
             if (isOrderBlocked) {
-//                Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
-                Order order = ordersRepository.save(purchaseOrder).block();
-                ordersRepository.update(order.getId(), purchaseOrder.getItems()).block();
-
-                // schedule purchase order
-                PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
-                logger.info("purchase order " + order.getId() + " is created");
-                Runnable purchaseTask = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
-                ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
-                scheduler = new ConcurrentTaskScheduler(localExecutor);
-                scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
-//                scheduler.schedule(purchaseTask, Date.from(productionDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            }
-            else{
-                //TODO schedule production
+                schedulePurchaseOrder();
+            } else {
+                scheduleProduction(product.getId());
             }
         }
+    }
+
+
+    //schedules the purchase order event
+    private void schedulePurchaseOrder() {
+        // Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
+        Order order = ordersRepository.save(purchaseOrder).block();
+        ordersRepository.updateItems(order.getId(), purchaseOrder.getItems()).block();
+
+        // schedule purchase order
+        PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
+        logger.info("purchase order " + order.getId() + " is created");
+        Runnable purchaseTask = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
+        ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduler = new ConcurrentTaskScheduler(localExecutor);
+        scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
+//                scheduler.schedule(purchaseTask, Date.from(productionDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    }
+
+    // schedules the production event
+    private void scheduleProduction(Integer productionID) {
+        ProductionEvent productionEvent = new ProductionEvent(productionID);
+
+        //TODO set timer
+        Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
+        ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduler = new ConcurrentTaskScheduler(localExecutor);
+        scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis() + 120000));
     }
 }

@@ -1,7 +1,5 @@
 package ca.serum390.godzilla.api.handlers;
 
-import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.Inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
@@ -11,11 +9,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.*;
 
@@ -88,6 +82,12 @@ public class PlannedProductHandler {
                 .flatMap(item -> noContent().build());
     }
 
+    /**
+     * gets the planned product by id
+     *
+     * @param req
+     * @return
+     */
     public Mono<ServerResponse> getByID(ServerRequest req) {
         return plannedProducts.findById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(plannedProduct -> ok().body(Mono.just(plannedProduct), PlannedProduct.class))

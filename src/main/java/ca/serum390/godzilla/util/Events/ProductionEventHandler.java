@@ -24,7 +24,7 @@ public class ProductionEventHandler {
         Integer productionID = event.getProductionID();
         Logger.getLogger("EventLog").info("production " + productionID + " completed");
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
-        plannedProductsRepository.update(productionID, "completed").subscribe();
-        ordersRepository.update(plannedProduct.getOrderID(), "completed").subscribe();
+        plannedProductsRepository.updateStatus(productionID, "completed").subscribe();
+        ordersRepository.updateStatus(plannedProduct.getOrderID(), "completed").subscribe();
     }
 }
