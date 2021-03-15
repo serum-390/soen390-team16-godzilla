@@ -20,6 +20,10 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeExchange()
+                    .pathMatchers("/api/docs/**",
+                                  "/api/healthcheck",
+                                  "/favicon.ico")
+                    .permitAll()
                 .anyExchange()
                 .authenticated().and()
                 .formLogin().and()

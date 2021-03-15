@@ -26,13 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProvinceOptions() {
+function ProvinceOptions({province, setProvince, defaultValue}) {
   const classes = useStyles();
-  const [province, setprovince] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
-    setprovince(event.target.value);
+    setProvince(event.target.value);
   };
 
   const handleClose = () => {
@@ -54,25 +53,58 @@ function ProvinceOptions() {
           onClose={handleClose}
           onOpen={handleOpen}
           value={province}
+          defaultValue={defaultValue}
           onChange={handleChange}
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={1}>AB</MenuItem>
-          <MenuItem value={2}>BC</MenuItem>
-          <MenuItem value={3}>MB</MenuItem>
-          <MenuItem value={4}>NB</MenuItem>
-          <MenuItem value={5}>NL</MenuItem>
-          <MenuItem value={6}>NT</MenuItem>
-          <MenuItem value={7}>NS</MenuItem>
-          <MenuItem value={8}>NU</MenuItem>
-          <MenuItem value={9}>ON</MenuItem>
-          <MenuItem value={10}>PE</MenuItem>
-          <MenuItem value={11}>QC</MenuItem>
-          <MenuItem value={12}>SK</MenuItem>
-          <MenuItem value={13}>YT</MenuItem>
+          <MenuItem value='AB'>AB</MenuItem>
+          <MenuItem value='BC'>BC</MenuItem>
+          <MenuItem value='MB'>MB</MenuItem>
+          <MenuItem value='NB'>NB</MenuItem>
+          <MenuItem value='NL'>NL</MenuItem>
+          <MenuItem value='NT'>NT</MenuItem>
+          <MenuItem value='NS'>NS</MenuItem>
+          <MenuItem value='NU'>NU</MenuItem>
+          <MenuItem value='ON'>ON</MenuItem>
+          <MenuItem value='PE'>PE</MenuItem>
+          <MenuItem value='QC'>QC</MenuItem>
+          <MenuItem value='SK'>SK</MenuItem>
+          <MenuItem value='YT'>YT</MenuItem>
         </Select>
+      </FormControl>
+    </div>
+  );
+}
+
+function PhoneNumberInput({contact, setContact}) {
+  const [values, setValues] = React.useState({
+    textmask: '(1  )    -    ',
+  });
+
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+
+    setContact(event.target.value);
+  };
+
+  return (
+    <div>
+      <FormControl>
+        <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
+        <Input
+          value={
+            (contact !== undefined) ? contact : values.textmask
+          }
+          onChange={handleChange}
+          name="textmask"
+          id="formatted-text-mask-input"
+          inputComponent={TextMaskCustom}
+        />
       </FormControl>
     </div>
   );
@@ -98,36 +130,16 @@ TextMaskCustom.propTypes = {
   inputRef: PropTypes.func.isRequired,
 };
 
-function PhoneNumberInput() {
-  const [values, setValues] = React.useState({
-    textmask: '(1  )    -    ',
-  });
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  return (
-    <div>
-      <FormControl>
-        <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
-        <Input
-          value={values.textmask}
-          onChange={handleChange}
-          name="textmask"
-          id="formatted-text-mask-input"
-          inputComponent={TextMaskCustom}
-        />
-      </FormControl>
-    </div>
-  );
-}
-
 export default function PurchaseOrderForm(props) {
   const [open, setOpen] = React.useState(false);
+  const vendor = props.onSubmit(null, false);
+  const [companyName, setCompanyName] = React.useState("");
+  const [contactName, setContactName] = React.useState("");
+  const [address, setAddress] = React.useState(props.splitAddress);
+  const [city, setCity] = React.useState(props.splitCity);
+  const [postal, setPostal] = React.useState(props.splitPostal);
+  const [province, setProvince] = React.useState(props.splitProvince);
+  const [contact, setContact] = React.useState(vendor.contact);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -137,14 +149,27 @@ export default function PurchaseOrderForm(props) {
     setOpen(false);
   };
 
+  const handleSubmit = () => {
+    let data = {
+      id: "",
+      companyName: companyName,
+      contactName: contactName,
+      address: address+","+city+","+postal+","+province,
+      contact: contact,
+      contactType: "vendor"
+    };
+    props.onSubmit(data, true);
+    setOpen(false);
+    // want to update the table after clicking this
+  };
+
   return (
     <div>
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
       {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
-        
+        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>   
         <DialogContent>
           <DialogContentText>
             {props.dialogContentText}
@@ -152,10 +177,21 @@ export default function PurchaseOrderForm(props) {
           <TextField
             autoFocus
             margin="dense"
+            id="company"
+            label="Company Name"
+            type="string"
+            defaultValue={vendor.companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            margin="dense"
             id="customer"
             label="Vendor Name"
             type="string"
-            defaultValue={props.vendorName}
+            defaultValue={vendor.contactName}
+            onChange={(event) => setContactName(event.target.value)}
             fullWidth
           />
           <TextField
@@ -164,7 +200,8 @@ export default function PurchaseOrderForm(props) {
             id="address"
             label="Address"
             type="string"
-            defaultValue={props.vendorAddress}
+            defaultValue={props.splitAddress}
+            onChange={(event) => setAddress(event.target.value)}
             fullWidth
           />
           <Grid container spacing={2}>
@@ -174,7 +211,9 @@ export default function PurchaseOrderForm(props) {
                 margin="normal"
                 id="city"
                 label="City"
-                type="text" 
+                type="text"
+                defaultValue={props.splitCity}
+                onChange={(event) => setCity(event.target.value)} 
               />
             </Grid>
             <Grid item md={3}>
@@ -185,16 +224,18 @@ export default function PurchaseOrderForm(props) {
                 label="Postal Code"
                 inputProps={{ maxLength: 6 }}
                 type="text" 
+                defaultValue={props.splitPostal}
+                onChange={(event) => setPostal(event.target.value)} 
               />
             </Grid>
             <Grid item md={3}>
-            <ProvinceOptions/>
+            <ProvinceOptions province={province} setProvince={setProvince} defaultValue={props.splitProvince}/>
             </Grid>
           </Grid>
-          <PhoneNumberInput/>
+          <PhoneNumberInput contact={contact} setContact={setContact}/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             {props.submitButton}
           </Button>
           <Button onClick={handleClose} color="primary">
