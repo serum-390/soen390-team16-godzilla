@@ -6,27 +6,17 @@ spring:
   config:
     activate:
       on-profile: dev
-  # r2dbc:
-  #   url: r2dbc:postgresql://admin:admin123@localhost:5432/godzilla
 logging:
   level:
-
-    # For more information on logging Spring: 34.207.81.52https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.1.5.RELEASE/multi/multi_troubleshooting.html
     org.springframework.data.r2dbc: DEBUG
     io.r2dbc.postgresql.QUERY: DEBUG
     io.r2dbc.postgresql.PARAM: DEBUG
     org.springframework.http.server.reactive: DEBUG
-    # org.springframework.web.reactive: DEBUG
-    # reactor.netty: DEBUG
 ---
 spring:
   config:
     activate:
       on-profile: prod
-  # r2dbc:
-  #   url: ""
-  #   name: ""
-  #   password: ""
 ---
 spring:
   config:
@@ -34,5 +24,3 @@ spring:
       on-profile: test
   r2dbc:
     url: "r2dbc:h2:mem:///testdb"
-    # name: ""
-    # password: ""

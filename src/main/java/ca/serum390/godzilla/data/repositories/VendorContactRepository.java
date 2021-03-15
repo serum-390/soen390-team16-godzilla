@@ -9,21 +9,21 @@ import ca.serum390.godzilla.domain.vendor.VendorContact;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer>{
+public interface VendorContactRepository extends ReactiveCrudRepository<VendorContact, Integer> {
 
     /**
      * Get all vendor
      */
     @Modifying
     @Query("SELECT * FROM contact WHERE contact_type = 'vendor'")
-    Mono<Integer> findAllVendor();
+    Mono<VendorContact> findAllVendor();
 
     /**
      * Find by id where contact_type = customer
      */
     @Modifying
     @Query("SELECT * FROM contact WHERE ID = $1 AND contact_type = 'vendor'")
-    Mono<Integer> findByIdVendor(int id);    
+    Mono<VendorContact> findByIdVendor(int id);
 
     /**
      * Update sales contact where contact_type = vendor
@@ -36,4 +36,3 @@ public interface VendorContactRepository extends ReactiveCrudRepository<VendorCo
             String address,
             String contact, Integer id);
 }
-

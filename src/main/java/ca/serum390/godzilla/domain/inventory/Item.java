@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.domain.Inventory;
+package ca.serum390.godzilla.domain.inventory;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -9,15 +9,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.With;
+
 import java.util.Map;
 
 @Data
+@With
 @Builder
 @ToString
-@Table("inventory")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Table("inventory")
 public class Item {
 
     @Id
@@ -30,4 +33,3 @@ public class Item {
     private String location;
     private Map<Integer,Integer> billOfMaterial;
 }
-
