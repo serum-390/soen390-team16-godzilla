@@ -51,9 +51,6 @@ function ChangeRowQuantity(qty, id, price){
 
 }
 
-const displayTotal = () => { 
-  document.getElementById('total').value= totalCost; 
-}
 
 const inventoryCols = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -93,19 +90,15 @@ const inventoryRows = [
 
 ]
 
-function InventoryTable () {
-  const classes = useStyles();
-  return (
-      <FormControl className={classes.formControl}>
-          <DataGrid rows={inventoryRows} columns={inventoryCols}   pageSize={99}  />   
-      </FormControl>
-  ); 
-}
-
 export default function NewSalesOrderForm(props) {
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {setOpen(true);};
   const handleClose = () => {setOpen(false);};
+
+  const classes = useStyles();
+  const displayTotal = () => { 
+    document.getElementById('total').value= totalCost; 
+  }
 
   return (
     <div>
@@ -133,9 +126,13 @@ export default function NewSalesOrderForm(props) {
                 )}
                 </Select>
           </FormControl>  
-          <InventoryTable/>
+
+          <FormControl className={classes.formControl}>
+          <DataGrid rows={inventoryRows} columns={inventoryCols}   pageSize={99}  />   
+          </FormControl>
+
           <Button  variant="contained" color="primary" onClick={displayTotal} style={{float: 'right',marginRight: 15}} >
-                  Calculate Total
+           Calculate Total
           </Button>
       </DialogContent>
         <DialogActions>
@@ -151,7 +148,7 @@ export default function NewSalesOrderForm(props) {
             />
           </div>
           <Button onClick={handleClose} color="primary">
-          Create 
+            Create 
           </Button>
           <Button onClick={handleClose} color="secondary">
             Close
