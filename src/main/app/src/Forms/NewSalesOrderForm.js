@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 const customerRows = [
   {id: 1, customerName: 'Customer1'},
   {id: 2, customerName: 'Customer2'},
-]
+];
 
 let dict = {};
 let totalCost = 0;
@@ -107,10 +107,6 @@ export default function NewSalesOrderForm(props) {
   const handleClickOpen = () => {setOpen(true);};
   const handleClose = () => {setOpen(false);};
 
-  const handleChange = (event) => {  
-    //for customer contact switch
-  };
-
   return (
     <div>
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
@@ -126,7 +122,6 @@ export default function NewSalesOrderForm(props) {
                 <InputLabel htmlFor="outlined-age-native-simple">Customers</InputLabel>
                 <Select
                 native
-                onChange={handleChange}
                 label="Customers"
                 inputProps={{
                     name: 'customer',
