@@ -15,7 +15,8 @@ public class ProductionManagerRouter {
         final String ID = "/{id}";
         return RouterFunctions.route()
                 .path("/production-manager/", builder -> builder
-                        .POST("/validate", productionManagerHandler::validateProduction))
+                        .POST("/validate", productionManagerHandler::validateProduction)
+                        .POST("/cancel", productionManagerHandler::cancelProduction))
                 .build();
     }
 }

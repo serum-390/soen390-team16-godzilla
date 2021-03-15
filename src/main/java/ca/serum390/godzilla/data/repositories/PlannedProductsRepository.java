@@ -20,6 +20,10 @@ public interface PlannedProductsRepository extends ReactiveCrudRepository<Planne
     @Query("UPDATE PLANNED_PRODUCTS SET  STATUS = $2 WHERE ID = $1")
     Mono<Integer> updateStatus(Integer id, String status);
 
+    @Modifying
+    @Query("UPDATE PLANNED_PRODUCTS SET USED_ITEMS = $2 WHERE ID = $1")
+    Mono<Integer> updateUsedItems(Integer id, Map<Integer, Integer> items);
+
     @Transactional
     @Query("INSERT INTO PLANNED_PRODUCTS( ORDER_ID, PRODUCTION_DATE, STATUS, USED_ITEMS) VALUES ($1,$2,$3,$4) RETURNING *")
     Mono<PlannedProduct> save( Integer orderID, LocalDate productionDate, String status, Map<Integer, Integer> usedItems);

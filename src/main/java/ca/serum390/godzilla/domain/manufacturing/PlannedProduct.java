@@ -23,6 +23,7 @@ public class PlannedProduct {
     public static final String NEW = "new";
     public static final String SCHEDULED = "scheduled";
     public static final String COMPLETED = "completed";
+    public static final String CANCELED = "canceled";
 
     @Id
     private Integer id;

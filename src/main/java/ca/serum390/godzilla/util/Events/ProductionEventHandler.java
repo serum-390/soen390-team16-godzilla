@@ -20,11 +20,13 @@ public class ProductionEventHandler {
         this.ordersRepository = ordersRepository;
     }
 
+    // completes the production
+    //sets the production status to complete and the sales order status to ready
     @EventListener
     public void handleProductionEvent(ProductionEvent event) {
         Integer productionID = event.getProductionID();
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
-        if (plannedProduct != null) {
+        if (plannedProduct != null && plannedProduct.getStatus().equals(PlannedProduct.SCHEDULED)) {
             Logger.getLogger("EventLog").info("production " + productionID + " completed");
             plannedProductsRepository.updateStatus(productionID, PlannedProduct.COMPLETED).subscribe();
             ordersRepository.updateStatus(plannedProduct.getOrderID(), Order.READY).subscribe();

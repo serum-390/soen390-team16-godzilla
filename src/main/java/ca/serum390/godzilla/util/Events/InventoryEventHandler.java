@@ -25,6 +25,7 @@ public class InventoryEventHandler {
     private final InventoryRepository inventoryRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private TaskScheduler scheduler;
+    private static final long SCHEDULE_TIME = System.currentTimeMillis() + 120000;
 
     public InventoryEventHandler(PlannedProductsRepository plannedProductsRepository, OrdersRepository ordersRepository, InventoryRepository inventoryRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.plannedProductsRepository = plannedProductsRepository;
@@ -33,15 +34,17 @@ public class InventoryEventHandler {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    // gets the production item waiting on the items added to inventory
+    // takes the items from the inventory and unblocks the production
+    // schedules the production
     @EventListener
     public void handleInventoryEvent(InventoryEvent event) {
-
         Integer productionID = event.getProductionID();
         Integer purchaseID = event.getPurchaseOrderID();
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
         Order purchaseOrder = ordersRepository.findById(purchaseID).block();
 
-        if (plannedProduct != null && purchaseOrder != null) {
+        if (plannedProduct != null && plannedProduct.getStatus().equals(PlannedProduct.BLOCKED) && purchaseOrder != null) {
             plannedProductsRepository.updateStatus(productionID, PlannedProduct.SCHEDULED).subscribe();
 
             for (Map.Entry<Integer, Integer> entry : purchaseOrder.getItems().entrySet()) {
@@ -54,7 +57,14 @@ public class InventoryEventHandler {
                     return;
                 }
                 inventoryRepository.addToQuantity(itemID, -itemQuantity).subscribe();
+                int used_quantity = itemQuantity;
+                if (plannedProduct.getUsedItems().containsKey(itemID)) {
+                    used_quantity += plannedProduct.getUsedItems().get(itemID);
+                }
+                plannedProduct.getUsedItems().put(itemID, used_quantity);
+
             }
+            plannedProductsRepository.updateUsedItems(productionID, plannedProduct.getUsedItems());
             ProductionEvent productionEvent = new ProductionEvent(productionID);
             Logger.getLogger("EventLog").info("production " + productionID + " is unblocked and scheduled");
 
@@ -62,7 +72,7 @@ public class InventoryEventHandler {
             Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
             ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
             scheduler = new ConcurrentTaskScheduler(localExecutor);
-            scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis() + 120000));
+            scheduler.schedule(exampleRunnable, new Date(SCHEDULE_TIME));
             //scheduler.schedule(exampleRunnable, Date.from(plannedProduct.getProductionDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         } else {
             Logger.getLogger("EventLog").info("production " + productionID + " cannot be scheduled");
