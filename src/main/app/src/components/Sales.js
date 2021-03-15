@@ -5,6 +5,8 @@ import useSalesPageStyles from "../styles/salesPageStyles";
 import { SpinBeforeLoading } from "./inventory/Inventory";
 import  CustomerForm  from "../Forms/CustomerForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
+import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
+
 
 const cols = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -85,9 +87,11 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
       <div style={{ height: 600, width: '50%', float: 'right' }}>
       <div >
           <h2 style={{ float: 'left' }}>Sales Orders</h2>
-          <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewSaleOrder(); }}>
-            Add New Sales Order
-          </Button>
+          <NewSalesOrderForm  
+            initialButton='Add New Sales Order'  
+            dialogTitle='New Sales Order '  
+            dialogContentText='Please enter the following information below to add a new sales order: '
+          />
 
       </div>
         <DataGrid
