@@ -3,6 +3,7 @@ package ca.serum390.godzilla.util.Events;
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
+import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -42,7 +44,7 @@ public class InventoryEventHandler {
         Integer purchaseID = event.getPurchaseOrderID();
         //TODO update the production status
         plannedProductsRepository.update(productionID,"processing").subscribe();
-
+        PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
         //TODO take the items from inventory
         Order purchaseOrder = ordersRepository.findById(purchaseID).block();
 
@@ -58,5 +60,6 @@ public class InventoryEventHandler {
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
         scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis()+120000));
+        //scheduler.schedule(exampleRunnable, Date.from(plannedProduct.getProductionDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 }

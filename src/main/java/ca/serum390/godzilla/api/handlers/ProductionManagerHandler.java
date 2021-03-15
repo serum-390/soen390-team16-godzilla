@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
@@ -32,7 +31,8 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 @Component
 public class ProductionManagerHandler {
 
-    //BUGs -> save(object) -> jsonb field is null , save(parameters) -> returns empty mono
+    //TODO check the order status before starting production
+    //TODO fix BUGs -> save(object) -> jsonb field is null , save(parameters) -> returns empty mono
     //TODO allow cancelling the production
     // allow editing production date ? or just cancel
     //TODO to cancel -> cancel all the purchase orders, -> return everything taken from inventory
@@ -48,7 +48,7 @@ public class ProductionManagerHandler {
 
     private Order salesOrder = null;
     private Order purchaseOrder = null;
-    private LocalDate productionDate;
+    private LocalDate productionDate = LocalDate.now().plusDays(1);
     private Logger logger;
 
     public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher, PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
@@ -57,45 +57,62 @@ public class ProductionManagerHandler {
         this.inventoryRepository = inventoryRepository;
         this.ordersRepository = ordersRepository;
 
+        // Setup event logger
         logger = Logger.getLogger("EventLog");
         FileHandler fh;
 
         try {
-
-            // This block configure the logger with handler and formatter
+            // TODO use relative path
             fh = new FileHandler("C:/Users/yasam/Desktop/ERP/src/main/java/ca/serum390/godzilla/util/Events/eventsLog.log");
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
-            // the following statement is used to log any messages
-            logger.info("My first log");
 
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    // preproduction  \=month?day?year?
+
+    // sets up the order id and the production date for production pipeline
+    // TODO add exception handling for when the query param values are not parsable
+    private void setup(ServerRequest req) {
+        Optional<String> orderID = req.queryParam("id");
+        Optional<String> productionDateReq = req.queryParam("date");
+
+        // get the sales order object
+        if (orderID.isPresent()) {
+            salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
+        }
+
+        // Production Date setup
+        if (productionDateReq.isPresent()) {
+            LocalDate input = LocalDate.parse(productionDateReq.get());
+            if (input.compareTo(LocalDate.now()) < 0) {
+                logger.info("invalid production date is entered");
+            }
+        }
+
+        //TODO for now the due date of purchase order is one day before the production.
+        purchaseOrder = new Order(LocalDate.now(), productionDate.minusDays(1), "Montreal", "purchase");
+    }
+
+    // validates the order for production
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
         setup(req);
-
         boolean isOrderReady = true;
         boolean isOrderBlocked = false;
         PlannedProduct plannedProduct;
 
-
         // Analyze the items in the order item list and the inventory
-        if (salesOrder != null && productionDate != null) {
-
-            plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
+        if (salesOrder != null) {
 
             for (Map.Entry<Integer, Integer> orderEntry : salesOrder.getItems().entrySet()) {
 
                 Integer orderItemID = orderEntry.getKey();
                 Integer orderItemQuantity = orderEntry.getValue();
-                // get item from inventory
+
+                // get item from inventory TODO change to subscribe
                 Item orderItem = inventoryRepository.findById(orderItemID).block();
 
                 if (orderItemQuantity <= orderItem.getQuantity()) {
@@ -123,6 +140,7 @@ public class ProductionManagerHandler {
                             total_quantity = total_quantity - bomItem.getQuantity();
                             //update inventory
                             inventoryRepository.update(bomItemID, 0).block();
+
                             // create purchase order this bom item with the number = total-quantity
                             if (purchaseOrder.getItems().containsKey(bomItemID)) {
                                 total_quantity += purchaseOrder.getItems().get(bomItemID);
@@ -133,58 +151,39 @@ public class ProductionManagerHandler {
                     }
                 }
             }
-            updateDB(isOrderReady, isOrderBlocked, plannedProduct);
+            plannedProduct = new PlannedProduct(productionDate, salesOrder.getId());
+            processOrder(isOrderReady, isOrderBlocked, plannedProduct);
+        } else {
+            logger.info("The orderID is invalid");
         }
         return noContent().build();
     }
 
 
-    private void setup(ServerRequest req) {
-        Optional<String> orderID = req.queryParam("id");
-        Optional<String> productionDateReq = req.queryParam("date");
-
-        purchaseOrder = new Order(LocalDate.of(2021, 1, 1),
-                LocalDate.of(2021, 1, 1), "Montreal", "purchase");
-
-        // get the sales order object
-        if (orderID.isPresent()) {
-            salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
-        }
-
-        // Production Date setup
-        if (productionDateReq.isPresent()) {
-            productionDate = LocalDate.parse(productionDateReq.get());
-        } else {
-            productionDate = LocalDate.of(1, 1, 1);
-        }
-
-    }
-
-
-
-
-
-
-    private void updateDB(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
+    private void processOrder(boolean isOrderReady, boolean isOrderBlocked, PlannedProduct plannedProduct) {
         if (isOrderReady) {
-            ordersRepository.update(salesOrder.getId(), "Ready").block();
+            ordersRepository.update(salesOrder.getId(), "ready").block();
         } else {
-            ordersRepository.update(salesOrder.getId(), isOrderBlocked ? "blocked" : "processing").block();
-
+            ordersRepository.update(salesOrder.getId(), "processing").block();
             PlannedProduct product = plannedProducts.save(plannedProduct).block();
             purchaseOrder.setProductionID(product.getId());
+
             if (isOrderBlocked) {
-                //     Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
+//                Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
                 Order order = ordersRepository.save(purchaseOrder).block();
                 ordersRepository.update(order.getId(), purchaseOrder.getItems()).block();
 
-                // TODO set timer
+                // schedule purchase order
                 PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
-                logger.info("purchase order "+order.getId()+" is created");
-                Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
+                logger.info("purchase order " + order.getId() + " is created");
+                Runnable purchaseTask = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
                 ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
                 scheduler = new ConcurrentTaskScheduler(localExecutor);
-                scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis()+120000));
+                scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
+//                scheduler.schedule(purchaseTask, Date.from(productionDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            }
+            else{
+                //TODO schedule production
             }
         }
     }

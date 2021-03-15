@@ -27,6 +27,7 @@ public class Order {
     private Map<Integer, Integer> items;
     private Integer productionID;
 
+    //TODO use enum for status : new , processing, ready
     public Order(LocalDate createdDate, LocalDate dueDate, String deliveryLocation, String orderType){
         this.createdDate = createdDate;
         this.dueDate = dueDate;

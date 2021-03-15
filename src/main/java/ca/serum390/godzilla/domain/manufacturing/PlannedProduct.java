@@ -22,6 +22,7 @@ public class PlannedProduct {
     private Integer orderID;
     private String status;
 
+    //TODO use enum for status : new , processing, blocked , complete
     public PlannedProduct(LocalDate productionDate, Integer orderID) {
         this.productionDate = productionDate;
         this.orderID = orderID;
