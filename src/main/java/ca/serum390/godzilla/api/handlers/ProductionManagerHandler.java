@@ -3,7 +3,7 @@ package ca.serum390.godzilla.api.handlers;
 import ca.serum390.godzilla.data.repositories.InventoryRepository;
 import ca.serum390.godzilla.data.repositories.OrdersRepository;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
-import ca.serum390.godzilla.domain.Inventory.Item;
+import ca.serum390.godzilla.domain.inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
 import ca.serum390.godzilla.util.Events.ProductionEvent;
@@ -96,7 +96,7 @@ public class ProductionManagerHandler {
         PlannedProduct plannedProduct;
 
         // Analyze the items in the order item list and the inventory
-        if (salesOrder != null && !salesOrder.getStatus().equals("new")) {
+        if (salesOrder != null && salesOrder.getStatus().equals("new")) {
 
             for (Map.Entry<Integer, Integer> orderEntry : salesOrder.getItems().entrySet()) {
 
@@ -207,8 +207,8 @@ public class ProductionManagerHandler {
         FileHandler fh;
 
         try {
-            File dest = new File("../../util/Events/eventsLog.log");
-            fh = new FileHandler(dest.getName());
+            File dest = new File("src/main/java/ca/serum390/godzilla/util/Events/eventsLog.log");
+            fh = new FileHandler(dest.getAbsolutePath());
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);

@@ -26,7 +26,7 @@ public class ProductionEventHandler {
         if (plannedProduct != null) {
             Logger.getLogger("EventLog").info("production " + productionID + " completed");
             plannedProductsRepository.updateStatus(productionID, "completed").subscribe();
-            ordersRepository.updateStatus(plannedProduct.getOrderID(), "completed").subscribe();
+            ordersRepository.updateStatus(plannedProduct.getOrderID(), "ready").subscribe();
         } else {
             Logger.getLogger("EventLog").info("production " + productionID + " cannot be completed");
         }

@@ -1,7 +1,7 @@
 package ca.serum390.godzilla.api.handlers;
 
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
-import ca.serum390.godzilla.domain.Inventory.Item;
+import ca.serum390.godzilla.domain.inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
 import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.stereotype.Component;
