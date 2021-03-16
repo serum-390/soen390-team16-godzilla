@@ -44,7 +44,6 @@ public class ProductionManagerHandler {
     private final PlannedProductsRepository plannedProductsRepository;
     private final InventoryRepository inventoryRepository;
     private final OrdersRepository ordersRepository;
-    private static final long SCHEDULE_TIME = System.currentTimeMillis() + 120000;
 
     private TaskScheduler scheduler;
     private Order salesOrder = null;
@@ -169,7 +168,11 @@ public class ProductionManagerHandler {
             int total_quantity = bomItemQuantity * orderItemQuantity;
             if (total_quantity <= bomItem.getQuantity()) {
                 inventoryRepository.updateQuantity(bomItemID, bomItem.getQuantity() - total_quantity).block();
-                plannedProduct.getUsedItems().put(bomItemID, total_quantity);
+                int used_quantity = bomItem.getQuantity();
+                if (plannedProduct.getUsedItems().containsKey(bomItemID)) {
+                    used_quantity += plannedProduct.getUsedItems().get(bomItemID);
+                }
+                plannedProduct.getUsedItems().put(bomItemID, used_quantity);
 
             } else {
                 isOrderBlocked = true;
@@ -224,7 +227,7 @@ public class ProductionManagerHandler {
         Runnable purchaseTask = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
-        scheduler.schedule(purchaseTask, new Date(SCHEDULE_TIME));
+        scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
     }
 
     // schedules the production event to 2 minutes after current time
@@ -234,7 +237,8 @@ public class ProductionManagerHandler {
         Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
-        scheduler.schedule(exampleRunnable, new Date(SCHEDULE_TIME));
+        scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis() + 120000));
+        Logger.getLogger("EventLog").info("production " + productionID + " is scheduled");
     }
 
 
