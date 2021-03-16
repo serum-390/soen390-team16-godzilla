@@ -2,9 +2,13 @@ import { DataGrid } from "@material-ui/data-grid";
 import { useState } from 'react';
 import useSalesPageStyles from "../styles/salesPageStyles";
 import { SpinBeforeLoading } from "./inventory/Inventory";
-import  CustomerForm  from "../Forms/CustomerForm";
+import CustomerForm from "../Forms/CustomerForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
+import axios from "axios";
+import Button from "@material-ui/core/Button";
+
+
 
 const cols = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -17,30 +21,30 @@ const cols = [
     headerName: 'Modify',
     width: 120,
     renderCell: params => (
-      
+
 
       <div style={{ margin: 'auto' }}>
         {
-         /*<Button variant='contained'
-          color='secondary'
-          onClick={params.value.onClick}>
-          show</Button> 
-          */
-         <CustomerForm  
-         initialButton='Edit' 
-         dialogTitle= {'Customer Information: ID('+ params.getValue('id')+')'}
-         dialogContentText='Please enter any information you would like to modify: ' 
-         customerCompanyName={params.getValue('companyName') || ''}
-         customerName={params.getValue('customerName') || ''}
-         customerAddress={params.getValue('customerAddress').split(",")[0] || ''}
-         customerCity={params.getValue('customerAddress').split(",")[1] || ''}
-         customerPostal={params.getValue('customerAddress').split(",")[2] || ''}
-         customerProvince ={params.getValue('customerAddress').split(",")[3] || ''} 
-         customerPhone={params.getValue('customerPhone') || ''}
-         submitButton='Update'  
-         deleteButton='Delete' 
-         /> 
-        }  
+          /*<Button variant='contained'
+           color='secondary'
+           onClick={params.value.onClick}>
+           show</Button> 
+           */
+          <CustomerForm
+            initialButton='Edit'
+            dialogTitle={'Customer Information: ID(' + params.getValue('id') + ')'}
+            dialogContentText='Please enter any information you would like to modify: '
+            customerCompanyName={params.getValue('companyName') || ''}
+            customerName={params.getValue('customerName') || ''}
+            customerAddress={params.getValue('customerAddress').split(",")[0] || ''}
+            customerCity={params.getValue('customerAddress').split(",")[1] || ''}
+            customerPostal={params.getValue('customerAddress').split(",")[2] || ''}
+            customerProvince={params.getValue('customerAddress').split(",")[3] || ''}
+            customerPhone={params.getValue('customerPhone') || ''}
+            submitButton='Update'
+            deleteButton='Delete'
+          />
+        }
       </div>
     ),
   },
@@ -56,26 +60,63 @@ const getSales = async () => {
 
   return json.sales.map(sale => {
     sale.salesOrders = {
-      onClick: () => {},
+      onClick: () => { },
     };
     return sale;
   });
 };
 
+const updateSales = async data => {
+  try {
+    const api = `/api/sales/${data.id}`;
+    const updated = await axios.put(api, data);
+    console.log(`STATUS CODE: ${updated.status}`);
+    console.log(`DATA: ${updated.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+const insertSales = async data => {
+  try {
+    const api = `/api/sales/`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+
+const deleteSales = async id => {
+  try {
+    const api = `/api/sales/${id}`;
+    const inserted = await axios.delete(api);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
 
 const SalesGrid = ({ className, columns, rows, onRowClick }) => {
   return (
-    
+
     <div className={className}>
       <h1>Sales</h1>
-      <div style={{ height: 600, width: '45%', float: 'left' }}> 
+      <div style={{ height: 600, width: '45%', float: 'left' }}>
         <div>
-        <h2 style={{ float: 'left' }}>Customer</h2>
-        <CustomerForm  
-        initialButton='Add New Customer'  
-        dialogTitle='Add New Customer '  
-        dialogContentText='Please enter the following information below to add a new customer: ' 
-        submitButton='Save'/>
+          <h2 style={{ float: 'left' }}>Customer</h2>
+          <CustomerForm
+            initialButton='Add New Customer'
+            dialogTitle='Add New Customer '
+            dialogContentText='Please enter the following information below to add a new customer: '
+            submitButton='Save' />
         </div>
         <DataGrid
           columns={columns}
@@ -84,15 +125,17 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
         />
       </div>
       <div style={{ height: 600, width: '50%', float: 'right' }}>
-      <div >
+        <div >
           <h2 style={{ float: 'left' }}>Sales Orders</h2>
-          <NewSalesOrderForm  
-            initialButton='Add New Sales Order'  
-            dialogTitle='New Sales Order '  
+          <NewSalesOrderForm
+            initialButton='Add New Sales Order'
+            dialogTitle='New Sales Order '
             dialogContentText='Please enter the following information below to add a new sales order: '
+            submitButton='Submit'
+            onSubmit={(data) => insertSales(data)}
           />
 
-      </div>
+        </div>
         <DataGrid
           columns={salesColumns}
           rows={salesRows}
@@ -104,35 +147,49 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
 };
 
 const customerRows = [
-  { id: 1,companyName: 'Company A',customerName: 'Customer1', customerAddress: '1444 Rue Mackay,Montreal,H3G2M2,QC', customerPhone: "1234567000" },
-  { id: 2,companyName: 'Company B', customerName: 'Customer2', customerAddress: '666 Ontario St,Toronto,M4X1N1,ON', customerPhone: "1233207000" }
+  { id: 1, companyName: 'Company A', customerName: 'Customer1', customerAddress: '1444 Rue Mackay,Montreal,H3G2M2,QC', customerPhone: "1234567000" },
+  { id: 2, companyName: 'Company B', customerName: 'Customer2', customerAddress: '666 Ontario St,Toronto,M4X1N1,ON', customerPhone: "1233207000" }
 ];
 
 const salesColumns = [
   { field: 'id', headerName: 'Order #', width: 110 },
-  { field: 'customerName', headerName: 'Customer', width: 130 },
-  { field: 'items', headerName: 'Products', width: 110 },
-  { field: 'timestamp', headerName: 'Timestamp', width: 130 },
-  { field: 'cost', headerName: 'Cost', width: 90 },
+  { field: 'createdDate', headerName: 'Created Date', width: 130 },
+  { field: 'dueDate', headerName: 'Due Date', width: 110 },
+  { field: 'deliveryLocation', headerName: 'Delivery Location', width: 130 },
+  { field: 'orderType', headerName: 'Order Type', width: 90 },
   { field: 'status', headerName: 'Status', width: 110 },
-  { field: 'SalesOrderDetails',
-    headerName: 'Details',
+  {
+    field: 'modify',
+    headerName: 'Modify',
     width: 130,
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         <PurchaseOrderDetailsForm
-                    orderID={params.getValue('id') || ''}
-                    vendorName={params.getValue('customerName') || ''}
-                    orderItems={params.getValue('items') || ''}
-                    orderTimestamp={params.getValue('timestamp') || ''}
-                    orderCost={params.getValue('cost') || ''}
-                    orderStatus={params.getValue('status') || ''}
-                    initialButton='View'
-                    dialogTitle={'Order Information - Order #' + params.getValue('id')}
-                    dialogContentText={'Data: '}
-                    submitButton='Cancel Order'
-                    TypeName = 'Customer'
-         />
+          orderID={params.getValue('id') || ''}
+          vendorName={params.getValue('customerName') || ''}
+          orderItems={params.getValue('items') || ''}
+          orderTimestamp={params.getValue('timestamp') || ''}
+          orderCost={params.getValue('cost') || ''}
+          orderStatus={params.getValue('status') || ''}
+          initialButton='EDIT'
+          dialogTitle={'Order Information - Order #' + params.getValue('id')}
+          dialogContentText={'Data: '}
+          submitButton='Cancel Order'
+          TypeName='Customer'
+        />
+      </div>
+    ),
+  },
+
+  {
+    field: 'delete',
+    headerName: 'Delete',
+    width: 130,
+    renderCell: params => (
+      <div style={{ margin: 'auto' }}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
+          Delete
+        </Button>
       </div>
     ),
   }
@@ -140,9 +197,9 @@ const salesColumns = [
 
 const salesRows = [
   { id: 1, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
-  { id: 2, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed"},
-  { id: 3, customerName: 'Customer 2', items: '????', timestamp: "01/31/2021", cost: "$200", status: "Ongoing"},
-  { id: 4, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100",status: "Ongoing" }
+  { id: 2, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
+  { id: 3, customerName: 'Customer 2', items: '????', timestamp: "01/31/2021", cost: "$200", status: "Ongoing" },
+  { id: 4, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Ongoing" }
 ];
 
 
