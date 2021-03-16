@@ -26,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProvinceOptions() {
+function ProvinceOptions({province,setProvince,defaultValue}) {
   const classes = useStyles();
-  const [province, setprovince] = React.useState('');
+  
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
-    setprovince(event.target.value);
+    setProvince(event.target.value);
   };
 
   const handleClose = () => {
@@ -54,24 +54,25 @@ function ProvinceOptions() {
           onClose={handleClose}
           onOpen={handleOpen}
           value={province}
-          onChange={handleChange}
+          defaultValue={defaultValue}
+          onChange={handleChange} 
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={1}>AB</MenuItem>
-          <MenuItem value={2}>BC</MenuItem>
-          <MenuItem value={3}>MB</MenuItem>
-          <MenuItem value={4}>NB</MenuItem>
-          <MenuItem value={5}>NL</MenuItem>
-          <MenuItem value={6}>NT</MenuItem>
-          <MenuItem value={7}>NS</MenuItem>
-          <MenuItem value={8}>NU</MenuItem>
-          <MenuItem value={9}>ON</MenuItem>
-          <MenuItem value={10}>PE</MenuItem>
-          <MenuItem value={11}>QC</MenuItem>
-          <MenuItem value={12}>SK</MenuItem>
-          <MenuItem value={13}>YT</MenuItem>
+          <MenuItem value='AB'>AB</MenuItem>
+          <MenuItem value='BC'>BC</MenuItem>
+          <MenuItem value='MB'>MB</MenuItem>
+          <MenuItem value='NB'>NB</MenuItem>
+          <MenuItem value='NL'>NL</MenuItem>
+          <MenuItem value='NT'>NT</MenuItem>
+          <MenuItem value='NS'>NS</MenuItem>
+          <MenuItem value='NU'>NU</MenuItem>
+          <MenuItem value='ON'>ON</MenuItem>
+          <MenuItem value='PE'>PE</MenuItem>
+          <MenuItem value='QC'>QC</MenuItem>
+          <MenuItem value='SK'>SK</MenuItem>
+          <MenuItem value='YT'>YT</MenuItem>
         </Select>
       </FormControl>
     </div>
@@ -98,7 +99,7 @@ TextMaskCustom.propTypes = {
   inputRef: PropTypes.func.isRequired,
 };
 
-function PhoneNumberInput() {
+function PhoneNumberInput({contact, setContact}) {
   const [values, setValues] = React.useState({
     textmask: '(1  )    -    ',
   });
@@ -108,6 +109,8 @@ function PhoneNumberInput() {
       ...values,
       [event.target.name]: event.target.value,
     });
+
+    setContact(event.target.value);
   };
 
   return (
@@ -115,7 +118,9 @@ function PhoneNumberInput() {
       <FormControl>
         <InputLabel htmlFor="formatted-text-mask-input">Phone Number</InputLabel>
         <Input
-          value={values.textmask}
+          value={
+            (contact !== undefined) ? contact : values.textmask
+          }
           onChange={handleChange}
           name="textmask"
           id="formatted-text-mask-input"
@@ -137,6 +142,9 @@ export default function CustomerForm(props) {
     setOpen(false);
   };
 
+  const [province, setProvince] = React.useState(props.customerProvince);
+  const [contact, setContact] = React.useState(props.customerPhone);
+
   return (
     <div>
       <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
@@ -144,11 +152,20 @@ export default function CustomerForm(props) {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
-        
         <DialogContent>
           <DialogContentText>
             {props.dialogContentText}
           </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="company"
+            label="Company Name"
+            type="string"
+            defaultValue={props.customerCompanyName}
+      
+            fullWidth
+          />
           <TextField
             autoFocus
             margin="dense"
@@ -192,10 +209,10 @@ export default function CustomerForm(props) {
               />
             </Grid>
             <Grid item md={3}>
-            <ProvinceOptions/>
+            <ProvinceOptions province={province} setProvince={setProvince} defaultValue={props.customerProvince}  />
             </Grid>
           </Grid>
-          <PhoneNumberInput/>
+          <PhoneNumberInput contact={contact} setContact={setContact} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">
