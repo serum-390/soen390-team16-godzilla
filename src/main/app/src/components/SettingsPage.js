@@ -47,7 +47,7 @@ const SettingsMenu = () => {
             className={classes.link}
           >
             <MenuItem>
-             User Management
+              User Management
             </MenuItem>
           </Link>
           <Link to='/settings/displaySettings'
