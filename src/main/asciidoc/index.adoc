@@ -350,4 +350,10 @@ path parameter.
 [[resources_vendorcontact]]
 == Vendor Contacts
 
-// TODO
+=== Retrieving Vendor Contact - `GET /api/vendorcontact/`
+
+operation::api/vendorcontact/all_GET[snippets='http-request,http-response,curl-request']
+
+=== Create Vendor Contact - `POST /api/vendorcontact/`
+
+operation::api/vendorcontact/create_POST[snippets='http-request,http-response,curl-request']

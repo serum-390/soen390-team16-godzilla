@@ -4,6 +4,7 @@ import static ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactI
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +34,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-
+import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.data.repositories.VendorContactRepository;
 import ca.serum390.godzilla.domain.vendor.VendorContact;
 import ca.serum390.godzilla.util.BuildableJsonMap;
@@ -101,9 +102,9 @@ public class VendersContactTests {
                 .body(contact, VendorContact.class)
                 .exchange()
                 .expectStatus().is2xxSuccessful()
-                .expectBody(VendorContact.class)
+                .expectBody()
                 .consumeWith(document("api/vendorcontact/create_POST",preprocessRequest(prettyPrint()),preprocessResponse(prettyPrint())))
-                .isEqualTo(c))
+                .isEmpty())
             .expectComplete()
             .verifyThenAssertThat()
             .tookLessThan(Duration.ofSeconds(1));
