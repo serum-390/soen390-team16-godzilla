@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.domain;
+package ca.serum390.godzilla.domain.user;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 @Data
-@Builder
 @With
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table("erp_user")
 public class GodzillaUser implements UserDetails {
     private static final long serialVersionUID = -336666572414315874L;
