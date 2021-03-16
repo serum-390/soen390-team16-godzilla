@@ -87,6 +87,30 @@ public class VendersContactTests {
         verify(vendorContactRepository).findAllVendor();
     }
 
+    @Test
+    @WithMockUser("test")
+    void createVendorContactTest(){
+        Mono<VendorContact> contact = buildContactFlux(1).take(1).shareNext();
+        when(vendorContactRepository.save(any())).thenReturn(contact);
+
+        StepVerifier.create(contact)
+            .consumeNextWith(c -> client.post()
+                .uri(VENDOR_CONTACT_API)
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
+                .body(contact, VendorContact.class)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(VendorContact.class)
+                .consumeWith(document("api/vendorcontact/create_POST",preprocessRequest(prettyPrint()),preprocessResponse(prettyPrint())))
+                .isEqualTo(c))
+            .expectComplete()
+            .verifyThenAssertThat()
+            .tookLessThan(Duration.ofSeconds(1));
+        
+        verify(vendorContactRepository).save(any());
+    }
+
     private static Flux<VendorContact> buildContactFlux(Integer startingId) {
         return Flux.fromStream(() -> Stream.iterate(
             buildVendorContact(startingId),
