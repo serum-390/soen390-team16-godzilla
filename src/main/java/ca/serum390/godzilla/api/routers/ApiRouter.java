@@ -35,6 +35,7 @@ public class ApiRouter implements WebFluxConfigurer {
     RouterFunction<ServerResponse> orderRoute;
     RouterFunction<ServerResponse> salesContactRoute;
     RouterFunction<ServerResponse> vendorContactRoute;
+    RouterFunction<ServerResponse> godzillaUserRoute;
 
     /**
      * Router using the functional endpoints Spring WebFlux API
@@ -54,6 +55,7 @@ public class ApiRouter implements WebFluxConfigurer {
                     .add(orderRoute)
                     .add(salesContactRoute)
                     .add(vendorContactRoute)
+                    .add(godzillaUserRoute)  
                     .build())
                 .build();
     }
