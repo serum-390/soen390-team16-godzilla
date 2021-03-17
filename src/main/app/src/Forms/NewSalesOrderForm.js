@@ -6,28 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import { DataGrid } from '@material-ui/data-grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    display: 'block',
-  },
-  formControl: {
-    margin: theme.spacing(2),
-    minWidth: 500,
-    minHeight: 400
-  },
-}));
-
-const customerRows = [
-  { id: 1, customerName: 'Customer1' },
-  { id: 2, customerName: 'Customer2' },
-];
 
 
 
