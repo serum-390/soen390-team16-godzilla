@@ -100,8 +100,9 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
 
 
 --SalesOrder
-INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "300" : 10, "198" : 33}');
-
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 7}');
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 15, "2" : 15}');
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 4, "2" : 2}');
 --SalesContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
 
