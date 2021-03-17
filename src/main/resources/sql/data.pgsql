@@ -36,24 +36,24 @@ INSERT INTO good_type (id,type, description)
     ON CONFLICT(type) DO NOTHING;
 
 INSERT INTO inventory ( item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
-    VALUES ('SuperSpeed BICYCLE', (
+    VALUES ('SuperSpeed BICYCLE 1', (
             SELECT
                 id
             FROM
                 good_type
             WHERE
                 type = 'fnmt'
-            LIMIT 1), 1, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2, "6":1}');
+            LIMIT 1), 1, 229.99, 'MONTREAL CONCORDIA', '{"4":1, "5":1, "6":2, "7":1}');
 
 INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
-    VALUES ('SuperSpeed BICYCLE', (
+    VALUES ('SuperSpeed BICYCLE 2', (
             SELECT
                 id
             FROM
                 good_type
             WHERE
                 type = 'fnmt'
-            LIMIT 1), 1, 299.99, 'MONTREAL CONCORDIA','{"3":1, "4":1, "5":2, "6":1}');
+            LIMIT 1), 1, 299.99, 'MONTREAL CONCORDIA','{"4":1, "5":1, "6":2, "7":1}');
 
 -- Semi-final self-product
 INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
@@ -101,9 +101,9 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
 
 
 --SalesOrder
-INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 7}');
-INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 15, "2" : 15}');
-INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "1" : 4, "2" : 2}');
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "2" : 7}');
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "2" : 15, "3" : 15}');
+INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-02-16','montreal','sales', 'new', '{ "2" : 4, "3" : 2}');
 --SalesContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
 
