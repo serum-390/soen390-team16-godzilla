@@ -9,12 +9,6 @@
 :operation-http-response-title: Example response
 :current-version: 1.1
 
-[source,json]
-----
-{"id":123,"itemName":"item","goodType":666,"quantity":89,"buyPrice":467.0,"sellPrice":555.0,"location":"Montreal, Quebec","billOfMaterial":null}
-----
-
-
 [[overview]]
 = Overview
 

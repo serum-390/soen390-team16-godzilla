@@ -1,98 +1,126 @@
-import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import { useState } from 'react';
-import useSalesPageStyles from "../styles/salesPageStyles";
+import { makeStyles } from '@material-ui/core';
 import { SpinBeforeLoading } from "./inventory/Inventory";
-import  CustomerForm  from "../Forms/CustomerForm";
-import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
+import CustomerForm from "../Forms/CustomerForm";
+import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
+import axios from "axios";
+import Button from "@material-ui/core/Button";
+
+
 
 const cols = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'customerName', headerName: 'Customer', width: 130 },
-  { field: 'customerAddress', headerName: 'Address', width: 130 },
-  { field: 'customerPhone', headerName: 'Contact #', width: 130 },
+  { field: 'companyName', headerName: 'Company Name', width: 120 },
+  { field: 'customerName', headerName: 'Customer', width: 120 },
+  { field: 'customerAddress', headerName: 'Address', width: 120 },
+  { field: 'customerPhone', headerName: 'Contact #', width: 120 },
   {
-    field: 'salesOrders',
     headerName: 'Modify',
-    width: 160,
+    width: 120,
     renderCell: params => (
-      
+
 
       <div style={{ margin: 'auto' }}>
         {
-
-         /*<Button variant='contained'
-          color='secondary'
-          onClick={params.value.onClick}>
-          show</Button> 
-          */
-         <CustomerForm  
-         initialButton='Edit' 
-         dialogTitle= {'Customer Information: ID('+ params.getValue('id')+')'}
-         dialogContentText='Please enter any information you would like to modify: ' 
-         customerName={params.getValue('customerName') || ''}
-         customerAddress={params.getValue('customerAddress').split(",")[0] || ''}
-         customerCity={params.getValue('customerAddress').split(",")[1] || ''}
-         customerPostal={params.getValue('customerAddress').split(",")[2] || ''}
-         customerProvince ={params.getValue('customerAddress').split(",")[3] || ''} //not yet done.
-         customerPhone={params.getValue('customerPhone') || ''}//not yet done.
-         submitButton='Update'  
-         deleteButton='Delete' 
-         /> 
-        }  
+          /*<Button variant='contained'
+           color='secondary'
+           onClick={params.value.onClick}>
+           show</Button> 
+           */
+          <CustomerForm
+            initialButton='Edit'
+            dialogTitle={'Customer Information: ID(' + params.getValue('id') + ')'}
+            dialogContentText='Please enter any information you would like to modify: '
+            customerCompanyName={params.getValue('companyName') || ''}
+            customerName={params.getValue('customerName') || ''}
+            customerAddress={params.getValue('customerAddress').split(",")[0] || ''}
+            customerCity={params.getValue('customerAddress').split(",")[1] || ''}
+            customerPostal={params.getValue('customerAddress').split(",")[2] || ''}
+            customerProvince={params.getValue('customerAddress').split(",")[3] || ''}
+            customerPhone={params.getValue('customerPhone') || ''}
+            submitButton='Update'
+            deleteButton='Delete'
+          />
+        }
       </div>
     ),
   },
 ];
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    padding: theme.spacing(1),
+  },
+  sort: {
+    margin: theme.spacing(1),
+    textTransform: 'none',
+  },
+}));
 
 const getSales = async () => {
-  const api = '/api/Sales/';
+  const api = '/api/orders/?status = sales';
   const got = await fetch(api);
   const json = await got.json();
+  return json || [];
+};
 
-  if (!json.sales) return [];
+const updateSales = async data => {
+  try {
+    const api = `/api/orders/${data.id}`;
+    const updated = await axios.put(api, data);
+    console.log(`STATUS CODE: ${updated.status}`);
+    console.log(`DATA: ${updated.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
 
-  return json.sales.map(sale => {
-    sale.salesOrders = {
-      onClick: () => {},
-    };
-    return sale;
-  });
+const insertSales = async data => {
+  try {
+    const api = `/api/orders/?status = sales`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+
+const deleteSales = async id => {
+  try {
+    const api = `/api/orders/${id}`;
+    const inserted = await axios.delete(api);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
 
 
 const SalesGrid = ({ className, columns, rows, onRowClick }) => {
   return (
-    
+
     <div className={className}>
       <h1>Sales</h1>
-      <div style={{ height: 600, width: '45%', float: 'left' }}> 
+      <div style={{ height: 600, width: '45%', float: 'left' }}>
         <div>
-        <h2 style={{ float: 'left' }}>Customer</h2>
-        <CustomerForm  
-        initialButton='Add New Customer'  
-        dialogTitle='Add New Customer '  
-        dialogContentText='Please enter the following information below to add a new customer: ' 
-        submitButton='Save'/>
+          <h2 style={{ float: 'left' }}>Customer</h2>
+          <CustomerForm
+            initialButton='Add New Customer'
+            dialogTitle='Add New Customer '
+            dialogContentText='Please enter the following information below to add a new customer: '
+            submitButton='Save' />
         </div>
         <DataGrid
           columns={columns}
           rows={customerRows}
-          onRowClick={onRowClick}
-        />
-      </div>
-      <div style={{ height: 600, width: '50%', float: 'right' }}>
-      <div >
-          <h2 style={{ float: 'left' }}>Sales Orders</h2>
-          <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={() => { AddNewSaleOrder(); }}>
-            Add New Sales Order
-          </Button>
-
-      </div>
-        <DataGrid
-          columns={salesColumns}
-          rows={salesRows}
           onRowClick={onRowClick}
         />
       </div>
@@ -101,58 +129,109 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
 };
 
 const customerRows = [
-  { id: 1, customerName: 'Customer1', customerAddress: '1444 Rue Mackay,Montreal,H3G2M2,QC', customerPhone: "1234567000" },
-  { id: 2, customerName: 'Customer2', customerAddress: '666 Ontario St,Toronto,M4X1N1,ON', customerPhone: "1233207000" }
+  { id: 1, companyName: 'Company A', customerName: 'Customer1', customerAddress: '1444 Rue Mackay,Montreal,H3G2M2,QC', customerPhone: "1234567000" },
+  { id: 2, companyName: 'Company B', customerName: 'Customer2', customerAddress: '666 Ontario St,Toronto,M4X1N1,ON', customerPhone: "1233207000" }
 ];
 
 const salesColumns = [
   { field: 'id', headerName: 'Order #', width: 110 },
-  { field: 'customerName', headerName: 'Customer', width: 130 },
-  { field: 'items', headerName: 'Products', width: 110 },
-  { field: 'timestamp', headerName: 'Timestamp', width: 130 },
-  { field: 'cost', headerName: 'Cost', width: 90 },
+  { field: 'createdDate', headerName: 'Created Date', width: 130 },
+  { field: 'dueDate', headerName: 'Due Date', width: 110 },
+  { field: 'deliveryLocation', headerName: 'Delivery Location', width: 130 },
+  { field: 'orderType', headerName: 'Order Type', width: 90 },
   { field: 'status', headerName: 'Status', width: 110 },
-  { field: 'SalesOrderDetails',
-    headerName: 'Details',
+  {
+    field: 'modify',
+    headerName: 'Modify',
     width: 130,
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
-        <PurchaseOrderDetailsForm
-                    orderID={params.getValue('id') || ''}
-                    vendorName={params.getValue('customerName') || ''}
-                    orderItems={params.getValue('items') || ''}
-                    orderTimestamp={params.getValue('timestamp') || ''}
-                    orderCost={params.getValue('cost') || ''}
-                    orderStatus={params.getValue('status') || ''}
-                    initialButton='View'
-                    dialogTitle={'Order Information - Order #' + params.getValue('id')}
-                    dialogContentText={'Data: '}
-                    submitButton='Cancel Order'
-                    TypeName = 'Customer'
-         />
+        <NewSalesOrderForm
+          initialButton='EDIT'
+          dialogTitle={'Order Information'}
+          dialogContentText={'Please enter the information you would like to modify'}
+          submitButton='Submit'
+          onSubmit={params.value}
+        />
+      </div>
+    ),
+  },
+
+  {
+    field: 'delete',
+    headerName: 'Delete',
+    width: 130,
+    renderCell: params => (
+      <div style={{ margin: 'auto' }}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
+          Delete
+        </Button>
       </div>
     ),
   }
 ];
 
-const salesRows = [
-  { id: 1, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
-  { id: 2, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed"},
-  { id: 3, customerName: 'Customer 2', items: '????', timestamp: "01/31/2021", cost: "$200", status: "Ongoing"},
-  { id: 4, customerName: 'Customer 3', items: '????', timestamp: "01/31/2021", cost: "$100",status: "Ongoing" }
-];
+
+const FilledSalesView = ({ salesOrders, classes }) => {
+  let orders = [];
+
+  let updateRow = (sales, updatedSales, toUpdate) => {
+    if (toUpdate) {
+      updateSales({
+        id: sales.id,
+        createdDate: updatedSales.createdDate === "" ? sales.createdDate : updatedSales.createdDate,
+        dueDate: updatedSales.dueDate === "" ? sales.dueDate : updatedSales.dueDate,
+        deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
+        orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
+        status: updatedSales.status === "" ? sales.status : updatedSales.status,
+        items: sales.items
+      })
+    }
+    return sales;
+  };
+  salesOrders.map(sales => (
+    orders.push({
+      id: sales.id,
+      createdDate: sales.createdDate,
+      dueDate: sales.dueDate,
+      deliveryLocation: sales.deliveryLocation,
+      orderType: sales.orderType,
+      status: sales.status,
+      modify: (updatedSales, toUpdate) => updateRow(sales, updatedSales, toUpdate),
+      delete: () => deleteSales(sales.id)
+    })));
+
+  return (
+    <DataGrid rows={orders} columns={salesColumns} pageSize={9} />
+  );
+};
+
+const LoadedSalesView = ({ classes, order }) => {
+  return (
+    <div style={{ height: 600, width: '50%', float: 'right' }}>
+      <h2 style={{ float: 'left' }}>Sales Orders</h2>
+      <NewSalesOrderForm
+        initialButton='Add New Sales Order'
+        dialogTitle='New Sales Order '
+        dialogContentText='Please enter the following information below to add a new sales order: '
+        submitButton='Submit'
+        onSubmit={(data) => insertSales(data)}
+      />
+      <FilledSalesView
+        salesOrders={order}
+        classes={classes}
+      />
+    </div>
+  );
+};
 
 
-function AddNewSaleOrder() {
-  alert('clicked');
-}
 
-function Sales() {
-  const classes = useSalesPageStyles();
-  const [rows, setRows] = useState([]);
+const Sales = () => {
+  const classes = useStyles();
+  const [order, setSales] = useState([]);
 
-  const waitForGetRequest = async () => getSales().then(sales => setRows(sales));
-  const handleRowclick = params => console.log(params);
+  const waitForGetRequest = async () => getSales().then(sales => setSales(sales));
 
   return (
     <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
@@ -160,11 +239,10 @@ function Sales() {
       <SalesGrid
         className={classes.root}
         columns={cols}
-        rows={rows}
-        onRowClick={handleRowclick}
       />
+      <LoadedSalesView classes={classes} order={order} />
     </SpinBeforeLoading>
   );
 }
-
+export { Sales, FilledSalesView, SpinBeforeLoading };
 export default Sales;

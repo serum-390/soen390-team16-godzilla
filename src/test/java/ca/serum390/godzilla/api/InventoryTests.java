@@ -1,21 +1,7 @@
 package ca.serum390.godzilla.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
-import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
-
-import java.time.Duration;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
+import ca.serum390.godzilla.data.repositories.InventoryRepository;
+import ca.serum390.godzilla.domain.inventory.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,12 +15,23 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.domain.inventory.Item;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -50,7 +47,7 @@ class InventoryTests {
      * Configure the WebTestClient for use with Spring REST Docs
      *
      * @param context {@link ApplicationContext} to use
-     * @param restDocumentation
+     * @param restDocProvider
      */
     @BeforeEach
     void setUp(ApplicationContext context, RestDocumentationContextProvider restDocProvider) {
@@ -75,19 +72,19 @@ class InventoryTests {
 
         StepVerifier.create(collected)
                 .consumeNextWith(l -> client.get()
-                    .uri(API_INVENTORY)
-                    .exchange()
-                    .expectStatus()
-                    .isOk()
-                    .expectBodyList(Item.class)
-                    .consumeWith(document("api/inventory/all_GET", preprocessResponse(prettyPrint())))
-                    .hasSize(numberOfItems)
-                    .isEqualTo(l)
+                        .uri(API_INVENTORY)
+                        .exchange()
+                        .expectStatus()
+                        .isOk()
+                        .expectBodyList(Item.class)
+                        .consumeWith(document("api/inventory/all_GET", preprocessResponse(prettyPrint())))
+                        .hasSize(numberOfItems)
+                        .isEqualTo(l)
                         .value(ls -> assertThat(ls)
-                            .isNotNull()
-                            .doesNotContainNull()
-                            .isInstanceOf(Collection.class)
-                            .containsAll(l)))
+                                .isNotNull()
+                                .doesNotContainNull()
+                                .isInstanceOf(Collection.class)
+                                .containsAll(l)))
                 .expectComplete()
                 .verifyThenAssertThat()
                 .tookLessThan(Duration.ofSeconds(1));
@@ -99,7 +96,7 @@ class InventoryTests {
      * <b>Tests:</b> <code>GET /api/inventory/?name=abc&id=123</code>
      *
      * <p>
-     *
+     * <p>
      * Tries both query string parameters `name` and `id`
      *
      * @param byId
@@ -137,23 +134,23 @@ class InventoryTests {
                                                Mono<Item> item, boolean byId) {
         StepVerifier.create(item)
                 .consumeNextWith(i -> client.get()
-                    .uri(uri)
-                    .accept(APPLICATION_JSON)
-                    .exchange()
-                    .expectStatus()
-                    .isOk()
-                    .expectBodyList(Item.class)
-                    .consumeWith(document(documentationDir, preprocessResponse(prettyPrint())))
-                    .hasSize(1)
-                    .contains(i)
-                    .value(list -> assertThat(list)
-                        .isNotNull()
-                        .hasAtLeastOneElementOfType(Item.class)
-                        .allMatch(i::equals)
-                        .isEqualTo(List.of(i))))
+                        .uri(uri)
+                        .accept(APPLICATION_JSON)
+                        .exchange()
+                        .expectStatus()
+                        .isOk()
+                        .expectBodyList(Item.class)
+                        .consumeWith(document(documentationDir, preprocessResponse(prettyPrint())))
+                        .hasSize(1)
+                        .contains(i)
+                        .value(list -> assertThat(list)
+                                .isNotNull()
+                                .hasAtLeastOneElementOfType(Item.class)
+                                .allMatch(i::equals)
+                                .isEqualTo(List.of(i))))
                 .expectComplete()
                 .verifyThenAssertThat()
-                .tookLessThan(Duration.ofSeconds(1));
+                .tookLessThan(Duration.ofSeconds(3));
     }
 
     /**
@@ -166,14 +163,14 @@ class InventoryTests {
 
         Function<Integer, Item> buildItem = id -> Item
                 .builder()
-                    .id(id)
-                    .itemName(name)
-                    .goodType(666)
-                    .quantity(89)
-                    .buyPrice(467)
-                    .sellPrice(555)
-                    .location("Montreal, Quebec")
-                    .billOfMaterial(null)
+                .id(id)
+                .itemName(name)
+                .goodType(666)
+                .quantity(89)
+                .buyPrice(467)
+                .sellPrice(555)
+                .location("Montreal, Quebec")
+                .billOfMaterial(null)
                 .build();
 
         return Flux.fromStream(() -> Stream.iterate(

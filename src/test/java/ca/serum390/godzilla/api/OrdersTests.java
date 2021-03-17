@@ -1,22 +1,8 @@
 package ca.serum390.godzilla.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
-import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import ca.serum390.godzilla.data.repositories.OrdersRepository;
+import ca.serum390.godzilla.domain.orders.Order;
+import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,13 +16,22 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import ca.serum390.godzilla.data.repositories.OrdersRepository;
-import ca.serum390.godzilla.domain.orders.Order;
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Supplier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
 /**
  * Tests: /api/orders/
@@ -106,14 +101,15 @@ class OrdersTests {
         Mono<Order> order = buildDemoOrderFlux().shareNext();
         order.subscribe(o -> {
             when(orderRepository
-                .save(
-                    o.getCreatedDate(),
-                    o.getDueDate(),
-                    o.getDeliveryLocation(),
-                    o.getOrderType(),
-                    o.getStatus(),
-                    o.getItems()))
-                .thenReturn(Mono.just(o));
+                    .save(
+                            o.getCreatedDate(),
+                            o.getDueDate(),
+                            o.getDeliveryLocation(),
+                            o.getOrderType(),
+                            o.getStatus(),
+                            o.getItems(),
+                            o.getProductionID()))
+                    .thenReturn(Mono.just(o));
             when(orderRepository.findById(o.getId())).thenReturn(Mono.just(o));
         });
 
@@ -135,16 +131,17 @@ class OrdersTests {
         // Verify database calls
         StepVerifier.create(order)
                 .consumeNextWith(
-                    o -> {
-                        verify(orderRepository, times(1)).save(
-                            o.getCreatedDate(),
-                            o.getDueDate(),
-                            o.getDeliveryLocation(),
-                            o.getOrderType(),
-                            o.getStatus(),
-                            o.getItems());
-                        verify(orderRepository, times(1)).findById(o.getId());
-                    })
+                        o -> {
+                            verify(orderRepository, times(1)).save(
+                                    o.getCreatedDate(),
+                                    o.getDueDate(),
+                                    o.getDeliveryLocation(),
+                                    o.getOrderType(),
+                                    o.getStatus(),
+                                    o.getItems(),
+                                    o.getProductionID());
+                            verify(orderRepository, times(1)).findById(o.getId());
+                        })
                 .expectComplete()
                 .verify();
     }
@@ -152,6 +149,7 @@ class OrdersTests {
     /**
      * Tests: <code>GET /api/orders/{id}</code>
      * <p>
+     *
      * @param id
      */
     @ParameterizedTest
@@ -162,8 +160,8 @@ class OrdersTests {
                 .take(id)
                 .last()
                 .doOnNext(o -> when(orderRepository
-                    .findById(id))
-                    .thenReturn(Mono.just(o)));
+                        .findById(id))
+                        .thenReturn(Mono.just(o)));
 
         StepVerifier.create(order)
                 .consumeNextWith(o -> assertGetDemoOrder(Mono.just(o)))
@@ -209,25 +207,26 @@ class OrdersTests {
                 .share()
                 .doOnNext(o -> collector.add(0, o))
                 .doOnNext(o -> when(orderRepository
-                    .findById(o.getId()))
-                    .thenReturn(Mono.just(o)));
+                        .findById(o.getId()))
+                        .thenReturn(Mono.just(o)));
 
         Mono<Order> order2 = order1
                 .map(o -> o
-                    .withCreatedDate(LocalDate.of(1997, 3, 14))
-                    .withDeliveryLocation("Some other location")
-                    .withDueDate(LocalDate.of(2025, 12, 21)))
+                        .withCreatedDate(LocalDate.of(1997, 3, 14))
+                        .withDeliveryLocation("Some other location")
+                        .withDueDate(LocalDate.of(2025, 12, 21)))
                 .doOnNext(o -> collector.add(1, o))
                 .doOnNext(o ->
-                    when(orderRepository.update(
-                        o.getCreatedDate(),
-                        o.getDueDate(),
-                        o.getDeliveryLocation(),
-                        o.getOrderType(),
-                        o.getId(),
-                        o.getStatus(),
-                        o.getItems()))
-                    .thenReturn(Mono.just(1)));
+                        when(orderRepository.update(
+                                o.getCreatedDate(),
+                                o.getDueDate(),
+                                o.getDeliveryLocation(),
+                                o.getOrderType(),
+                                o.getId(),
+                                o.getStatus(),
+                                o.getItems(),
+                                o.getProductionID()))
+                                .thenReturn(Mono.just(1)));
 
         verifyPut(order2, order1);
         verifyUpdateAndFindBy(collector.get(0), collector.get(1));
@@ -242,15 +241,15 @@ class OrdersTests {
     private void verifyPut(Mono<Order> source, Mono<Order> target) {
         StepVerifier.create(target)
                 .consumeNextWith(o -> client
-                    .put()
-                    .uri(ORDERS_API + o.getId())
-                    .contentType(APPLICATION_JSON)
-                    .body(source, Order.class)
-                    .exchange()
-                    .expectStatus()
-                    .is2xxSuccessful()
-                    .expectBody()
-                    .isEmpty())
+                        .put()
+                        .uri(ORDERS_API + o.getId())
+                        .contentType(APPLICATION_JSON)
+                        .body(source, Order.class)
+                        .exchange()
+                        .expectStatus()
+                        .is2xxSuccessful()
+                        .expectBody()
+                        .isEmpty())
                 .expectComplete()
                 .verifyThenAssertThat()
                 .tookLessThan(Duration.ofSeconds(1));
@@ -271,7 +270,8 @@ class OrdersTests {
                 updated.getOrderType(),
                 updated.getId(),
                 updated.getStatus(),
-                updated.getItems());
+                updated.getItems(),
+                updated.getProductionID());
     }
 
     /**
@@ -283,7 +283,10 @@ class OrdersTests {
     private Flux<Order> buildDemoOrderFlux() {
         class Incrementer {
             int val = 1;
-            int next() { return val++; }
+
+            int next() {
+                return val++;
+            }
         }
 
         Incrementer idIncrementer = new Incrementer();
@@ -294,6 +297,7 @@ class OrdersTests {
                 .dueDate(FUTURE_DATE)
                 .deliveryLocation("Godzilla ERP HQ")
                 .orderType("Some really good stuff")
+                .productionID(1)
                 .status("new")
                 .items(Map.of())
                 .build();
@@ -310,21 +314,21 @@ class OrdersTests {
     private void assertGetDemoOrder(Mono<Order> order) {
         StepVerifier.create(order)
                 .assertNext(o -> client
-                    .get()
-                    .uri(ORDERS_API + o.getId())
-                    .exchange()
-                    .expectStatus()
-                    .is2xxSuccessful()
-                    .expectBody(Order.class)
-                    .consumeWith(document("api/orders/byid_GET", preprocessResponse(prettyPrint())))
-                    .isEqualTo(o)
-                    .value(o2 -> assertThat(o2)
-                        .isNotNull()
-                        .hasNoNullFieldsOrProperties()
-                        .hasFieldOrPropertyWithValue("createdDate", NOW)
-                        .hasFieldOrPropertyWithValue("dueDate", FUTURE_DATE)
-                        .hasSameHashCodeAs(o2)
-                        .hasToString(o2.toString())))
+                        .get()
+                        .uri(ORDERS_API + o.getId())
+                        .exchange()
+                        .expectStatus()
+                        .is2xxSuccessful()
+                        .expectBody(Order.class)
+                        .consumeWith(document("api/orders/byid_GET", preprocessResponse(prettyPrint())))
+                        .isEqualTo(o)
+                        .value(o2 -> assertThat(o2)
+                                .isNotNull()
+                                .hasNoNullFieldsOrProperties()
+                                .hasFieldOrPropertyWithValue("createdDate", NOW)
+                                .hasFieldOrPropertyWithValue("dueDate", FUTURE_DATE)
+                                .hasSameHashCodeAs(o2)
+                                .hasToString(o2.toString())))
                 .expectComplete()
                 .verifyThenAssertThat()
                 .tookLessThan(Duration.ofSeconds(1));

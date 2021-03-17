@@ -1,9 +1,9 @@
-import {Box, makeStyles} from '@material-ui/core';
-import React, {Fragment, useEffect, useState} from 'react';
+import { Box, makeStyles } from '@material-ui/core';
+import React, { Fragment, useEffect, useState } from 'react';
 import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
-import {spinnyBoi} from '../About';
-import {DataGrid} from "@material-ui/data-grid";
+import { spinnyBoi } from '../About';
+import { DataGrid } from "@material-ui/data-grid";
 import InventoryForm from "../../Forms/InventoryForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
@@ -58,19 +58,19 @@ const deleteItem = async id => {
 
 
 const inventoryCols = [
-  {field: 'id', headerName: 'Item', width: 100},
-  {field: 'ItemName', headerName: 'Item Name', width: 130},
-  {field: 'GoodType', headerName: 'Type', width: 100},
-  {field: 'Quantity', headerName: 'Quantity', width: 130},
-  {field: 'SellPrice', headerName: 'Sell Price', width: 130},
-  {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
-  {field: 'Location', headerName: 'Location', width: 130},
+  { field: 'id', headerName: 'Item', width: 100 },
+  { field: 'ItemName', headerName: 'Item Name', width: 130 },
+  { field: 'GoodType', headerName: 'Type', width: 100 },
+  { field: 'Quantity', headerName: 'Quantity', width: 130 },
+  { field: 'SellPrice', headerName: 'Sell Price', width: 130 },
+  { field: 'BuyPrice', headerName: 'Buy Price', width: 130 },
+  { field: 'Location', headerName: 'Location', width: 130 },
   {
     field: 'modify',
     headerName: 'Modify',
     width: 100,
     renderCell: params => (
-      <div style={{margin: 'auto'}}>
+      <div style={{ margin: 'auto' }}>
         {
           <InventoryForm
             initialButton='Edit'
@@ -88,8 +88,8 @@ const inventoryCols = [
     headerName: 'Delete',
     width: 130,
     renderCell: params => (
-      <div style={{margin: 'auto'}}>
-        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
+      <div style={{ margin: 'auto' }}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
           Delete
         </Button>
       </div>
@@ -106,7 +106,7 @@ const getInventory = async () => {
   return json || [];
 };
 
-const FilledInventoryView = ({inventoryItems, classes}) => {
+const FilledInventoryView = ({ inventoryItems, classes }) => {
   let items = [];
 
   let updateRow = (item, updatedItem, toUpdate) => {
@@ -119,7 +119,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
         sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
         buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
         location: updatedItem.location === "" ? item.location : updatedItem.location,
-        billOfMaterial:  item.billOfMaterial
+        billOfMaterial: item.billOfMaterial
       })
     }
     return item;
@@ -138,7 +138,7 @@ const FilledInventoryView = ({inventoryItems, classes}) => {
     })));
 
   return (
-    <DataGrid rows={items} columns={inventoryCols} pageSize={9}/>
+    <DataGrid rows={items} columns={inventoryCols} pageSize={9} />
   );
 };
 
@@ -153,18 +153,18 @@ const Spinner = () => {
         alignItems: 'center',
       }}
     >
-      <img src={AppLogo} alt='React Logo' className='App-logo'/>
+      <img src={AppLogo} alt='React Logo' className='App-logo' />
       <h1>Loading...</h1>
     </Box>
   );
 };
 
-const LoadedView = ({classes, inventory}) => {
+const LoadedView = ({ classes, inventory }) => {
   return (
     <div>
-      <h1 style={{textAlign: "center"}}>Inventory</h1>
-      <div style={{height: 800, width: '85%', float: "left"}}>
-        <div style={{float: "left"}}>
+      <h1 style={{ textAlign: "center" }}>Inventory</h1>
+      <div style={{ height: 800, width: '85%', float: "left" }}>
+        <div style={{ float: "left" }}>
           <InventoryForm
             initialButton='Insert'
             dialogTitle='Inventory Information '
@@ -184,11 +184,11 @@ const LoadedView = ({classes, inventory}) => {
 };
 
 const SpinBeforeLoading = ({
-                             awaiting = async () => {
-                             },
-                             minLoadingTime = 0,
-                             ...props
-                           }) => {
+  awaiting = async () => {
+  },
+  minLoadingTime = 0,
+  ...props
+}) => {
 
   const [loading, setLoading] = useState(true);
   const [loadingMin, setLoadingMin] = useState(true);
@@ -210,10 +210,10 @@ const Inventory = () => {
 
   return (
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} inventory={inventory}/>
+      <LoadedView classes={classes} inventory={inventory} />
     </SpinBeforeLoading>
   );
 };
 
-export {Inventory, FilledInventoryView, Spinner, SpinBeforeLoading};
+export { Inventory, FilledInventoryView, Spinner, SpinBeforeLoading };
 export default Inventory;
