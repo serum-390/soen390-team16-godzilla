@@ -1,12 +1,9 @@
-DELETE FROM goods;
 DELETE FROM orders;
 DELETE FROM contact;
 DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
 
-INSERT INTO goods (name, description)
-    VALUES ('SuperSpeed Bicycle', 'A really fast bike, fun for the whole family');
 
 --insert data for good_type
 INSERT INTO good_type (id,type, description)
