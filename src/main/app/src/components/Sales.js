@@ -1,9 +1,8 @@
 import { DataGrid } from "@material-ui/data-grid";
 import { useState } from 'react';
-import useSalesPageStyles from "../styles/salesPageStyles";
+import { makeStyles } from '@material-ui/core';
 import { SpinBeforeLoading } from "./inventory/Inventory";
 import CustomerForm from "../Forms/CustomerForm";
-import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
@@ -17,7 +16,6 @@ const cols = [
   { field: 'customerAddress', headerName: 'Address', width: 120 },
   { field: 'customerPhone', headerName: 'Contact #', width: 120 },
   {
-    field: 'salesOrders',
     headerName: 'Modify',
     width: 120,
     renderCell: params => (
@@ -50,25 +48,27 @@ const cols = [
   },
 ];
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    padding: theme.spacing(1),
+  },
+  sort: {
+    margin: theme.spacing(1),
+    textTransform: 'none',
+  },
+}));
 
 const getSales = async () => {
-  const api = '/api/Sales/';
+  const api = '/api/orders/?status = sales';
   const got = await fetch(api);
   const json = await got.json();
-
-  if (!json.sales) return [];
-
-  return json.sales.map(sale => {
-    sale.salesOrders = {
-      onClick: () => { },
-    };
-    return sale;
-  });
+  return json || [];
 };
 
 const updateSales = async data => {
   try {
-    const api = `/api/sales/${data.id}`;
+    const api = `/api/orders/${data.id}`;
     const updated = await axios.put(api, data);
     console.log(`STATUS CODE: ${updated.status}`);
     console.log(`DATA: ${updated.data || "Nothing"}`);
@@ -80,7 +80,7 @@ const updateSales = async data => {
 
 const insertSales = async data => {
   try {
-    const api = `/api/sales/`;
+    const api = `/api/orders/?status = sales`;
     const inserted = await axios.post(api, data);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
@@ -93,7 +93,7 @@ const insertSales = async data => {
 
 const deleteSales = async id => {
   try {
-    const api = `/api/sales/${id}`;
+    const api = `/api/orders/${id}`;
     const inserted = await axios.delete(api);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
@@ -124,24 +124,6 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
           onRowClick={onRowClick}
         />
       </div>
-      <div style={{ height: 600, width: '50%', float: 'right' }}>
-        <div >
-          <h2 style={{ float: 'left' }}>Sales Orders</h2>
-          <NewSalesOrderForm
-            initialButton='Add New Sales Order'
-            dialogTitle='New Sales Order '
-            dialogContentText='Please enter the following information below to add a new sales order: '
-            submitButton='Submit'
-            onSubmit={(data) => insertSales(data)}
-          />
-
-        </div>
-        <DataGrid
-          columns={salesColumns}
-          rows={salesRows}
-          onRowClick={onRowClick}
-        />
-      </div>
     </div>
   );
 };
@@ -164,18 +146,12 @@ const salesColumns = [
     width: 130,
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
-        <PurchaseOrderDetailsForm
-          orderID={params.getValue('id') || ''}
-          vendorName={params.getValue('customerName') || ''}
-          orderItems={params.getValue('items') || ''}
-          orderTimestamp={params.getValue('timestamp') || ''}
-          orderCost={params.getValue('cost') || ''}
-          orderStatus={params.getValue('status') || ''}
+        <NewSalesOrderForm
           initialButton='EDIT'
-          dialogTitle={'Order Information - Order #' + params.getValue('id')}
-          dialogContentText={'Data: '}
-          submitButton='Cancel Order'
-          TypeName='Customer'
+          dialogTitle={'Order Information'}
+          dialogContentText={'Please enter the information you would like to modify'}
+          submitButton='Submit'
+          onSubmit={params.value}
         />
       </div>
     ),
@@ -195,20 +171,67 @@ const salesColumns = [
   }
 ];
 
-const salesRows = [
-  { id: 1, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
-  { id: 2, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
-  { id: 3, customerName: 'Customer 2', items: '????', timestamp: "01/31/2021", cost: "$200", status: "Ongoing" },
-  { id: 4, customerName: 'Customer 1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Ongoing" }
-];
+
+const FilledSalesView = ({ salesOrders, classes }) => {
+  let orders = [];
+
+  let updateRow = (sales, updatedSales, toUpdate) => {
+    if (toUpdate) {
+      updateSales({
+        id: sales.id,
+        createdDate: updatedSales.createdDate === "" ? sales.createdDate : updatedSales.createdDate,
+        dueDate: updatedSales.dueDate === "" ? sales.dueDate : updatedSales.dueDate,
+        deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
+        orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
+        status: updatedSales.status === "" ? sales.status : updatedSales.status,
+        items: sales.items
+      })
+    }
+    return sales;
+  };
+  salesOrders.map(sales => (
+    orders.push({
+      id: sales.id,
+      createdDate: sales.createdDate,
+      dueDate: sales.dueDate,
+      deliveryLocation: sales.deliveryLocation,
+      orderType: sales.orderType,
+      status: sales.status,
+      modify: (updatedSales, toUpdate) => updateRow(sales, updatedSales, toUpdate),
+      delete: () => deleteSales(sales.id)
+    })));
+
+  return (
+    <DataGrid rows={orders} columns={salesColumns} pageSize={9} />
+  );
+};
+
+const LoadedSalesView = ({ classes, order }) => {
+  return (
+    <div style={{ height: 600, width: '50%', float: 'right' }}>
+      <h2 style={{ float: 'left' }}>Sales Orders</h2>
+      <NewSalesOrderForm
+        initialButton='Add New Sales Order'
+        dialogTitle='New Sales Order '
+        dialogContentText='Please enter the following information below to add a new sales order: '
+        submitButton='Submit'
+        onSubmit={(data) => insertSales(data)}
+      />
+      <FilledSalesView
+        salesOrders={order}
+        classes={classes}
+      />
+    </div>
+  );
+};
 
 
-function Sales() {
-  const classes = useSalesPageStyles();
-  const [rows, setRows] = useState([]);
 
-  const waitForGetRequest = async () => getSales().then(sales => setRows(sales));
-  const handleRowclick = params => console.log(params);
+const Sales = () => {
+  const classes = useStyles();
+  const [order, setSales] = useState([]);
+
+  const waitForGetRequest = async () => getSales().then(sales => setSales(sales));
 
   return (
     <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
@@ -216,11 +239,10 @@ function Sales() {
       <SalesGrid
         className={classes.root}
         columns={cols}
-        rows={rows}
-        onRowClick={handleRowclick}
       />
+      <LoadedSalesView classes={classes} order={order} />
     </SpinBeforeLoading>
   );
 }
-
+export { Sales, FilledSalesView, SpinBeforeLoading };
 export default Sales;

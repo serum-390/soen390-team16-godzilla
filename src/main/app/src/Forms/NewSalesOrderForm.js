@@ -31,44 +31,6 @@ const customerRows = [
 
 
 
-
-const inventoryCols = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'ProductName', headerName: 'Product name', width: 150 },
-  {
-    field: 'price',
-    headerName: 'Price',
-    type: 'number',
-    width: 90,
-  },
-  {
-    field: 'quantity',
-    headerName: 'Quantity',
-    type: 'number',
-    width: 120,
-    renderCell: params => (
-      <TextField
-        id="quantityVal"
-        label="Quantity"
-        type="number"
-        defaultValue="0"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    )
-  },
-]
-
-const inventoryRows = [
-  { id: 1, ProductName: 'Product1', price: "400" },
-  { id: 2, ProductName: 'Product2', price: "100" },
-  { id: 3, ProductName: 'Product3', price: "300" },
-  { id: 4, ProductName: 'Product4', price: "250" },
-  { id: 5, ProductName: 'Product5', price: "200" },
-
-]
-
 export default function NewSalesOrderForm(props) {
   const sales = props.onSubmit(null, false);
 
@@ -95,7 +57,6 @@ export default function NewSalesOrderForm(props) {
     };
     props.onSubmit(data, true);
     setOpen(false);
-    // want to update the table after clicking this
 
   };
 
