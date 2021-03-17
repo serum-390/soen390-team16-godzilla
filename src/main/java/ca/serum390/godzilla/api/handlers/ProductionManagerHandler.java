@@ -260,12 +260,10 @@ public class ProductionManagerHandler {
         logger = Logger.getLogger("EventLog");
         FileHandler fh;
         try {
-            File dest = new File("src/main/java/ca/serum390/godzilla/util/Events/eventsLog.log");
-            fh = new FileHandler(dest.getAbsolutePath());
+            fh = new FileHandler(new File("eventsLog.log").getAbsolutePath());
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
-
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
