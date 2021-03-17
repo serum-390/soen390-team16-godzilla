@@ -1,9 +1,6 @@
 import { Button, Grid, TextField, makeStyles, Paper, useMediaQuery, useTheme } from '@material-ui/core';
 import React from 'react';
 
-
-//TODO Make Inline Styling
-
 const useStyles = makeStyles(theme => ({
     divStyle: {
         alignContent: 'centre',
