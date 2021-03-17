@@ -1,7 +1,6 @@
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import NavBar from './components/NavBar';
 import NavBarMobile from './components/NavBarMobile';
-// import Login from './components/Login';
 
 function App() {
 
@@ -13,7 +12,6 @@ function App() {
       {
         desktop ? <NavBar />
           : <NavBarMobile />
-        // <Login />
       }
     </div>
   );
