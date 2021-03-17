@@ -37,7 +37,6 @@ public class OrderHandler {
 
     // Create an order
     public Mono<ServerResponse> create(ServerRequest req) {
-        System.out.println("HEGNJKRDFGJKDSJFLKDKFKLDGJK 23243432432");
         return req.bodyToMono(Order.class).flatMap(order -> ordersRepository.save(order.getCreatedDate(),
                 order.getDueDate(), order.getDeliveryLocation(), order.getOrderType(), order.getStatus(), order.getItems()))
                 .flatMap(id -> noContent().build());
