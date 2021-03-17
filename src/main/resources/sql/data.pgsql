@@ -3,8 +3,9 @@ DELETE FROM contact;
 DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
+DELETE FROM PLANNED_PRODUCTS;
 
-
+SELECT setval(pg_get_serial_sequence('inventory', 'id'), 1, true);
 --insert data for good_type
 INSERT INTO good_type (id,type, description)
     VALUES (1,'fnmt', 'final product')
@@ -34,8 +35,8 @@ INSERT INTO good_type (id,type, description)
     VALUES (6,'accp', 'accessories')
     ON CONFLICT(type) DO NOTHING;
 
-INSERT INTO inventory (id, item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
-    VALUES (1,'SuperSpeed BICYCLE', (
+INSERT INTO inventory ( item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
+    VALUES ('SuperSpeed BICYCLE', (
             SELECT
                 id
             FROM
@@ -44,8 +45,8 @@ INSERT INTO inventory (id, item_name, good_type, quantity, sell_price, LOCATION,
                 type = 'fnmt'
             LIMIT 1), 1, 229.99, 'MONTREAL CONCORDIA', '{"3":1, "4":1, "5":2, "6":1}');
 
-INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
-    VALUES (2,'SuperSpeed BICYCLE', (
+INSERT INTO inventory (item_name, good_type, quantity, sell_price, LOCATION, BILL_OF_MATERIAL)
+    VALUES ('SuperSpeed BICYCLE', (
             SELECT
                 id
             FROM
@@ -55,8 +56,8 @@ INSERT INTO inventory (id,item_name, good_type, quantity, sell_price, LOCATION, 
             LIMIT 1), 1, 299.99, 'MONTREAL CONCORDIA','{"3":1, "4":1, "5":2, "6":1}');
 
 -- Semi-final self-product
-INSERT INTO inventory (id,item_name, good_type, quantity, LOCATION)
-    VALUES (3,'frame speed', (
+INSERT INTO inventory (item_name, good_type, quantity, LOCATION)
+    VALUES ('frame speed', (
             SELECT
                 id
             FROM
@@ -66,8 +67,8 @@ INSERT INTO inventory (id,item_name, good_type, quantity, LOCATION)
             LIMIT 1), 10, 'MONTREAL CONCORDIA');
 
 --Semi-final buy or self-product
-INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
-    VALUES (4,'Speed Control', (
+INSERT INTO inventory ( item_name, good_type, quantity, buy_price, LOCATION)
+    VALUES ('Speed Control', (
             SELECT
                 id
             FROM
@@ -76,8 +77,8 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
                 type = 'smbs'
             LIMIT 1), 10, 32.99, 'MONTREAL CONCORDIA');
 
-INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
-    VALUES (5,'Speed Wheel', (
+INSERT INTO inventory ( item_name, good_type, quantity, buy_price, LOCATION)
+    VALUES ('Speed Wheel', (
             SELECT
                 id
             FROM
@@ -88,8 +89,8 @@ INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
 
 --Semi-final buy-product = raw material
 
-INSERT INTO inventory (id, item_name, good_type, quantity, buy_price, LOCATION)
-    VALUES (6,'Skill Brake', (
+INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
+    VALUES ('Skill Brake', (
             SELECT
                 id
             FROM
