@@ -4,6 +4,7 @@ import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.Map;
 
+@Repository
 public interface OrdersRepository extends ReactiveCrudRepository<Order, Integer> {
     @Modifying
     @Query("UPDATE orders SET CREATED_DATE = $1, DUE_DATE = $2, DELIVERY_LOCATION= $3, ORDER_TYPE=$4 , STATUS = $6 , ITEMS = $7, PRODUCTION_ID = $8 WHERE ID = $5")

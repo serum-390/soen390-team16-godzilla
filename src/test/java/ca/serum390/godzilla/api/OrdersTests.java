@@ -297,6 +297,7 @@ class OrdersTests {
                 .dueDate(FUTURE_DATE)
                 .deliveryLocation("Godzilla ERP HQ")
                 .orderType("Some really good stuff")
+                .productionID(1)
                 .status("new")
                 .items(Map.of())
                 .build();

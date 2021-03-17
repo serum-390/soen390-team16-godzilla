@@ -5,8 +5,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class PurchaseOrderEvent extends ERPEvent {
-    //TODO : fire this event after a certain time, the inventory will listen and handle it. it will add all the items
-    // in the purchase event to inventory -> fires an inventory event
+public class PurchaseOrderEvent {
     private Integer orderID;
 }

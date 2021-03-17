@@ -150,7 +150,7 @@ class InventoryTests {
                                 .isEqualTo(List.of(i))))
                 .expectComplete()
                 .verifyThenAssertThat()
-                .tookLessThan(Duration.ofSeconds(1));
+                .tookLessThan(Duration.ofSeconds(3));
     }
 
     /**

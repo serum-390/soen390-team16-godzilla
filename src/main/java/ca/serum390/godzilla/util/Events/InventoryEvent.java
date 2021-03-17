@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class InventoryEvent extends ERPEvent {
+public class InventoryEvent {
     private Integer productionID;
     private Integer purchaseOrderID;
 }

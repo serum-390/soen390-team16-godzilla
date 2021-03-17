@@ -1,7 +1,6 @@
 package ca.serum390.godzilla.data.repositories;
 
 import ca.serum390.godzilla.domain.inventory.Item;
-import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -30,6 +29,6 @@ public interface InventoryRepository extends ReactiveCrudRepository<Item, Intege
     Mono<Integer> addToQuantity(Integer id, int quantity);
 
     @Query("INSERT INTO inventory(ITEM_NAME, LOCATION, BUY_PRICE, GOOD_TYPE, QUANTITY, SELL_PRICE, BILL_OF_MATERIAL) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *")
-    Mono<Order> save(String name, String location, float buyPrice, int goodType, int quantity, float sellPrice, Map<Integer, Integer> BOM);
+    Mono<Item> save(String name, String location, float buyPrice, int goodType, int quantity, float sellPrice, Map<Integer, Integer> BOM);
 
 }

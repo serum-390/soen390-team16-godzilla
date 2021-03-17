@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ProductionEvent extends ERPEvent {
+public class ProductionEvent {
     private Integer productionID;
 }

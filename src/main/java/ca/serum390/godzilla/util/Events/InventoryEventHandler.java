@@ -26,7 +26,10 @@ public class InventoryEventHandler {
     private final ApplicationEventPublisher applicationEventPublisher;
     private TaskScheduler scheduler;
 
-    public InventoryEventHandler(PlannedProductsRepository plannedProductsRepository, OrdersRepository ordersRepository, InventoryRepository inventoryRepository, ApplicationEventPublisher applicationEventPublisher) {
+    public InventoryEventHandler(PlannedProductsRepository plannedProductsRepository,
+                                 OrdersRepository ordersRepository,
+                                 InventoryRepository inventoryRepository,
+                                 ApplicationEventPublisher applicationEventPublisher) {
         this.plannedProductsRepository = plannedProductsRepository;
         this.ordersRepository = ordersRepository;
         this.inventoryRepository = inventoryRepository;
@@ -56,11 +59,11 @@ public class InventoryEventHandler {
                     return;
                 }
                 inventoryRepository.addToQuantity(itemID, -itemQuantity).subscribe();
-                int used_quantity = itemQuantity;
+                int usedQuantity = itemQuantity;
                 if (plannedProduct.getUsedItems().containsKey(itemID)) {
-                    used_quantity += plannedProduct.getUsedItems().get(itemID);
+                    usedQuantity += plannedProduct.getUsedItems().get(itemID);
                 }
-                plannedProduct.getUsedItems().put(itemID, used_quantity);
+                plannedProduct.getUsedItems().put(itemID, usedQuantity);
 
             }
             plannedProductsRepository.updateUsedItems(productionID, plannedProduct.getUsedItems()).block();
@@ -68,10 +71,10 @@ public class InventoryEventHandler {
             Logger.getLogger("EventLog").info("production " + productionID + " is unblocked and scheduled");
 
             //TODO set real time
-            Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
+            Runnable productionTask = () -> applicationEventPublisher.publishEvent(productionEvent);
             ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
             scheduler = new ConcurrentTaskScheduler(localExecutor);
-            scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis() + 120000));
+            scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
             //scheduler.schedule(exampleRunnable, Date.from(plannedProduct.getProductionDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         } else {
             Logger.getLogger("EventLog").info("production " + productionID + " cannot be scheduled");

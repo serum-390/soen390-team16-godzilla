@@ -47,7 +47,10 @@ public class ProductionManagerHandler {
     private boolean isOrderReady = true;
     private boolean isOrderBlocked = false;
 
-    public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher, PlannedProductsRepository plannedProducts, InventoryRepository inventoryRepository, OrdersRepository ordersRepository) {
+    public ProductionManagerHandler(ApplicationEventPublisher applicationEventPublisher,
+                                    PlannedProductsRepository plannedProducts,
+                                    InventoryRepository inventoryRepository,
+                                    OrdersRepository ordersRepository) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.plannedProductsRepository = plannedProducts;
         this.inventoryRepository = inventoryRepository;
@@ -158,14 +161,14 @@ public class ProductionManagerHandler {
 
             Item bomItem = inventoryRepository.findById(bomItemID).block();
 
-            int total_quantity = bomItemQuantity * orderItemQuantity;
-            if (total_quantity <= bomItem.getQuantity()) {
-                inventoryRepository.updateQuantity(bomItemID, bomItem.getQuantity() - total_quantity).block();
-                int used_quantity = bomItem.getQuantity();
+            int totalQuantity = bomItemQuantity * orderItemQuantity;
+            if (totalQuantity <= bomItem.getQuantity()) {
+                inventoryRepository.updateQuantity(bomItemID, bomItem.getQuantity() - totalQuantity).block();
+                int usedQuantity = totalQuantity;
                 if (plannedProduct.getUsedItems().containsKey(bomItemID)) {
-                    used_quantity += plannedProduct.getUsedItems().get(bomItemID);
+                    usedQuantity += plannedProduct.getUsedItems().get(bomItemID);
                 }
-                plannedProduct.getUsedItems().put(bomItemID, used_quantity);
+                plannedProduct.getUsedItems().put(bomItemID, usedQuantity);
 
             } else {
                 isOrderBlocked = true;
@@ -176,15 +179,15 @@ public class ProductionManagerHandler {
                     }
                     plannedProduct.getUsedItems().put(bomItemID, used_quantity);
                 }
-                total_quantity = total_quantity - bomItem.getQuantity();
+                totalQuantity = totalQuantity - bomItem.getQuantity();
                 //update inventory
                 inventoryRepository.updateQuantity(bomItemID, 0).block();
 
                 // create purchase order this bom item with the number = total-quantity
                 if (purchaseOrder.getItems().containsKey(bomItemID)) {
-                    total_quantity += purchaseOrder.getItems().get(bomItemID);
+                    totalQuantity += purchaseOrder.getItems().get(bomItemID);
                 }
-                purchaseOrder.getItems().put(bomItemID, total_quantity);
+                purchaseOrder.getItems().put(bomItemID, totalQuantity);
             }
         }
     }
@@ -198,7 +201,12 @@ public class ProductionManagerHandler {
         } else {
             ordersRepository.updateStatus(salesOrder.getId(), Order.PROCESSING).block();
             plannedProduct.setStatus(isOrderBlocked ? PlannedProduct.BLOCKED : PlannedProduct.SCHEDULED);
-            PlannedProduct product = plannedProductsRepository.save(plannedProduct.getOrderID(), plannedProduct.getProductionDate(), plannedProduct.getStatus(), plannedProduct.getUsedItems()).block();
+            PlannedProduct product = plannedProductsRepository.save(
+                    plannedProduct.getOrderID(),
+                    plannedProduct.getProductionDate(),
+                    plannedProduct.getStatus(),
+                    plannedProduct.getUsedItems())
+                    .block();
             purchaseOrder.setProductionID(product.getId());
 
             if (isOrderBlocked) {
@@ -213,24 +221,36 @@ public class ProductionManagerHandler {
     // saves the purchase order in db
     //schedules the purchase order event to 2 minutes after current time
     private void schedulePurchaseOrder() {
-        Order order = ordersRepository.save(purchaseOrder.getCreatedDate(), purchaseOrder.getDueDate(), purchaseOrder.getDeliveryLocation(), purchaseOrder.getOrderType(), purchaseOrder.getStatus(), purchaseOrder.getItems(), purchaseOrder.getProductionID()).block();
+        Order order = ordersRepository.save(
+                purchaseOrder.getCreatedDate(),
+                purchaseOrder.getDueDate(),
+                purchaseOrder.getDeliveryLocation(),
+                purchaseOrder.getOrderType(),
+                purchaseOrder.getStatus(),
+                purchaseOrder.getItems(),
+                purchaseOrder.getProductionID())
+                .block();
         // schedule purchase order
-        PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
-        logger.info("purchase order " + order.getId() + " is created");
-        Runnable purchaseTask = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
-        ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
-        scheduler = new ConcurrentTaskScheduler(localExecutor);
-        scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
+        if (order != null) {
+            PurchaseOrderEvent purchaseOrderEvent = new PurchaseOrderEvent(order.getId());
+            logger.info("purchase order " + order.getId() + " is created");
+            Runnable purchaseTask = () -> applicationEventPublisher.publishEvent(purchaseOrderEvent);
+            ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+            scheduler = new ConcurrentTaskScheduler(localExecutor);
+            scheduler.schedule(purchaseTask, new Date(System.currentTimeMillis() + 120000));
+        } else {
+            logger.info("purchase order cannot be created");
+        }
     }
 
     // schedules the production event to 2 minutes after current time
     //TODO test wih real time scheduling
     private void scheduleProduction(Integer productionID) {
         ProductionEvent productionEvent = new ProductionEvent(productionID);
-        Runnable exampleRunnable = () -> applicationEventPublisher.publishEvent(productionEvent);
+        Runnable productionTask = () -> applicationEventPublisher.publishEvent(productionEvent);
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
-        scheduler.schedule(exampleRunnable, new Date(System.currentTimeMillis() + 120000));
+        scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
         Logger.getLogger("EventLog").info("production " + productionID + " is scheduled");
     }
 
