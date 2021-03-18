@@ -70,18 +70,15 @@ const vendorColumns = [
       </div>
     ),
   },
-
-
-
 ];
 
 const orderColumns = [
-  { field: 'id', headerName: 'Order #', width: 100 },
-  { field: 'vendorName', headerName: 'Vendor', width: 100 },
-  { field: 'items', headerName: 'Items', width: 140 },
-  { field: 'timestamp', headerName: 'Timestamp', width: 130 },
-  { field: 'cost', headerName: 'Cost', width: 100 },
+  { field: 'id', headerName: 'Order #', width: 70 },
+  { field: 'createdDate', headerName: 'Create Date', width: 120 },
+  { field: 'dueDate', headerName: 'Due Date', width: 120 },
+  { field: 'deliveryLocation', headerName: 'Location', width: 130 },
   { field: 'status', headerName: 'Status', width: 110 },
+  { field: 'items', headerName: 'Items', width: 110 },
   {
     field: 'purchaseOrderDetails',
     headerName: 'Details',
@@ -91,28 +88,21 @@ const orderColumns = [
         {
           <PurchaseOrderDetailsForm
             orderID={params.getValue('id') || ''}
-            vendorName={params.getValue('vendorName') || ''}
-            orderItems={params.getValue('items') || ''}
-            orderTimestamp={params.getValue('timestamp') || ''}
-            orderCost={params.getValue('cost') || ''}
-            orderStatus={params.getValue('status') || ''}
+            createdDate={params.getValue('createdDate') || ''}
+            dueDate={params.getValue('dueDate') || ''}
+            deliveryLocation={params.getValue('deliveryLocation') || ''}
+            status={params.getValue('status') || ''}
+            items={params.getValue('items') || ''}
             initialButton='View'
             dialogTitle={'Order Information - Order #' + params.getValue('id')}
             dialogContentText={'Data: '}
             submitButton='Cancel Order'
-            TypeName = 'Vendor'
+            TypeName = 'Company'
           />
         }
       </div>
     ),
   }
-];
-
-const orderRows = [
-  { id: 1, vendorName: 'Vendor1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
-  { id: 2, vendorName: 'Vendor1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Completed" },
-  { id: 3, vendorName: 'Vendor2', items: '????', timestamp: "01/31/2021", cost: "$200", status: "Ongoing" },
-  { id: 5, vendorName: 'Vendor1', items: '????', timestamp: "01/31/2021", cost: "$100", status: "Ongoing" }
 ];
 
 const getVendors = async () => {
@@ -158,6 +148,25 @@ const deleteVendor = async id => {
   }
 };
 
+const getPurchaseOrders = async () => {
+  const api = '/api/orders/?type=purchases';
+  const got = await fetch(api);
+  const json = await got.json();
+  return json || [];
+};
+
+const insertPurchaseOrder = async data => {
+  try {
+    const api = `/api/orders/`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
 const FilledVendorView = ({vendors}) => {
   let contacts = [];
 
@@ -173,7 +182,6 @@ const FilledVendorView = ({vendors}) => {
     }
     return item;
   };
-
 
   vendors.map(item => (
     contacts.push({
@@ -191,7 +199,25 @@ const FilledVendorView = ({vendors}) => {
   );
 };
 
-function LoadedView({classes, vendors}) {
+const FilledOrderView = ({orders}) => {
+  let purchases = [];
+
+  orders.map(item => (
+    purchases.push({
+      id: item.id,
+      createdDate: item.createdDate,
+      dueDate: item.dueDate,
+      deliveryLocation: item.deliveryLocation,
+      status: item.status,
+      items: item.items,
+    })));
+
+  return (
+    <DataGrid rows={purchases} columns={orderColumns} pageSize={9} />
+  );
+};
+
+function LoadedView({classes, vendors, orders}) {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
@@ -212,14 +238,17 @@ function LoadedView({classes, vendors}) {
         <div>
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
           <NewPurchaseOrderForm
+            onSubmit={(data) => insertPurchaseOrder(data)}
             initialButton='Add New Purchase Order'
             dialogTitle='New Purchase Order'
             dialogContentText='Please enter any information you would like to modify: '
             submitButton='Order'
+            vendors={vendors}
+          />       
+        </div>  
+        <FilledOrderView
+            orders={orders}
           />
-        </div>
-        <DataGrid rows={orderRows} columns={orderColumns} pageSize={4} />
-
       </div>
     </div>
   );
@@ -228,11 +257,16 @@ function LoadedView({classes, vendors}) {
 function Purchase() {
   const classes = useStyles();
   const [vendors, setVendors] = useState([]);
-  const waitForGetRequest = async () => getVendors().then(ven => setVendors(ven));
+  const [orders, setOrders] = useState([]);
+
+  const waitForGetRequest = async () => {
+    getPurchaseOrders().then(ord => setOrders(ord));
+    getVendors().then(ven => setVendors(ven));
+  } 
 
   return (
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} vendors={vendors}/>
+      <LoadedView classes={classes} vendors={vendors} orders={orders}/>
     </SpinBeforeLoading>
   );
 }

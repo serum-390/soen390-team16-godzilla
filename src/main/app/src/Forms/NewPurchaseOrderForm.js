@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,6 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Snackbar from '@material-ui/core/Snackbar';
 import Fade from '@material-ui/core/Fade';
+//import { SpinBeforeLoading } from '../components/inventory/Inventory';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -24,11 +25,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 500
   },
 }));
-
-const vendorRows = [
-    {id: 1, vendorName: 'Vendor1'},
-    {id: 2, vendorName: 'Vendor2'},
-]
 
 const inventoryCols = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -92,12 +88,41 @@ const inventoryRows = [
     {id: 7, itemName: 'Item7', price: "20"},
 ]
 
-export default function PurchaseOrderForm(props) {
-  const [open, setOpen] = React.useState(false);
-  const [vendor, setVendor] = React.useState(1);
+/*const getInventory = async () => {
+  const api = '/api/inventory/';
+  const got = await fetch(api);
+  const json = await got.json();
+  return json || [];
+};*/
 
-  const [openAlert, setOpenAlert] = React.useState(false);
-  const [alertText, setAlertText] = React.useState();
+export default function NewPurchaseOrderForm(props){
+  /*const [inventory, setInventory] = useState([]);
+  const waitForGetRequest = async () => getInventory().then(inv => setInventory(inv));
+
+  return (
+    <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
+      <LoadedView props={props} inventory={inventory}/>
+    </SpinBeforeLoading>
+  );*/
+
+  return <LoadedView props={props}/>;
+}
+
+ function LoadedView({props, inventory}) {
+  const [open, setOpen] = useState(false);
+  //const [vendor, setVendor] = useState(1);
+
+  let today = new Date().toISOString().slice(0, 10);
+  let tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow = tomorrow.toISOString().slice(0, 10);
+
+  const [createdDate, setCreatedDate] = React.useState(today);
+  const [dueDate, setDueDate] = React.useState(tomorrow);
+  const [deliveryLocation, setDeliveryLocation] = React.useState("Montreal");
+
+  const [openAlert, setOpenAlert] = useState(false);
+  //const [alertText, setAlertText] = useState();
 
   const AlertSnackbar = () => {
     return (
@@ -106,23 +131,25 @@ export default function PurchaseOrderForm(props) {
           open={openAlert}
           onClose={closeAlert}
           TransitionComponent={Fade}
-          message={alertText}
+          message={"alertText"}
           autoHideDuration={6000}
         />
       </div>
     );
   };
 
-  function showAlert(text){
+  /*function showAlert(text){
     setAlertText(text);
     setOpenAlert(true);
-  }
+  }*/
 
   function closeAlert(){
     setOpenAlert(false);
   }
 
-  const totalCostText = useRef("Total Cost: $0");
+  const displayTotal = () => { 
+    document.getElementById('total').value = totalCost; 
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -130,23 +157,32 @@ export default function PurchaseOrderForm(props) {
 
   const handleSubmit = () => {
     // THIS IS WHERE WE CALL DB TO CREATE NEW ENTRY
-    var outString = "Vendor ID: " + [vendor] + "\n\n";
+    //var outString = "Vendor ID: " + [vendor] + "\n\n";
+    var itemsData = {};
 
     for(var key in dict) {
         var value = dict[key][0];
-        
+         
         // Skip if invalid quantity amount
         if(value <= 0)
             continue;
-        
-        outString += "Item ID:" + key + " --> Qty: " + value + ", Price: " + dict[key][1] + "\n";
+
+        itemsData[key] = value;
+        //outString += "Item ID:" + key + " --> Qty: " + value + ", Price: " + dict[key][1] + "\n";
     }
 
-    showAlert(outString + "Total Cost: " + totalCost)
+    //showAlert(itemsData);
 
-    //////////////
-    // THIS IS WHERE DATABASE FUNCTION WILL TAKE PLACE
-    //////////////
+    let data = {
+      createdDate: createdDate,
+      dueDate: dueDate,
+      deliveryLocation: deliveryLocation,
+      orderType: "purchases",
+      status: "New",
+      items: itemsData,
+      productionID: "0"
+    };
+    props.onSubmit(data, true);
 
     dict = {};  // Clear dictionary
     setOpen(false);
@@ -158,26 +194,15 @@ export default function PurchaseOrderForm(props) {
   };
 
   const handleChange = (event) => {  
-    //alert(event.target.value);
-    setVendor(event.target.value);
+    //setVendor(event.target.value);
 
     ////////////////////
     // CHANGE INVENTORY ROWS BY FETCHING VENDOR'S INVENTORY FROM DB
     ////////////////////
+    // Or not...
   };
 
-  const handleTotalCost = () => {
-    totalCostText.current.innerHTML = "Total Cost: $" + totalCost;
-  };
-
-  function InventoryTable () {
-      const classes = useStyles();
-      return (
-          <FormControl className={classes.formControl}>
-              <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={99} hideFooter={true} onRowClick={handleTotalCost}/>   
-          </FormControl>
-      );
-  }
+  const classes = useStyles();
 
   return (
     <div>
@@ -191,7 +216,36 @@ export default function PurchaseOrderForm(props) {
             <DialogContentText>
             {props.dialogContentText}
             </DialogContentText>
-
+            <TextField
+              autoFocus
+              margin="dense"
+              id="createdDate"
+              label="Created Date"
+              type="date"
+              defaultValue={today}
+              onChange={(event) => setCreatedDate(event.target.value)}
+              fullWidth
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="dueDate"
+              label="Due Date"
+              type="date"
+              defaultValue={tomorrow}
+              onChange={(event) => setDueDate(event.target.value)}
+              fullWidth
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="deliveryLocation"
+              label="Delivery Location"
+              type="string"
+              defaultValue="Montreal"
+              onChange={(event) => setDeliveryLocation(event.target.value)}
+              fullWidth
+            />
             <FormControl variant="outlined" >
                 <InputLabel htmlFor="outlined-age-native-simple">Vendors</InputLabel>
                 <Select
@@ -203,17 +257,32 @@ export default function PurchaseOrderForm(props) {
                     id: 'outlined-vendor-native-simple',
                 }}
                 >
-                {vendorRows.map(item =>
-                    <option value={item.id}>{item.vendorName}</option>
+
+                {props.vendors.map(item =>
+                    <option value={item.id}>{item.companyName}</option>
                 )}
                 </Select>
             </FormControl>  
-          <InventoryTable/>
+            <FormControl className={classes.formControl}>
+              <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={99} hideFooter={true} onRowClick={displayTotal}/>   
+          </FormControl>
+
+          <Button  variant="contained" color="primary" onClick={displayTotal} style={{float: 'right',marginRight: 15}} >
+           Calculate Total
+          </Button>
         </DialogContent>
         <DialogActions>
-            <div style={{float: 'left', width: '100%'}}>
-                <h3 ref={totalCostText}>Total Cost: $0</h3>
-            </div>
+          <div style={{float: 'left', width: '100%'}}>
+            <TextField 
+              disabled
+              margin="dense"
+              id="total"
+              label="Total Cost"
+              type="number"
+              defaultValue="0"
+              variant="outlined"
+            />
+          </div>
             
           <Button onClick={handleSubmit} color="primary">
             {props.submitButton}
