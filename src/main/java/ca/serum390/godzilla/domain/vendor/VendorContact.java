@@ -1,7 +1,5 @@
 package ca.serum390.godzilla.domain.vendor;
 
-import java.time.LocalDate;
-
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.relational.core.mapping.Table;
@@ -12,15 +10,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.With;
 
 @Data
+@With
 @Builder
 @ToString
 @Table("contact")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class VendorContact {
     @Id
     private Integer id;
