@@ -267,9 +267,6 @@ export default function NewPurchaseOrderForm(props){
               <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={99} hideFooter={true} onRowClick={displayTotal}/>   
           </FormControl>
 
-          <Button  variant="contained" color="primary" onClick={displayTotal} style={{float: 'right',marginRight: 15}} >
-           Calculate Total
-          </Button>
         </DialogContent>
         <DialogActions>
           <div style={{float: 'left', width: '100%'}}>
