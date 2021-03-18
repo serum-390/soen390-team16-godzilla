@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ProvinceOptions({province,setProvince,defaultValue}) {
   const classes = useStyles();
-  
+
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
@@ -55,7 +55,7 @@ function ProvinceOptions({province,setProvince,defaultValue}) {
           onOpen={handleOpen}
           value={province}
           defaultValue={defaultValue}
-          onChange={handleChange} 
+          onChange={handleChange}
         >
           <MenuItem value="">
             <em>None</em>
@@ -109,7 +109,6 @@ function PhoneNumberInput({contact, setContact}) {
       ...values,
       [event.target.name]: event.target.value,
     });
-
     setContact(event.target.value);
   };
 
@@ -133,15 +132,8 @@ function PhoneNumberInput({contact, setContact}) {
 
 export default function CustomerForm(props) {
   const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [province, setProvince] = React.useState(props.customerProvince);
   const [contact, setContact] = React.useState(props.customerPhone);
 
@@ -163,7 +155,7 @@ export default function CustomerForm(props) {
             label="Company Name"
             type="string"
             defaultValue={props.customerCompanyName}
-      
+
             fullWidth
           />
           <TextField
@@ -173,7 +165,7 @@ export default function CustomerForm(props) {
             label="Customer Name"
             type="string"
             defaultValue={props.customerName}
-            
+
             fullWidth
           />
           <TextField
@@ -194,7 +186,7 @@ export default function CustomerForm(props) {
                 id="city"
                 label="City"
                 type="text"
-                defaultValue={props.customerCity} 
+                defaultValue={props.customerCity}
               />
             </Grid>
             <Grid item md={3}>
@@ -204,7 +196,7 @@ export default function CustomerForm(props) {
                 id="postalCode"
                 label="Postal Code"
                 inputProps={{ maxLength: 6 }}
-                type="text" 
+                type="text"
                 defaultValue={props.customerPostal}
               />
             </Grid>

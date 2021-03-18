@@ -1,11 +1,10 @@
 import { Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
 import NewPurchaseOrderForm from "../Forms/NewPurchaseOrderForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
-/*import DeleteButton from "./forms/DeleteButton";*/
 import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
@@ -32,18 +31,12 @@ const vendorColumns = [
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
-          /*<Button variant='contained'
-           color='secondary'
-           onClick={params.value.onClick}>
-           show</Button> 
-           */
-
           <VendorDetailsForm
             onSubmit={params.value}
             splitAddress={params.getValue('address').split(",")[0] || ''}
             splitCity={params.getValue('address').split(",")[1] || ''}
             splitPostal={params.getValue('address').split(",")[2] || ''}
-            splitProvince ={params.getValue('address').split(",")[3] || ''}
+            splitProvince={params.getValue('address').split(",")[3] || ''}
             initialButton='Edit'
             dialogTitle={'Vendor Information - (' + params.getValue('id') + ") " + params.getValue('contactName')}
             dialogContentText='Please enter any information you would like to modify: '
@@ -58,13 +51,8 @@ const vendorColumns = [
     headerName: 'Delete',
     width: 120,
     renderCell: params => (
-      // RE-ADD THIS LATER
-      /*<DeleteButton
-        vendorName={params.getValue('vendorName') || ''}
-      />*/
-      
-      <div style={{margin: 'auto'}}>
-        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
+      <div style={{ margin: 'auto' }}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
           Delete
         </Button>
       </div>
@@ -97,7 +85,7 @@ const orderColumns = [
             dialogTitle={'Order Information - Order #' + params.getValue('id')}
             dialogContentText={'Data: '}
             submitButton='Cancel Order'
-            TypeName = 'Company'
+            TypeName='Company'
           />
         }
       </div>
@@ -167,9 +155,8 @@ const insertPurchaseOrder = async data => {
   }
 };
 
-const FilledVendorView = ({vendors}) => {
+const FilledVendorView = ({ vendors }) => {
   let contacts = [];
-
   let updateRow = (item, updatedItem, toUpdate) => {
     if (toUpdate) {
       updateVendor({
@@ -199,7 +186,7 @@ const FilledVendorView = ({vendors}) => {
   );
 };
 
-const FilledOrderView = ({orders}) => {
+const FilledOrderView = ({ orders }) => {
   let purchases = [];
 
   orders.map(item => (
@@ -217,19 +204,19 @@ const FilledOrderView = ({orders}) => {
   );
 };
 
-function LoadedView({classes, vendors, orders}) {
+function LoadedView({ classes, vendors, orders }) {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
       <div style={{ height: 600, width: '45%', float: 'left' }}>
         <h2 style={{ float: 'left' }}>Vendors</h2>
         <VendorDetailsForm
-            onSubmit={(data) => insertVendor(data)}
-            initialButton='Add New Vendor'
-            dialogTitle='Add New Vendor'
-            dialogContentText='Please enter any information you would like to add: '
-            submitButton='Confirm'
-          />
+          onSubmit={(data) => insertVendor(data)}
+          initialButton='Add New Vendor'
+          dialogTitle='Add New Vendor'
+          dialogContentText='Please enter any information you would like to add: '
+          submitButton='Confirm'
+        />
         <FilledVendorView
           vendors={vendors}
         />
@@ -244,11 +231,11 @@ function LoadedView({classes, vendors, orders}) {
             dialogContentText='Please enter any information you would like to modify: '
             submitButton='Order'
             vendors={vendors}
-          />       
-        </div>  
-        <FilledOrderView
-            orders={orders}
           />
+        </div>
+        <FilledOrderView
+          orders={orders}
+        />
       </div>
     </div>
   );
@@ -262,11 +249,11 @@ function Purchase() {
   const waitForGetRequest = async () => {
     getPurchaseOrders().then(ord => setOrders(ord));
     getVendors().then(ven => setVendors(ven));
-  } 
+  }
 
   return (
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} vendors={vendors} orders={orders}/>
+      <LoadedView classes={classes} vendors={vendors} orders={orders} />
     </SpinBeforeLoading>
   );
 }
