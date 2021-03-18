@@ -90,19 +90,23 @@ export default function PurchaseOrderDetailsForm(props) {
               <TableBody>
                 <TableRow>
                   <TableCell className={classes.table} aria-label="simple table">{props.TypeName} Name</TableCell>
-                  <TableCell>{props.vendorName}</TableCell>
+                  <TableCell>Vendor ???</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className={classes.table} aria-label="simple table">Timestamp</TableCell>
-                  <TableCell>{props.orderTimestamp}</TableCell>
+                  <TableCell className={classes.table} aria-label="simple table">Created Date</TableCell>
+                  <TableCell>{props.createdDate}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className={classes.table} aria-label="simple table">Total Cost</TableCell>
-                  <TableCell>{props.orderCost}</TableCell>
+                  <TableCell className={classes.table} aria-label="simple table">Due Date</TableCell>
+                  <TableCell>{props.dueDate}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className={classes.table} aria-label="simple table">Delivery Location</TableCell>
+                  <TableCell>{props.deliveryLocation}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className={classes.table} aria-label="simple table">Status</TableCell>
-                  <TableCell>{props.orderStatus}</TableCell>
+                  <TableCell>{props.status}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

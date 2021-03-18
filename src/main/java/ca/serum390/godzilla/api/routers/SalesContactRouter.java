@@ -7,19 +7,24 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ca.serum390.godzilla.api.handlers.SalesContactHandler;
+import lombok.AllArgsConstructor;
 
 @Configuration
+@AllArgsConstructor
 public class SalesContactRouter {
+
+    SalesContactHandler salesContactHandler;
+
     @Bean
-    public RouterFunction<ServerResponse> salesContactRoute(SalesContactHandler salesContactHandler) {
+    public RouterFunction<ServerResponse> salesContactRoute() {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/salescontact/",
-                        builder -> builder.GET("/", salesContactHandler::all)
-                        .POST("/", salesContactHandler::create)
-                                .GET(ID, salesContactHandler::get)
-                                .PUT(ID, salesContactHandler::update)
-                                .DELETE(ID, salesContactHandler::delete))
+                .path("/salescontact/", builder -> builder
+                    .GET("/", salesContactHandler::all)
+                    .POST("/", salesContactHandler::create)
+                    .GET(ID, salesContactHandler::get)
+                    .PUT(ID, salesContactHandler::update)
+                    .DELETE(ID, salesContactHandler::delete))
                 .build();
     }
 }

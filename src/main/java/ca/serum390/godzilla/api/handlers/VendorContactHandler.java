@@ -12,6 +12,8 @@ import ca.serum390.godzilla.data.repositories.VendorContactRepository;
 import ca.serum390.godzilla.domain.vendor.VendorContact;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 @Component
 public class VendorContactHandler {
 
@@ -25,14 +27,16 @@ public class VendorContactHandler {
      * get all vendor contact
      */
     public Mono<ServerResponse> all(ServerRequest req) {
-        return ok().body(vendorContacts.findAllVendor(), VendorContact.class);
+        return ok().contentType(APPLICATION_JSON).body(vendorContacts.findAllVendor(), VendorContact.class);
     }
 
     /**
      * create a vendor contact
      */
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(VendorContact.class).flatMap(vendorContacts::save).flatMap(id -> noContent().build());
+        return req.bodyToMono(VendorContact.class)
+            .flatMap(vendorContacts::save)
+            .flatMap(id -> noContent().build());
     }
 
     /**
