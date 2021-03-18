@@ -1,9 +1,10 @@
+DELETE FROM PLANNED_PRODUCTS;
 DELETE FROM orders;
 DELETE FROM contact;
 DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
-DELETE FROM PLANNED_PRODUCTS;
+
 
 SELECT setval(pg_get_serial_sequence('inventory', 'id'), 1, true);
 --insert data for good_type

@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getSales = async () => {
-  const api = '/api/orders/?status = sales';
+  const api = '/api/orders/?type=sales';
   const got = await fetch(api);
   const json = await got.json();
   return json || [];
@@ -80,7 +80,7 @@ const updateSales = async data => {
 
 const insertSales = async data => {
   try {
-    const api = `/api/orders/?status = sales`;
+    const api = `/api/orders/`;
     const inserted = await axios.post(api, data);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
