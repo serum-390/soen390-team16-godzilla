@@ -1,9 +1,6 @@
 import { Box, CircularProgress, useMediaQuery, useTheme } from "@material-ui/core";
-import { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import ReactMarkDown from "react-markdown";
 import Paper from '@material-ui/core/Paper';
-import AboutUsPage from "./markDown/aboutUs.md";
 import AboutUsPara from "./markDown/AboutUsPara"
 
 const spinnyBoi = (
@@ -35,16 +32,9 @@ const useStyles = makeStyles((theme) => ({
 
 function About() {
   const classes = useStyles();
-  const [markDown, setMarkdown] = useState("");
 
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('sm'));
-
-  useEffect(() => {
-    fetch(AboutUsPage)
-      .then((res) => res.text())
-      .then((text) => setMarkdown(text));
-  }, []);
 
   const DesktopMarkDown = () => { //Desktop Version of the About Us Markdown Page
     return (
