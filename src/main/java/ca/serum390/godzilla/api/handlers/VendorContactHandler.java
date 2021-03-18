@@ -34,7 +34,9 @@ public class VendorContactHandler {
      * create a vendor contact
      */
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req.bodyToMono(VendorContact.class).flatMap(vendorContacts::save).flatMap(id -> noContent().build());
+        return req.bodyToMono(VendorContact.class)
+            .flatMap(vendorContacts::save)
+            .flatMap(id -> noContent().build());
     }
 
     /**

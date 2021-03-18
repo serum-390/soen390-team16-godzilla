@@ -9,12 +9,6 @@
 :operation-http-response-title: Example response
 :current-version: 1.1
 
-[source,json]
-----
-{"id":123,"itemName":"item","goodType":666,"quantity":89,"buyPrice":467.0,"sellPrice":555.0,"location":"Montreal, Quebec","billOfMaterial":null}
-----
-
-
 [[overview]]
 = Overview
 
@@ -350,4 +344,10 @@ path parameter.
 [[resources_vendorcontact]]
 == Vendor Contacts
 
-// TODO
+=== Retrieving Vendor Contact - `GET /api/vendorcontact/`
+
+operation::api/vendorcontact/all_GET[snippets='http-request,http-response,curl-request']
+
+=== Create Vendor Contact - `POST /api/vendorcontact/`
+
+operation::api/vendorcontact/create_POST[snippets='http-request,http-response,curl-request']
