@@ -1,10 +1,12 @@
-import { makeStyles } from '@material-ui/core';
-import {
-  DataGrid, GridColumnsToolbarButton,
-  GridFilterToolbarButton, GridToolbarContainer, GridToolbarExport
-} from '@material-ui/data-grid';
 import React from "react";
+import { makeStyles } from '@material-ui/core';
+
+import {
+  DataGrid, GridToolbarContainer, GridToolbarExport, GridColumnsToolbarButton,
+  GridFilterToolbarButton
+} from '@material-ui/data-grid';
 import { SpinBeforeLoading } from './inventory/Inventory';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,6 +58,8 @@ const purchaseRows = [
   { id: 2, vendorName: 'Vendor 2', invoiceDate: '05/10/19', dueDate: '05/10/19', status: 'Pending', amount: '$600' },
   { id: 3, vendorName: 'Vendor 3', invoiceDate: '05/10/19', dueDate: '05/10/21', status: 'Overdue', amount: '$7700' },
   { id: 4, vendorName: 'Vendor 4', invoiceDate: '05/11/19', dueDate: '05/11/22', status: 'Paid', amount: '$1750' },
+
+
 ];
 
 function CustomToolbar() {
@@ -68,36 +72,43 @@ function CustomToolbar() {
   );
 }
 const LoadedView = () => {
+
   return (
-    <div style={{ height: 1000 }}>
+  <div style={{ height: 1000 }}>
       <h1 style={{ textAlign: "center" }}>Accounting Department</h1>
       <div style={{ height: 600 }}>
         <h2 style={{ textAlign: 'left' }}>Sales Invoices</h2>
-        <DataGrid
-          rows={salesRows}
-          columns={salesColumns}
-          pageSize={100}
-          components={{ Toolbar: CustomToolbar, }}
+        <DataGrid 
+            rows={salesRows} 
+            columns={salesColumns} 
+            pageSize={100}
+            components={{ Toolbar: CustomToolbar, }} 
         />
       </div>
-      <div style={{ height: 600 }}>
-        <h2 style={{ textAlign: 'left' }}>Sales Invoices</h2>
+
+
+      <div style={{  marginTop:'7em',height: 600 }}>
+        <h2 style={{textAlign: 'left' }}>Purchases Invoices</h2>
         <DataGrid
-          rows={purchaseRows}
-          columns={purchaseColumns}
-          pageSize={100}
-          components={{ Toolbar: CustomToolbar, }}
-          sortModel={[{ field: 'amount', sort: 'asc' }]}
+          rows={purchaseRows} 
+          columns={purchaseColumns} pageSize={100}
+          components={{ Toolbar: CustomToolbar, }} 
+          sortModel={[
+            {
+              field: 'amount',
+              sort: 'asc',
+            },
+          ]} 
         />
       </div>
-    </div>
+  </div>
   );
 }
 
 function Accounting() {
   const classes = useStyles();
   return (
-    <SpinBeforeLoading minLoadingTime={300}>
+    <SpinBeforeLoading minLoadingTime={700}>
       <LoadedView classes={classes} />
     </SpinBeforeLoading>
   );
