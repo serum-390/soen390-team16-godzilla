@@ -26,7 +26,7 @@ const cols = [
           /*<Button variant='contained'
            color='secondary'
            onClick={params.value.onClick}>
-           show</Button> 
+           show</Button>
            */
           <CustomerForm
             initialButton='Edit'
@@ -106,7 +106,6 @@ const deleteSales = async id => {
 
 const SalesGrid = ({ className, columns, rows, onRowClick }) => {
   return (
-
     <div className={className}>
       <h1>Sales</h1>
       <div style={{ height: 600, width: '45%', float: 'left' }}>
@@ -202,7 +201,11 @@ const FilledSalesView = ({ salesOrders, classes }) => {
     })));
 
   return (
-    <DataGrid rows={orders} columns={salesColumns} pageSize={9} />
+    <DataGrid
+      rows={orders}
+      columns={salesColumns}
+      pageSize={9}
+    />
   );
 };
 
@@ -225,8 +228,6 @@ const LoadedSalesView = ({ classes, order }) => {
   );
 };
 
-
-
 const Sales = () => {
   const classes = useStyles();
   const [order, setSales] = useState([]);
@@ -235,7 +236,6 @@ const Sales = () => {
 
   return (
     <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
-
       <SalesGrid
         className={classes.root}
         columns={cols}
