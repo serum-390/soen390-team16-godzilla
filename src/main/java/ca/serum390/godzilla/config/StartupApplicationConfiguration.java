@@ -1,5 +1,7 @@
 package ca.serum390.godzilla.config;
 
+import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.DEFAULT_AUTHORITIES;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import ca.serum390.godzilla.domain.GodzillaUser;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 
 @Log4j2
 @Configuration
@@ -56,7 +59,7 @@ public class StartupApplicationConfiguration {
         return GodzillaUser.builder()
                 .username(username)
                 .password(passwordEncoder.encode("demo"))
-                .authorities("ROLE_USER")
+                .authorities(DEFAULT_AUTHORITIES)
                 .build();
     }
 
