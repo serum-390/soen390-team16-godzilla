@@ -1,19 +1,11 @@
-import { Grid, MenuItem, MenuList, useTheme } from "@material-ui/core";
-import Switch from '@material-ui/core/Switch';
+import { Grid, MenuItem, MenuList, Switch, useTheme } from "@material-ui/core";
 import React, { useContext } from 'react';
-import ThemeContext from '../../styles/themes'
-
-
+import { ThemeContext } from "../../styles/themes";
 
 function DisplaySettings() {
 
   const ctx = useContext(ThemeContext);
-
-  console.log(ctx);
-
-  const handleDarkMode = () => {
-    ctx.setDarkMode(!ctx.darkMode);
-  }
+  const handleDarkMode = () => ctx.setDarkMode(!ctx.darkMode);
 
   return (
     <div>

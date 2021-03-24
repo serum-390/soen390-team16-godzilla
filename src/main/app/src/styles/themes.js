@@ -1,33 +1,20 @@
-import { useMemo } from 'react'
 import { createMuiTheme } from '@material-ui/core/styles';
-import React from 'react'
+import React, { useMemo, useState } from 'react';
 
-const darkTheme = createMuiTheme({
-  palette: {
-    type: 'dark',
-  },
-});
-
-const lightTheme = createMuiTheme({
-  palette: {
-    type: 'light',
-  },
-});
-
-const ThemeContext = React.createContext({}).Provider;
+const ThemeContext = React.createContext({});
 
 function useThisTheme() {
-
-  let darkMode = false;
-
-  function setDarkMode(on) {
-    darkMode = on;
-  }
-
-  const theme = useMemo(() => darkMode ? darkTheme : lightTheme, [darkMode]);
-
+  const [darkMode, setDarkMode] = useState(false);
+  const theme = useMemo(
+      () =>
+        createMuiTheme({
+          palette: {
+            type: darkMode ? 'dark' : 'light',
+          },
+        }),
+      [darkMode]);
   return [theme, darkMode, setDarkMode];
 }
 
-export { ThemeContext, useThisTheme };
 export default useThisTheme;
+export { ThemeContext, useThisTheme };
