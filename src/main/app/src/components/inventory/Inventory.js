@@ -180,7 +180,6 @@ const LoadedView = ({ classes, inventory }) => {
           />
         </div>
       </div>
-
     </div>
   );
 };
