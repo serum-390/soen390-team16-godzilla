@@ -107,7 +107,7 @@ const deleteSales = async id => {
 const SalesGrid = ({ className, columns, rows, onRowClick }) => {
   return (
     <div className={className}>
-      <h1>Sales</h1>
+      <h1 style={{ textAlign: "center" }}>Sales</h1>
       <div style={{ height: 720, width: '45%', float: 'left', display: 'table' }}>
        <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Customer</h2>
