@@ -1,29 +1,26 @@
-import { CircularProgress, Grid, MenuItem, MenuList, useMediaQuery, useTheme } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, MenuItem, MenuList, useTheme } from "@material-ui/core";
 import Switch from '@material-ui/core/Switch';
-import useNavBarStyles from '../../styles/navBarSyles';
-import ThemeContext from '..//../App'
 import React, { useContext } from 'react';
+import ThemeContext from '../../styles/themes'
 
 
 
 function DisplaySettings() {
 
-  const theme = useContext(ThemeContext);
+  const ctx = useContext(ThemeContext);
 
-  const toggleTheme = () => {
-
-  };
-
+  const handleDarkMode = () => {
+    ctx.setDarkMode(!ctx.darkMode);
+  }
 
   return (
     <div>
       <MenuList>
         <MenuItem  >
-          <p>{JSON.stringify(theme)}</p>
+          <p>Dark Mode</p>
           <Grid container spacing={0} justify='flex-end' >
             <Grid item key={0} style={{ padding: useTheme().spacing(1, 0) }}>
-              <Switch />
+              <Switch onChange={handleDarkMode} value={ctx.darkMode} />
             </Grid>
           </Grid>
         </MenuItem>
