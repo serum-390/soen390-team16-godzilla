@@ -9,6 +9,8 @@ function DisplaySettings() {
 
   const ctx = useContext(ThemeContext);
 
+  console.log(ctx);
+
   const handleDarkMode = () => {
     ctx.setDarkMode(!ctx.darkMode);
   }
