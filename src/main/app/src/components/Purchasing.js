@@ -67,7 +67,7 @@ const getVendors = async () => {
   return json || [];
 };
 
-const updateVendor = async data => {
+const updateVendor = async (data, reload) => {
   try {
     const api = `/api/vendorcontact/${data.id}`;
     const updated = await axios.put(api, data);
@@ -77,9 +77,11 @@ const updateVendor = async data => {
     console.log(err);
     return err;
   }
+
+  reload();
 };
 
-const insertVendor = async data => {
+const insertVendor = async (data, reload) => {
   try {
     const api = `/api/vendorcontact/`;
     const inserted = await axios.post(api, data);
@@ -89,9 +91,11 @@ const insertVendor = async data => {
     console.log(err);
     return err;
   }
+  
+  reload();
 };
 
-const deleteVendor = async id => {
+const deleteVendor = async (id, reload) => {
   try {
     const api = `/api/vendorcontact/${id}`;
     const inserted = await axios.delete(api);
@@ -101,6 +105,8 @@ const deleteVendor = async id => {
     console.log(err);
     return err;
   }
+
+  reload();
 };
 
 const getPurchaseOrders = async () => {
@@ -110,7 +116,7 @@ const getPurchaseOrders = async () => {
   return json || [];
 };
 
-const insertPurchaseOrder = async data => {
+const insertPurchaseOrder = async (data, reload) => {
   try {
     const api = `/api/orders/`;
     const inserted = await axios.post(api, data);
@@ -120,6 +126,8 @@ const insertPurchaseOrder = async data => {
     console.log(err);
     return err;
   }
+
+  reload();
 };
 
 const getInventory = async () => {
@@ -129,7 +137,7 @@ const getInventory = async () => {
   return json || [];
 };
 
-const FilledVendorView = ({ vendors }) => {
+const FilledVendorView = (props) => {
   let contacts = [];
   let updateRow = (item, updatedItem, toUpdate) => {
     if (toUpdate) {
@@ -139,12 +147,12 @@ const FilledVendorView = ({ vendors }) => {
         contactName: updatedItem.contactName === "" ? item.contactName : updatedItem.contactName,
         address: updatedItem.address === "" ? item.address : updatedItem.address,
         contact: updatedItem.contact === "" ? item.contact : updatedItem.contact
-      })
+      }, props.reload)
     }
     return item;
   };
 
-  vendors.map(item => (
+  props.vendors.map(item => (
     contacts.push({
       id: item.id,
       companyName: item.companyName,
@@ -152,7 +160,7 @@ const FilledVendorView = ({ vendors }) => {
       address: item.address,
       contact: item.contact,
       modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
-      delete: () => deleteVendor(item.id)
+      delete: () => deleteVendor(item.id, props.reload)
     })));
 
   return (
@@ -198,7 +206,7 @@ function ShowItems(items, inventory){
   return allItems;
 }
 
-function LoadedView({ classes, vendors, orders, inventory }) {
+function LoadedView(props) {
   const orderColumns = [
     { field: 'id', headerName: '#', width: 60 },
     { field: 'createdDate', headerName: 'Create Date', width: 120 },
@@ -226,7 +234,7 @@ function LoadedView({ classes, vendors, orders, inventory }) {
               dialogContentText={'Data: '}
               submitButton='Cancel Order'
               TypeName='Company'
-              inventory={inventory}
+              inventory={props.inventory}
             />
           }
         </div>
@@ -243,7 +251,7 @@ function LoadedView({ classes, vendors, orders, inventory }) {
           <h2 style={{ float: 'left'}}>Vendors</h2>
           <div style={{ float: 'right'}}>
             <VendorDetailsForm
-              onSubmit={(data) => insertVendor(data)}
+              onSubmit={(data) => insertVendor(data, props.reload)}
               initialButton='Add New Vendor'
               dialogTitle='Add New Vendor'
               dialogContentText='Please enter any information you would like to add: '
@@ -254,7 +262,8 @@ function LoadedView({ classes, vendors, orders, inventory }) {
 
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
           <FilledVendorView
-            vendors={vendors}
+            vendors={props.vendors}
+            reload={props.reload}
           />
         </div>
       </div>
@@ -264,22 +273,22 @@ function LoadedView({ classes, vendors, orders, inventory }) {
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
           <div style={{ float: 'right'}}>
             <NewPurchaseOrderForm
-              onSubmit={(data) => insertPurchaseOrder(data)}
+              onSubmit={(data) => insertPurchaseOrder(data, props.reload)}
               initialButton='Add New Purchase Order'
               dialogTitle='New Purchase Order'
               dialogContentText='Please enter any information you would like to modify: '
               submitButton='Order'
-              vendors={vendors}
-              inventory={inventory}
+              vendors={props.vendors}
+              inventory={props.inventory}
             />
           </div>
         </div>
 
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
           <FilledOrderView
-            orders={orders}
+            orders={props.orders}
             orderColumns={orderColumns}
-            inventory={inventory}
+            inventory={props.inventory}
           />
         </div>     
       </div>
@@ -292,21 +301,25 @@ function Purchase() {
   const [vendors, setVendors] = useState([]);
   const [orders, setOrders] = useState([]);
   const [inventory, setInventory] = useState([]);
-  const [loading, setDoneLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const waitForGetRequest = async () => {
     getVendors().then(ven => setVendors(ven));
     getPurchaseOrders().then(ord => setOrders(ord));
     getInventory().then(inv => setInventory(inv));
-    setDoneLoading(false);
+    setLoading(false);
+  }
+
+  function reload(){
+    setLoading(true);
   }
 
   return (
     (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} />
+      <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} reload={reload} />
     </SpinBeforeLoading> :
-    <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} />
+    <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} reload={reload} />
   );
 }
 
