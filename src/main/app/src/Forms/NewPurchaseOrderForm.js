@@ -145,12 +145,6 @@ export default function NewPurchaseOrderForm(props) {
     setOpen(false);
   };
 
-  const handleChange = event => {
-    //setVendor(event.target.value);
-    // CHANGE INVENTORY ROWS BY FETCHING VENDOR'S INVENTORY FROM DB
-    // Or not...
-  };
-
   const classes = useStyles();
 
   return (
@@ -199,7 +193,6 @@ export default function NewPurchaseOrderForm(props) {
                 <InputLabel htmlFor="outlined-age-native-simple">Vendors</InputLabel>
                 <Select
                   native
-                  onChange={handleChange}
                   label="Vendors"
                   inputProps={{
                       name: 'vendor',

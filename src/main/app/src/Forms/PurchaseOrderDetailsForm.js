@@ -46,14 +46,29 @@ const inventoryCols = [
   },
 ];
 
-const inventoryRows = [
-  {id: 1, itemName: 'Item1', price: "20", quantity: "1"},
-  {id: 2, itemName: 'Item2', price: "20", quantity: "3"},
-  {id: 3, itemName: 'Item3', price: "30", quantity: "4"}
-]
-
-function InventoryTable () {
+function InventoryTable (props) {
   const classes = useStyles();
+
+  let inventoryRows = [];
+  let count = 0;
+  let total = 0;
+
+  console.log(props.inventory);
+
+  for(let i = 0; i < props.inventory.length; i++){
+    let id = props.inventory[i]["id"];
+    console.log(i + " " + id);
+    if(props.items[id] !== undefined){
+      inventoryRows[count++] = {id: id, itemName: props.inventory[i]["itemName"], price: props.inventory[i]["buyPrice"], quantity: props.items[id]};
+      total += props.inventory[i]["buyPrice"] * props.items[id];
+      console.log(total);
+    }
+  }
+
+  console.log(inventoryRows);
+
+  props.changeTotalAmount(total);
+
   return (
     <FormControl className={classes.formControl}>
       <DataGrid rows={inventoryRows} columns={inventoryCols} pageSize={10}/>
@@ -63,6 +78,7 @@ function InventoryTable () {
 
 export default function PurchaseOrderDetailsForm(props) {
   const classes = useStyles();
+  const [total, setTotal] = React.useState(0);
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -72,6 +88,10 @@ export default function PurchaseOrderDetailsForm(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const changeTotalAmount = (val) => {
+    setTotal(val);
+  }
 
   return (
     <div>
@@ -89,10 +109,6 @@ export default function PurchaseOrderDetailsForm(props) {
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableCell className={classes.table} aria-label="simple table">{props.TypeName} Name</TableCell>
-                  <TableCell>Vendor ???</TableCell>
-                </TableRow>
-                <TableRow>
                   <TableCell className={classes.table} aria-label="simple table">Created Date</TableCell>
                   <TableCell>{props.createdDate}</TableCell>
                 </TableRow>
@@ -108,10 +124,14 @@ export default function PurchaseOrderDetailsForm(props) {
                   <TableCell className={classes.table} aria-label="simple table">Status</TableCell>
                   <TableCell>{props.status}</TableCell>
                 </TableRow>
+                <TableRow>
+                  <TableCell className={classes.table} aria-label="simple table">Total Cost</TableCell>
+                  <TableCell>${total}</TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </FormControl>
-          <InventoryTable/>
+          <InventoryTable inventory={props.inventory} items={props.items} changeTotalAmount={changeTotalAmount}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

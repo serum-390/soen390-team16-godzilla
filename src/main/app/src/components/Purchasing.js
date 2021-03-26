@@ -60,39 +60,6 @@ const vendorColumns = [
   },
 ];
 
-const orderColumns = [
-  { field: 'id', headerName: 'Order #', width: 70 },
-  { field: 'createdDate', headerName: 'Create Date', width: 120 },
-  { field: 'dueDate', headerName: 'Due Date', width: 120 },
-  { field: 'deliveryLocation', headerName: 'Location', width: 130 },
-  { field: 'status', headerName: 'Status', width: 110 },
-  { field: 'items', headerName: 'Items', width: 110 },
-  {
-    field: 'purchaseOrderDetails',
-    headerName: 'Details',
-    width: 130,
-    renderCell: params => (
-      <div style={{ margin: 'auto' }}>
-        {
-          <PurchaseOrderDetailsForm
-            orderID={params.getValue('id') || ''}
-            createdDate={params.getValue('createdDate') || ''}
-            dueDate={params.getValue('dueDate') || ''}
-            deliveryLocation={params.getValue('deliveryLocation') || ''}
-            status={params.getValue('status') || ''}
-            items={params.getValue('items') || ''}
-            initialButton='View'
-            dialogTitle={'Order Information - Order #' + params.getValue('id')}
-            dialogContentText={'Data: '}
-            submitButton='Cancel Order'
-            TypeName='Company'
-          />
-        }
-      </div>
-    ),
-  }
-];
-
 const getVendors = async () => {
   const api = '/api/vendorcontact/';
   const got = await fetch(api);
@@ -193,7 +160,7 @@ const FilledVendorView = ({ vendors }) => {
   );
 };
 
-const FilledOrderView = ({ orders }) => {
+const FilledOrderView = ({ orders, orderColumns }) => {
   let purchases = [];
 
   orders.map(item => (
@@ -212,6 +179,40 @@ const FilledOrderView = ({ orders }) => {
 };
 
 function LoadedView({ classes, vendors, orders, inventory }) {
+  const orderColumns = [
+    { field: 'id', headerName: 'Order #', width: 70 },
+    { field: 'createdDate', headerName: 'Create Date', width: 120 },
+    { field: 'dueDate', headerName: 'Due Date', width: 120 },
+    { field: 'deliveryLocation', headerName: 'Location', width: 130 },
+    { field: 'status', headerName: 'Status', width: 110 },
+    { field: 'items', headerName: 'Items', width: 110 },
+    {
+      field: 'purchaseOrderDetails',
+      headerName: 'Details',
+      width: 130,
+      renderCell: params => (
+        <div style={{ margin: 'auto' }}>
+          {
+            <PurchaseOrderDetailsForm
+              orderID={params.getValue('id') || ''}
+              createdDate={params.getValue('createdDate') || ''}
+              dueDate={params.getValue('dueDate') || ''}
+              deliveryLocation={params.getValue('deliveryLocation') || ''}
+              status={params.getValue('status') || ''}
+              items={params.getValue('items') || ''}
+              initialButton='View'
+              dialogTitle={'Order Information - Order #' + params.getValue('id')}
+              dialogContentText={'Data: '}
+              submitButton='Cancel Order'
+              TypeName='Company'
+              inventory={inventory}
+            />
+          }
+        </div>
+      ),
+    }
+  ];
+
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
@@ -256,6 +257,7 @@ function LoadedView({ classes, vendors, orders, inventory }) {
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
           <FilledOrderView
             orders={orders}
+            orderColumns={orderColumns}
           />
         </div>     
       </div>
