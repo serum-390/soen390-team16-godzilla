@@ -19,7 +19,7 @@ public class SecurityConfig {
         return http
                 .csrf()
                 .disable()
-                .authorizeExchange()
+                    .authorizeExchange()
                     .pathMatchers("/api/docs/**",
                                   "/api/healthcheck",
                                   "/favicon.ico",
