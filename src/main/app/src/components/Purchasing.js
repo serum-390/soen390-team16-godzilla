@@ -160,7 +160,7 @@ const FilledVendorView = ({ vendors }) => {
   );
 };
 
-const FilledOrderView = ({ orders, orderColumns }) => {
+const FilledOrderView = ({ orders, orderColumns, inventory }) => {
   let purchases = [];
 
   orders.map(item => (
@@ -170,6 +170,7 @@ const FilledOrderView = ({ orders, orderColumns }) => {
       dueDate: item.dueDate,
       deliveryLocation: item.deliveryLocation,
       status: item.status,
+      itemsVisible: ShowItems(item.items, inventory),
       items: item.items,
     })));
 
@@ -178,18 +179,38 @@ const FilledOrderView = ({ orders, orderColumns }) => {
   );
 };
 
+function ShowItems(items, inventory){
+  let allItems = "";
+  let count = 0;
+
+  for(let i = 0; i < inventory.length; i++){
+    let id = inventory[i]["id"];
+    if(items[id] !== undefined){
+      if(count > 0)
+        allItems += ", ";
+
+      allItems += inventory[i]["itemName"] + " ("+items[id]+")";
+
+      count++;
+    }
+  }
+
+  return allItems;
+}
+
 function LoadedView({ classes, vendors, orders, inventory }) {
   const orderColumns = [
-    { field: 'id', headerName: 'Order #', width: 70 },
+    { field: 'id', headerName: '#', width: 60 },
     { field: 'createdDate', headerName: 'Create Date', width: 120 },
     { field: 'dueDate', headerName: 'Due Date', width: 120 },
     { field: 'deliveryLocation', headerName: 'Location', width: 130 },
     { field: 'status', headerName: 'Status', width: 110 },
-    { field: 'items', headerName: 'Items', width: 110 },
+    { field: 'itemsVisible', headerName: 'Items', width: 260 },
+    { field: 'items', headerName: 'Items', width: 0, hide: true},
     {
       field: 'purchaseOrderDetails',
       headerName: 'Details',
-      width: 130,
+      width: 120,
       renderCell: params => (
         <div style={{ margin: 'auto' }}>
           {
@@ -237,7 +258,7 @@ function LoadedView({ classes, vendors, orders, inventory }) {
           />
         </div>
       </div>
-      <div style={{ height: 720, width: '45%', float: 'right', display: 'table' }}>
+      <div style={{ height: 720, width: '52%', float: 'right', display: 'table' }}>
 
         <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
@@ -258,6 +279,7 @@ function LoadedView({ classes, vendors, orders, inventory }) {
           <FilledOrderView
             orders={orders}
             orderColumns={orderColumns}
+            inventory={inventory}
           />
         </div>     
       </div>

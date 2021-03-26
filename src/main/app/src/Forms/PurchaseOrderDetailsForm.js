@@ -52,21 +52,14 @@ function InventoryTable (props) {
   let inventoryRows = [];
   let count = 0;
   let total = 0;
-
-  console.log(props.inventory);
-
+  
   for(let i = 0; i < props.inventory.length; i++){
     let id = props.inventory[i]["id"];
-    console.log(i + " " + id);
     if(props.items[id] !== undefined){
       inventoryRows[count++] = {id: id, itemName: props.inventory[i]["itemName"], price: props.inventory[i]["buyPrice"], quantity: props.items[id]};
       total += props.inventory[i]["buyPrice"] * props.items[id];
-      console.log(total);
     }
   }
-
-  console.log(inventoryRows);
-
   props.changeTotalAmount(total);
 
   return (
