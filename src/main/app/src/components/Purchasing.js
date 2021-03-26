@@ -155,6 +155,13 @@ const insertPurchaseOrder = async data => {
   }
 };
 
+const getInventory = async () => {
+  const api = '/api/inventory/';
+  const got = await fetch(api);
+  const json = await got.json();
+  return json || [];
+};
+
 const FilledVendorView = ({ vendors }) => {
   let contacts = [];
   let updateRow = (item, updatedItem, toUpdate) => {
@@ -204,7 +211,7 @@ const FilledOrderView = ({ orders }) => {
   );
 };
 
-function LoadedView({ classes, vendors, orders }) {
+function LoadedView({ classes, vendors, orders, inventory }) {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
@@ -241,6 +248,7 @@ function LoadedView({ classes, vendors, orders }) {
               dialogContentText='Please enter any information you would like to modify: '
               submitButton='Order'
               vendors={vendors}
+              inventory={inventory}
             />
           </div>
         </div>
@@ -259,20 +267,22 @@ function Purchase() {
   const classes = useStyles();
   const [vendors, setVendors] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [inventory, setInventory] = useState([]);
   const [loading, setDoneLoading] = useState(true);
 
   const waitForGetRequest = async () => {
     getVendors().then(ven => setVendors(ven));
     getPurchaseOrders().then(ord => setOrders(ord));
+    getInventory().then(inv => setInventory(inv));
     setDoneLoading(false);
   }
 
   return (
     (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} vendors={vendors} orders={orders} />
+      <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} />
     </SpinBeforeLoading> :
-    <LoadedView classes={classes} vendors={vendors} orders={orders} />
+    <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} />
   );
 }
 

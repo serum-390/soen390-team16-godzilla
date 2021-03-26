@@ -29,7 +29,7 @@ const inventoryCols = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'itemName', headerName: 'Item name', width: 130 },
     {
-        field: 'price',
+        field: 'buyPrice',
         headerName: 'Price',
         type: 'number',
         width: 90,
@@ -44,7 +44,7 @@ const inventoryCols = [
             id="quantityVal"
             label="Quantity"
             type="number"
-            onChange={(e) => {ChangeRowQuantity(e, params.getValue('id'), params.getValue('price'))}}
+            onChange={(e) => {ChangeRowQuantity(e, params.getValue('id'), params.getValue('buyPrice'))}}
             defaultValue="0"
             InputLabelProps={{
             shrink: true,
@@ -71,22 +71,7 @@ function ChangeRowQuantity(qty, id, price){
     }
 }
 
-const inventoryRows = [
-    {id: 1, itemName: 'Item1', price: "20"},
-    {id: 2, itemName: 'Item2', price: "20"},
-    {id: 3, itemName: 'Item3', price: "30"},
-    {id: 4, itemName: 'Item4', price: "50"},
-    {id: 5, itemName: 'Item5', price: "90"},
-    {id: 6, itemName: 'Item6', price: "10"},
-    {id: 7, itemName: 'Item7', price: "20"},
-]
-
-
-export default function NewPurchaseOrderForm(props){
-  return <LoadedView props={props}/>;
-}
-
- function LoadedView({props, inventory}) {
+export default function NewPurchaseOrderForm(props) {
   const [open, setOpen] = useState(false);
 
   let today = new Date().toISOString().slice(0, 10);
@@ -228,7 +213,7 @@ export default function NewPurchaseOrderForm(props){
             </FormControl>
             <FormControl className={classes.formControl}>
               <DataGrid
-                rows={inventoryRows}
+                rows={props.inventory}
                 columns={inventoryCols}
                 pageSize={99}
                 hideFooter={true}
