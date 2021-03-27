@@ -5,6 +5,15 @@ import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import AccountingHelp from './helpMiniPages/AccountingHelp';
+import NavBarHelp from './helpMiniPages/NavBarHelp';
+import PlanningHelp from './helpMiniPages/PlanningHelp';
+import ProductionHelp from './helpMiniPages/ProductionHelp';
+import PurchasingHelp from './helpMiniPages/PurchasingHelp';
+import SalesHelp from './helpMiniPages/SalesHelp';
+import UserManagementHelp from './helpMiniPages/UserManagementHelp';
+
+
 
 const useStyles = makeStyles((theme) => ({
   menu: {
@@ -32,37 +41,50 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const SettingsMenu = () => {
+const HelpMenu = () => {
   const classes = useStyles();
   const location = useLocation();
   return (
     <div className={classes.menu}>
       <Paper elevation={3}>
         <MenuList>
-          <Link to='/settings/userManagement'
-            selected={location.pathname === '/settings/userManagement'}
+          <Link to='/help/Accounting'
+            selected={location.pathname === '/help/Accounting'}
             className={classes.link}
           >
-            <MenuItem>
-              User Management
-            </MenuItem>
+            <MenuItem>Accounting</MenuItem>
           </Link>
-          <Link to='/settings/displaySettings'
-            selected={location.pathname === '/settings/displaySettings'}
+          <Link to='/help/Navbar'
+            selected={location.pathname === '/help/Navbar'}
             className={classes.link}
           >
-            <MenuItem>Display Settings</MenuItem>
+            <MenuItem>Navigation Bar</MenuItem>
           </Link>
-          <MenuItem>Authentication Settings</MenuItem>
-          <MenuItem>Notification Settings</MenuItem>
-          <MenuItem>File Upload Settings</MenuItem>
+          <Link to='/help/Planning'
+            selected={location.pathname === '/help/Planning'}
+            className={classes.link}
+          >
+            <MenuItem>Planning</MenuItem>
+          </Link>
+          <Link to='/help/Production'
+            selected={location.pathname === '/help/Production'}
+            className={classes.link}
+          >
+            <MenuItem>Production</MenuItem>
+          </Link>
+          <Link to='/help/Purchasing'
+            selected={location.pathname === '/help/P'}
+            className={classes.link}
+          >
+            <MenuItem>Purchasing</MenuItem>
+          </Link>
         </MenuList>
       </Paper >
     </div>
   );
 };
 
-const SettingsDisplay = () => {
+const HelpDisplay = () => {
   const classes = useStyles();
   return (
     <div className={classes.mainDisplay}>
@@ -76,8 +98,11 @@ const SettingsDisplay = () => {
 const ContentSwitch = () => {
   return (
     <Switch>
-      <Route exact path="/settings/displaySettings" component={DisplaySettings} />
-      <Route exact path="/settings/userManagement" component={UserManagement} />
+      <Route exact path="/help/Accounting" component={AccountingHelp} />
+      <Route exact path="/help/Navbar" component={NavBarHelp} />
+      <Route exact path="/help/Planning" component={PlanningHelp} />
+      <Route exact path="/help/Production" component={ProductionHelp} />
+      <Route exact path="/help/Purchasing" component={PurchasingHelp} />
     </Switch>
   );
 };
