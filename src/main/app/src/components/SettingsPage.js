@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SettingsMenu = () => {
+const HelpMenu = () => {
   const classes = useStyles();
   const location = useLocation();
   return (
@@ -63,7 +63,7 @@ const SettingsMenu = () => {
   );
 };
 
-const SettingsDisplay = () => {
+const HelpDisplay = () => {
   const classes = useStyles();
   return (
     <div className={classes.mainDisplay}>
@@ -89,10 +89,10 @@ function SettingsPage() {
       <Router on>
         <Grid container spacing={7}>
           <Grid item>
-            <SettingsMenu />
+            <HelpMenu />
           </Grid>
           <Grid item>
-            <SettingsDisplay />
+            <HelpDisplay />
           </Grid>
         </Grid>
       </Router>
