@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import AccountingHelp from './helpMiniPages/AccountingHelp';
+import InventoryHelp from './helpMiniPages/InventoryHelp';
 import NavBarHelp from './helpMiniPages/NavBarHelp';
 import PlanningHelp from './helpMiniPages/PlanningHelp';
 import ProductionHelp from './helpMiniPages/ProductionHelp';
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
       width: theme.spacing(30),
-      height: theme.spacing(25),
+      height: theme.spacing(40),
     },
   },
   mainDisplay: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
       width: theme.spacing(120),
-      height: theme.spacing(50),
+      height: theme.spacing(75),
     },
   },
   link: {
@@ -54,6 +55,12 @@ const HelpMenu = () => {
           >
             <MenuItem>Accounting</MenuItem>
           </Link>
+          <Link to='/help/Inventory'
+            selected={location.pathname === '/help/Inventory'}
+            className={classes.link}
+          >
+            <MenuItem>Inventory</MenuItem>
+          </Link>
           <Link to='/help/Navbar'
             selected={location.pathname === '/help/Navbar'}
             className={classes.link}
@@ -73,10 +80,22 @@ const HelpMenu = () => {
             <MenuItem>Production</MenuItem>
           </Link>
           <Link to='/help/Purchasing'
-            selected={location.pathname === '/help/P'}
+            selected={location.pathname === '/help/Purchasing'}
             className={classes.link}
           >
             <MenuItem>Purchasing</MenuItem>
+          </Link>
+          <Link to='/help/Sales'
+            selected={location.pathname === '/help/Sales'}
+            className={classes.link}
+          >
+            <MenuItem>Sales</MenuItem>
+          </Link>
+          <Link to='/help/UserManagement'
+            selected={location.pathname === '/help/UserManagement'}
+            className={classes.link}
+          >
+            <MenuItem>User Management</MenuItem>
           </Link>
         </MenuList>
       </Paper >
@@ -99,10 +118,13 @@ const ContentSwitch = () => {
   return (
     <Switch>
       <Route exact path="/help/Accounting" component={AccountingHelp} />
+      <Route exact path="/help/Inventory" component={InventoryHelp} />
       <Route exact path="/help/Navbar" component={NavBarHelp} />
       <Route exact path="/help/Planning" component={PlanningHelp} />
       <Route exact path="/help/Production" component={ProductionHelp} />
       <Route exact path="/help/Purchasing" component={PurchasingHelp} />
+      <Route exact path="/help/Sales" component={SalesHelp} />
+      <Route exact path="/help/UserManagement" component={UserManagementHelp} />
     </Switch>
   );
 };
