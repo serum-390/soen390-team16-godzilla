@@ -76,7 +76,8 @@ public class ProductionManagerHandler {
                 Item orderItem = inventoryRepository.findById(orderItemID).block();
 
                 if (orderItemQuantity <= orderItem.getQuantity()) {
-                    inventoryRepository.updateQuantity(orderItemID, orderItem.getQuantity() - orderItemQuantity).block();
+                    inventoryRepository.updateQuantity(orderItemID, orderItem.getQuantity() - orderItemQuantity)
+                            .block();
                     plannedProduct.getUsedItems().put(orderItemID, orderItemQuantity);
                 } else {
                     isOrderReady = false;
