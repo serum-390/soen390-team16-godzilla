@@ -12,15 +12,15 @@ function useThisTheme() {
           type: darkMode ? 'dark' : 'light',
           primary: darkMode ? {
             light: '#484848',
-            main: '#757575',
+            main: '#212121',
             dark: '#000000',
             contrastText: '#fff',
           } :
             {
-              light: '#ffffff',
-              main: '#fafafa',
-              dark: '#c7c7c7',
-              contrastText: '#000',
+              light: '#9162e4',
+              main: '#5e35b1',
+              dark: '#280680',
+              contrastText: '#fff',
             },
         },
       }),
