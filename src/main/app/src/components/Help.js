@@ -86,8 +86,18 @@ const ContentSwitch = () => {
 function Help() {
   return (
     <div>
-      <h1>This is the  Help page</h1>
+      <Router on>
+        <Grid container spacing={7}>
+          <Grid item>
+            <HelpMenu />
+          </Grid>
+          <Grid item>
+            <HelpDisplay />
+          </Grid>
+        </Grid>
+      </Router>
     </div>
+
   );
 }
 
