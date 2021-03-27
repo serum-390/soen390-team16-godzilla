@@ -208,34 +208,48 @@ function LoadedView({ classes, vendors, orders }) {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
-      <div style={{ height: 600, width: '45%', float: 'left' }}>
-        <h2 style={{ float: 'left' }}>Vendors</h2>
-        <VendorDetailsForm
-          onSubmit={(data) => insertVendor(data)}
-          initialButton='Add New Vendor'
-          dialogTitle='Add New Vendor'
-          dialogContentText='Please enter any information you would like to add: '
-          submitButton='Confirm'
-        />
-        <FilledVendorView
-          vendors={vendors}
-        />
-      </div>
-      <div style={{ height: 600, width: '45%', float: 'right' }}>
-        <div>
-          <h2 style={{ float: 'left' }}>Purchase Orders</h2>
-          <NewPurchaseOrderForm
-            onSubmit={(data) => insertPurchaseOrder(data)}
-            initialButton='Add New Purchase Order'
-            dialogTitle='New Purchase Order'
-            dialogContentText='Please enter any information you would like to modify: '
-            submitButton='Order'
+      <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
+
+        <div style={{width: '100%', display: 'table-row' }}>
+          <h2 style={{ float: 'left'}}>Vendors</h2>
+          <div style={{ float: 'right'}}>
+            <VendorDetailsForm
+              onSubmit={(data) => insertVendor(data)}
+              initialButton='Add New Vendor'
+              dialogTitle='Add New Vendor'
+              dialogContentText='Please enter any information you would like to add: '
+              submitButton='Confirm'
+            />
+          </div>
+        </div>
+
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <FilledVendorView
             vendors={vendors}
           />
         </div>
-        <FilledOrderView
-          orders={orders}
-        />
+      </div>
+      <div style={{ height: 720, width: '45%', float: 'right', display: 'table' }}>
+
+        <div style={{width: '100%', display: 'table-row' }}>
+          <h2 style={{ float: 'left' }}>Purchase Orders</h2>
+          <div style={{ float: 'right'}}>
+            <NewPurchaseOrderForm
+              onSubmit={(data) => insertPurchaseOrder(data)}
+              initialButton='Add New Purchase Order'
+              dialogTitle='New Purchase Order'
+              dialogContentText='Please enter any information you would like to modify: '
+              submitButton='Order'
+              vendors={vendors}
+            />
+          </div>
+        </div>
+
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <FilledOrderView
+            orders={orders}
+          />
+        </div>     
       </div>
     </div>
   );
@@ -245,16 +259,20 @@ function Purchase() {
   const classes = useStyles();
   const [vendors, setVendors] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [loading, setDoneLoading] = useState(true);
 
   const waitForGetRequest = async () => {
-    getPurchaseOrders().then(ord => setOrders(ord));
     getVendors().then(ven => setVendors(ven));
+    getPurchaseOrders().then(ord => setOrders(ord));
+    setDoneLoading(false);
   }
 
   return (
+    (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
       <LoadedView classes={classes} vendors={vendors} orders={orders} />
-    </SpinBeforeLoading>
+    </SpinBeforeLoading> :
+    <LoadedView classes={classes} vendors={vendors} orders={orders} />
   );
 }
 
