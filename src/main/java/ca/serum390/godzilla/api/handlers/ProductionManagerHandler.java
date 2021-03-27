@@ -95,7 +95,7 @@ public class ProductionManagerHandler {
             }
             processOrder();
         } else {
-            logger.info("The order ID is invalid or it is already in pipeline");
+            logger.info("The order ID is invalid or it is already planned for production");
         }
         return noContent().build();
     }
@@ -252,16 +252,16 @@ public class ProductionManagerHandler {
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
         scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
-        Logger.getLogger("EventLog").info("production " + productionID + " is scheduled");
+        logger.info("production " + productionID + " is scheduled");
     }
 
 
     // Setups logger to log production info
     private void setupLogger() {
-        logger = Logger.getLogger("EventLog");
+        logger = Logger.getLogger("ProductionLog");
         FileHandler fh;
         try {
-            fh = new FileHandler(new File("eventsLog.log").getAbsolutePath());
+            fh = new FileHandler(new File("productionLog.log").getAbsolutePath());
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);

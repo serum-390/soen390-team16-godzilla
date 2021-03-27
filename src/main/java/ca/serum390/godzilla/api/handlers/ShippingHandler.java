@@ -64,11 +64,11 @@ public class ShippingHandler {
                     if (updated != null) {
                         original.setDeliveryDate(updated.getDeliveryDate());
                         original.setDueDate(updated.getDueDate());
-                        original.setShippingStatus(updated.getShippingStatus());
-                        original.setOrderId(updated.getOrderId());
+                        original.setStatus(updated.getStatus());
+                        original.setOrderID(updated.getOrderID());
                         original.setPackagingDate(updated.getPackagingDate());
                         original.setShippingPrice(updated.getShippingPrice());
-                        original.setTransportationMethod(updated.getTransportationMethod());
+                        original.setShippingMethod(updated.getShippingMethod());
 
                     }
                     return original;
@@ -78,12 +78,12 @@ public class ShippingHandler {
         ).cast(Shipping.class)
                 .flatMap(shippingItem -> shippingRepository.update(
                         shippingItem.getId(),
-                        shippingItem.getTransportationMethod(),
-                        shippingItem.getShippingStatus(),
+                        shippingItem.getShippingMethod(),
+                        shippingItem.getStatus(),
                         shippingItem.getDueDate(),
                         shippingItem.getDeliveryDate(),
                         shippingItem.getPackagingDate(),
-                        shippingItem.getOrderId(),
+                        shippingItem.getOrderID(),
                         shippingItem.getShippingPrice()))
                 .flatMap(item -> noContent().build());
     }
