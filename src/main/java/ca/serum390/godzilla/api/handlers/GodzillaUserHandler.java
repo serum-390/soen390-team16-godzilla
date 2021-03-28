@@ -49,6 +49,7 @@ public class GodzillaUserHandler {
         return req.formData()
                 .handle(CreateUserWithoutUsernameOrPasswordException::handle)
                 .handle(this::handleUserNameTooShort)
+                .handle(this::handleInvalidEmail)
                 .flatMap(this::errorIfUserAlreadyExists)
                 .flatMap(this::saveUser)
                 .flatMap(user -> noContent().build())
@@ -74,6 +75,16 @@ public class GodzillaUserHandler {
         }
     }
 
+    private void handleInvalidEmail(
+            MultiValueMap<String, String> data, 
+            SynchronousSink<MultiValueMap<String, String>> sink){
+        var email = data.getFirst(EMAIL_FIELD);
+        if(email.matches(EMAIL_VALIDATOR)){
+            sink.next(data);
+        } else {
+            sink.error(new RuntimeException("email'"+ email + "' does not comply to the standards."));
+        }
+    }
 
 
     @SuppressWarnings("unchecked")
