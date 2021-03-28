@@ -62,7 +62,7 @@ public class ShippingHandler {
                     Shipping original = (Shipping) data[0];
                     Shipping updated = (Shipping) data[1];
                     if (updated != null) {
-                        original.setDeliveryDate(updated.getDeliveryDate());
+                        original.setShippingDate(updated.getShippingDate());
                         original.setDueDate(updated.getDueDate());
                         original.setStatus(updated.getStatus());
                         original.setOrderID(updated.getOrderID());
@@ -81,7 +81,7 @@ public class ShippingHandler {
                         shippingItem.getShippingMethod(),
                         shippingItem.getStatus(),
                         shippingItem.getDueDate(),
-                        shippingItem.getDeliveryDate(),
+                        shippingItem.getShippingDate(),
                         shippingItem.getPackagingDate(),
                         shippingItem.getOrderID(),
                         shippingItem.getShippingPrice()))
