@@ -2,6 +2,7 @@ package ca.serum390.godzilla.api.handlers.exceptions;
 
 import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.PASSWORD_FIELD;
 import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.USERNAME_FIELD;
+import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.EMAIL_FIELD;;
 
 import org.springframework.util.MultiValueMap;
 
@@ -9,7 +10,7 @@ import reactor.core.publisher.SynchronousSink;
 
 public class CreateUserWithoutUsernameOrPasswordException extends RuntimeException {
     private static final long serialVersionUID = -437083407553022825L;
-    public static final String ERROR_MESSAGE = "User create form is missing required fields: `username` and/or `password`";
+    public static final String ERROR_MESSAGE = "User create form is missing required fields: `username` and/or `password` and/or `email`" ;
 
     /**
      * Causes the reactive stream to emit an error if the {@link MultiValueMap form
@@ -25,7 +26,8 @@ public class CreateUserWithoutUsernameOrPasswordException extends RuntimeExcepti
             MultiValueMap<String, String> formData,
             SynchronousSink<MultiValueMap<String, String>> sink) {
         if (formData.getFirst(USERNAME_FIELD) == null
-                || formData.getFirst(PASSWORD_FIELD) == null) {
+                || formData.getFirst(PASSWORD_FIELD) == null
+                || formData.getFirst(EMAIL_FIELD) == null) {
             sink.error(new CreateUserWithoutUsernameOrPasswordException(ERROR_MESSAGE));
         } else {
             sink.next(formData);

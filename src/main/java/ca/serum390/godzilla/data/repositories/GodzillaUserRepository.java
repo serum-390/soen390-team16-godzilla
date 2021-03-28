@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public interface GodzillaUserRepository extends ReactiveCrudRepository<GodzillaUser, Integer> {
     Mono<GodzillaUser> findByUsername(String username);
     
-    @Query("INSERT INTO erp_user(username, password, authorities) values ($1,$2,$3) returning *")
-    Mono<GodzillaUser> save(String username,String password, String authorities);
+    @Query("INSERT INTO erp_user(username, password, authorities, email) values ($1,$2,$3,$4) returning *")
+    Mono<GodzillaUser> save(String username,String password, String authorities, String email);
 
 }

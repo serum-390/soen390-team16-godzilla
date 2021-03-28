@@ -60,6 +60,7 @@ public class StartupApplicationConfiguration {
                 .username(username)
                 .password(passwordEncoder.encode("demo"))
                 .authorities(DEFAULT_AUTHORITIES)
+                .email("demo@demomail.com")
                 .build();
     }
 

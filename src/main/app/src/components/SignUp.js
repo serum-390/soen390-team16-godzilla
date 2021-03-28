@@ -1,5 +1,6 @@
 import { Button, Grid, TextField, makeStyles, Paper, useMediaQuery, useTheme } from '@material-ui/core';
-import React from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
 
 
 //TODO Make Inline Styling
@@ -19,20 +20,44 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const postMe = async data => {
+  try {
+    const api = '/api/signup/';
+    const posted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${posted.status}`);
+    console.log(`DATA: ${posted.data || "Nothing"}`);
+    return posted.status == 200 ? posted.data || {} : {};
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+};
+
+
 const SignUpForm = () => {
   const classes = useStyles();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const signup = () => {
+    var sendData = new URLSearchParams();
+    sendData.append("username",userName)
+    sendData.append("password",password)
+    sendData.append("email",email)
+    postMe(sendData)
+  }
   return (
-    <Paper className={classes.divStyle} square="false" variant="outlined" >
+    <Paper className={classes.divStyle} square={false} variant="outlined" >
       <Grid container justify="center">
         <img alt="Logo goes here" />
       </Grid>
-      <TextField label="Username" margin="normal" variant="outlined" />
-      <TextField label="Password" margin="normal" type="password" variant="outlined" />
-      <TextField label="Confirm Password" margin="normal" type="password" variant="outlined" />
+      <TextField label="Username" margin="normal" variant="outlined" onChange={e => setUserName(e.target.value)}/>
+      <TextField label="Password" margin="normal" type="password" variant="outlined" onChange={e => setPassword(e.target.value)}/>
+      <TextField label="email" margin="normal" variant="outlined" onChange={e => setEmail(e.target.value)}/>
       <div style={{ height: 20 }} />
-      <Button color="secondary" variant="contained">Sign Up</Button>
+      <Button color="secondary" variant="contained" onClick={signup}>Sign Up</Button>
       <div style={{ height: 10 }} />
-      <Button color="tertiary">Back</Button>
+      <Button color="default">Back</Button>
     </Paper>
   );
 }
