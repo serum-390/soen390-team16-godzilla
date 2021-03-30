@@ -17,10 +17,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Shipping {
 
-    // Status values
-    public static final String PACKAGED = "packaged";
-    public static final String DELIVERED = "delivered";
-    public static final String TRANSIT = "in transit";
+    // Status value
+    public static final String SHIPPED = "shipped";
+    public static final String CANCELED = "canceled";
+    public static final String SCHEDULED = "scheduled";
     public static final String NEW = "new";
 
     // shipping methods
@@ -29,28 +29,10 @@ public class Shipping {
     public static final String FERRY = "ferry";
 
     // prices
-    public static final double PACKAGING_RATIO = 1.5;
     public static final double AIR_RATIO = 4;
     public static final double CAR_RATIO = 1;
     public static final double FERRY_RATIO = 2;
 
-    public Shipping(String shippingMethod,
-                    String status,
-                    LocalDate dueDate,
-                    LocalDate shippingDate,
-                    LocalDate packagingDate,
-                    Integer orderID,
-                    double shippingPrice) {
-
-        this.shippingMethod = shippingMethod;
-        this.status = status;
-        this.dueDate = dueDate;
-        this.shippingDate = shippingDate;
-        this.packagingDate = packagingDate;
-        this.orderID = orderID;
-        this.shippingPrice = shippingPrice;
-
-    }
 
     @Id
     private Integer id;
@@ -58,7 +40,34 @@ public class Shipping {
     private String status;
     private LocalDate dueDate;
     private LocalDate shippingDate;
-    private LocalDate packagingDate;
     private Integer orderID;
     private double shippingPrice;
+
+    public Shipping(String shippingMethod,
+                    String status,
+                    LocalDate dueDate,
+                    LocalDate shippingDate,
+                    Integer orderID,
+                    double shippingPrice) {
+
+        this.shippingMethod = shippingMethod;
+        this.status = status;
+        this.dueDate = dueDate;
+        this.shippingDate = shippingDate;
+        this.orderID = orderID;
+        this.shippingPrice = shippingPrice;
+    }
+
+    public static double getPrice(int numItems, String shippingMethod) {
+        switch (shippingMethod) {
+            case AIR:
+                return numItems * AIR_RATIO;
+            case CAR:
+                return numItems * CAR_RATIO;
+            case FERRY:
+                return numItems * FERRY_RATIO;
+            default:
+                return -1;
+        }
+    }
 }

@@ -40,7 +40,7 @@ public class PurchaseOrderEventHandler {
             }
 
             Logger.getLogger("ProductionLog").info("Purchase order " + orderID + " is received in the inventory");
-            ordersRepository.updateStatus(purchaseOrder.getId(), Order.COMPLETED).subscribe();
+            ordersRepository.updateStatus(purchaseOrder.getId(), Order.DELIVERED).subscribe();
             InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID(), purchaseOrder.getId());
             applicationEventPublisher.publishEvent(inventoryEvent);
         } else {

@@ -22,7 +22,9 @@ public class Order {
     public static final String READY = "ready";
     public static final String NEW = "new";
     public static final String PROCESSING = "processing";
-    public static final String COMPLETED = "completed";
+    public static final String PACKAGED = "packaged";
+    public static final String SHIPPED = "shipped";
+    public static final String DELIVERED = "delivered";
     @Id
     private Integer id;
     private LocalDate createdDate;

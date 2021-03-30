@@ -14,14 +14,17 @@ public interface ShippingRepository extends ReactiveCrudRepository<Shipping, Int
 
     @Modifying
     @Query("UPDATE shippings SET SHIPPING_METHOD = $2, STATUS = $3, DUE_DATE = $4, DELIVERY_DATE =$5," +
-            "PACKAGING_DATE = $6,  ORDER_ID = $7 ,SHIPPING_PRICE = $8 WHERE ID = $1")
+            "ORDER_ID = $6 ,SHIPPING_PRICE = $7 WHERE ID = $1")
     Mono<Integer> update(
             Integer id,
             String shippingMethod,
             String shippingStatus,
             LocalDate dueDate,
             LocalDate deliveryDate,
-            LocalDate packagingDate,
             Integer orderId,
             Double shippingPrice);
+
+    @Modifying
+    @Query("UPDATE shippings SET STATUS = $2, WHERE ID = $1")
+    Mono<Integer> updateStatus(Integer id, String shippingStatus);
 }

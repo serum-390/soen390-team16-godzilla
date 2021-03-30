@@ -66,7 +66,6 @@ public class ShippingHandler {
                         original.setDueDate(updated.getDueDate());
                         original.setStatus(updated.getStatus());
                         original.setOrderID(updated.getOrderID());
-                        original.setPackagingDate(updated.getPackagingDate());
                         original.setShippingPrice(updated.getShippingPrice());
                         original.setShippingMethod(updated.getShippingMethod());
 
@@ -82,7 +81,6 @@ public class ShippingHandler {
                         shippingItem.getStatus(),
                         shippingItem.getDueDate(),
                         shippingItem.getShippingDate(),
-                        shippingItem.getPackagingDate(),
                         shippingItem.getOrderID(),
                         shippingItem.getShippingPrice()))
                 .flatMap(item -> noContent().build());
