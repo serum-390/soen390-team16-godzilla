@@ -15,7 +15,7 @@ public class ShippingManagerRouter {
         return RouterFunctions.route()
                 .path("/shipping-manager/", builder -> builder
                         .POST("/validate", shippingManagerHandler::validateShipping)
-                        .POST("/cancel/" + ID, shippingManagerHandler::cancelShipping))
+                        .POST("/cancel" + ID, shippingManagerHandler::cancelShipping))
                 .build();
     }
 }

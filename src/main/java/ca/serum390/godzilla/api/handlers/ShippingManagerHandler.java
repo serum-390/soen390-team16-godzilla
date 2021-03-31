@@ -36,7 +36,6 @@ public class ShippingManagerHandler {
     private Order salesOrder = null;
     private LocalDate shippingDate;
     private String shippingMethod;
-    private Shipping shipping;
     private TaskScheduler scheduler;
     private Logger logger;
 
@@ -53,45 +52,39 @@ public class ShippingManagerHandler {
 
         if (validateOrderID(req) && salesOrder.getStatus().equals(Order.PACKAGED) && validateShippingDate(req) &&
                 validateShippingMethod(req)) {
-            shipping = new Shipping(
-                    shippingMethod,
-                    Shipping.NEW,
-                    salesOrder.getDueDate(),
-                    shippingDate,
-                    salesOrder.getId(),
-                    Shipping.getPrice(salesOrder.getItems().size(), shippingMethod));
+            shippingRepository.save(
+                    new Shipping(
+                            shippingMethod,
+                            Shipping.NEW,
+                            salesOrder.getDueDate(),
+                            shippingDate,
+                            salesOrder.getId(),
+                            Shipping.getPrice(salesOrder.getItems().size(), shippingMethod))).subscribe(shippingItem ->
+            {
 
-            shipping = shippingRepository.save(shipping).block();
-
-            // schedule the delivery
-            ShippingEvent shippingEvent = new ShippingEvent(shipping.getId(), salesOrder.getId());
-            Runnable productionTask = () -> applicationEventPublisher.publishEvent(shippingEvent);
-            ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
-            scheduler = new ConcurrentTaskScheduler(localExecutor);
-            scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
-            shippingRepository.updateStatus(shipping.getId(), Shipping.SCHEDULED);
-            logger.info("shipping " + shipping.getId() + " is scheduled");
+                // schedule the shipping
+                ShippingEvent shippingEvent = new ShippingEvent(shippingItem.getId());
+                Runnable productionTask = () -> applicationEventPublisher.publishEvent(shippingEvent);
+                ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+                scheduler = new ConcurrentTaskScheduler(localExecutor);
+                scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
+                shippingRepository.updateStatus(shippingItem.getId(), Shipping.SCHEDULED).subscribe(item ->
+                        logger.info("shipping " + shippingItem.getId() + " is scheduled"));
+            });
         }
         return noContent().build();
+
     }
 
-
-    //TODO removed the shipping item, reset the order status to packaged
+    // cancel the shipping by setting the order status to packaged and the shipping item to canceled
     public Mono<ServerResponse> cancelShipping(ServerRequest req) {
-        Optional<String> shippingIDReq = req.queryParam("shippingID");
-        int shippingID;
-        int orderID;
-        if (shippingIDReq.isPresent()) {
-            shippingID = Integer.parseInt(shippingIDReq.get());
-            shippingRepository.updateStatus(shippingID, Shipping.CANCELED);
-            shippingRepository
-                    .findById(shippingID)
-                    .subscribe(shipping -> ordersRepository
-                            .updateStatus(shipping.getOrderID(), Order.PACKAGED)
-                            .subscribe());
-        }
-
-
+        int shippingID = Integer.parseInt(req.pathVariable("id"));
+        shippingRepository.updateStatus(shippingID, Shipping.CANCELED).subscribe(item ->
+                logger.info("shipping item " + shippingID + " is cancelled"));
+        shippingRepository
+                .findById(shippingID)
+                .subscribe(shipping ->
+                        ordersRepository.updateStatus(shipping.getOrderID(), Order.PACKAGED).subscribe());
         return noContent().build();
     }
 
@@ -101,9 +94,8 @@ public class ShippingManagerHandler {
         // get the sales order object
         if (orderID.isPresent()) {
             salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
-            if (salesOrder != null) {
-                return true;
-            }
+            logger.info("orderID is valid");
+            return salesOrder != null;
         } else {
             logger.info("orderID is not entered");
         }
@@ -113,7 +105,7 @@ public class ShippingManagerHandler {
     private boolean validateShippingDate(ServerRequest req) {
         Optional<String> shippingDateReq = req.queryParam("shippingDate");
         // shipping Date setup
-        if (salesOrder != null && shippingDateReq.isPresent()) {
+        if (shippingDateReq.isPresent()) {
             LocalDate input = LocalDate.parse(shippingDateReq.get());
             if (input.compareTo(LocalDate.now()) < 0) {
                 logger.info("the entered shipping date is past.");
@@ -121,6 +113,7 @@ public class ShippingManagerHandler {
                 logger.info("the entered shipping date does not meet the order due date");
             } else {
                 shippingDate = input;
+                logger.info("shippingDate is valid");
                 return true;
             }
         } else {
@@ -139,6 +132,7 @@ public class ShippingManagerHandler {
                 case Shipping.CAR:
                 case Shipping.FERRY:
                     shippingMethod = shippingMethodReq.get();
+                    logger.info("shipping method is valid");
                     return true;
                 default:
                     logger.info("invalid shipping method");

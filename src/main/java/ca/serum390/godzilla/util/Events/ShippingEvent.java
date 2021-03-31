@@ -7,5 +7,4 @@ import lombok.Getter;
 @Getter
 public class ShippingEvent {
     private int shippingID;
-    private int salesOrderID;
 }

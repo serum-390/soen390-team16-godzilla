@@ -13,18 +13,18 @@ import java.time.LocalDate;
 public interface ShippingRepository extends ReactiveCrudRepository<Shipping, Integer> {
 
     @Modifying
-    @Query("UPDATE shippings SET SHIPPING_METHOD = $2, STATUS = $3, DUE_DATE = $4, DELIVERY_DATE =$5," +
+    @Query("UPDATE shippings SET SHIPPING_METHOD = $2, STATUS = $3, DUE_DATE = $4, SHIPPING_DATE =$5," +
             "ORDER_ID = $6 ,SHIPPING_PRICE = $7 WHERE ID = $1")
     Mono<Integer> update(
             Integer id,
             String shippingMethod,
             String shippingStatus,
             LocalDate dueDate,
-            LocalDate deliveryDate,
+            LocalDate shippingDate,
             Integer orderId,
             Double shippingPrice);
 
     @Modifying
-    @Query("UPDATE shippings SET STATUS = $2, WHERE ID = $1")
+    @Query("UPDATE shippings SET STATUS = $2 WHERE ID = $1")
     Mono<Integer> updateStatus(Integer id, String shippingStatus);
 }
