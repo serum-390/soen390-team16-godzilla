@@ -1,4 +1,5 @@
 import { DataGrid } from "@material-ui/data-grid";
+import CustomToolbar from './tables/CustomToolbar';
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { SpinBeforeLoading } from "./inventory/Inventory";
@@ -6,8 +7,6 @@ import CustomerForm from "../Forms/CustomerForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-
-
 
 const cols = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -124,6 +123,7 @@ const SalesGrid = ({ className, columns, rows, onRowClick }) => {
             columns={columns}
             rows={customerRows}
             onRowClick={onRowClick}
+            components={{ Toolbar: CustomToolbar}}
           />
         </div>
       </div>
@@ -209,6 +209,7 @@ const FilledSalesView = ({ salesOrders, classes }) => {
       rows={orders}
       columns={salesColumns}
       pageSize={9}
+      components={{ Toolbar: CustomToolbar}}
     />
   );
 };
