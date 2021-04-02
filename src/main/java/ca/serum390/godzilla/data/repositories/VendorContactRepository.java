@@ -29,6 +29,7 @@ public interface VendorContactRepository extends ReactiveCrudRepository<VendorCo
      */
     @Query("SELECT * FROM contact WHERE CONTACT_NAME = $1 AND contact_type = 'vendor'")
     Flux<VendorContact> findByNameVendor(String name);
+    
     /**
      * Update sales contact where contact_type = vendor
      */

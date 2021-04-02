@@ -73,7 +73,7 @@ public class VendorContactHandler {
             .fromCallable(() -> parseInt(id))
             .handle(this::errorIfNegativeId)
             .flatMap(vendorContacts::findByIdVendor)
-            .flatMap(vendorContact -> ok().body(Mono.just(vendorContacts), VendorContact.class))
+            .flatMap(vendorContact -> ok().body(Mono.just(vendorContact), VendorContact.class))
             .switchIfEmpty(notFound().build());
             //.onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
    }
@@ -86,7 +86,7 @@ public class VendorContactHandler {
             .collectList()
             .flatMap(l -> l.isEmpty() ? Mono.empty() : Mono.just(l))
             .map(l -> l.size() == 1 ? l.get(0) : l)
-            .flatMap(vendorContact -> ok().bodyValue(vendorContacts))
+            .flatMap(vendorContact -> ok().bodyValue(vendorContact))
             .switchIfEmpty(Mono.defer(() -> status(404).bodyValue("Vendor Contact with name " + name + " does not exist.")));
     }
 
