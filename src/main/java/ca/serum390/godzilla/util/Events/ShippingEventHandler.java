@@ -20,6 +20,10 @@ public class ShippingEventHandler {
         this.shippingRepository = shippingRepository;
     }
 
+    /**
+     * handles th shipping event if the shipping item is scheduled.
+     * @param event
+     */
     @EventListener
     public void handleShippingEvent(ShippingEvent event) {
         int shippingID = event.getShippingID();

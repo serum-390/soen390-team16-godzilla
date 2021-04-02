@@ -200,7 +200,7 @@ public class ProductionManagerHandler {
         if (isOrderReady) {
             ordersRepository.updateStatus(salesOrder.getId(), Order.READY).block();
         } else {
-            ordersRepository.updateStatus(salesOrder.getId(), Order.PROCESSING).block();
+            ordersRepository.updateStatus(salesOrder.getId(), Order.PRODUCTION_PROCESS).block();
             plannedProduct.setStatus(isOrderBlocked ? PlannedProduct.BLOCKED : PlannedProduct.SCHEDULED);
             PlannedProduct product = plannedProductsRepository.save(
                     plannedProduct.getOrderID(),

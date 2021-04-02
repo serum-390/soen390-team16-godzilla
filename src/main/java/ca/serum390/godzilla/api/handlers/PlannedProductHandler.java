@@ -60,7 +60,7 @@ public class PlannedProductHandler {
     }
 
     /**
-     * updates the planned products
+     * updates the planned product
      *
      * @param req
      * @return

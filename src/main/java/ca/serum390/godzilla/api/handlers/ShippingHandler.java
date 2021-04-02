@@ -13,10 +13,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public class ShippingHandler {
 
-
-    /**
-     * {@link ca.serum390.godzilla.data.repositories.PlannedProductsRepository}
-     */
     private final ShippingRepository shippingRepository;
 
     public ShippingHandler(ShippingRepository shippingRepository) {
@@ -24,7 +20,7 @@ public class ShippingHandler {
     }
 
     /**
-     * Insert into the table
+     * Insert the shipping item into the table
      */
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Shipping.class)
@@ -33,7 +29,7 @@ public class ShippingHandler {
     }
 
     /**
-     * Delete element in table by id
+     * Delete shipping item in table by id
      */
     public Mono<ServerResponse> delete(ServerRequest req) {
         return shippingRepository.deleteById(
@@ -43,14 +39,14 @@ public class ShippingHandler {
 
     /**
      * @param req
-     * @return
+     * @return all the shipping items in the repo
      */
     public Mono<ServerResponse> get(ServerRequest req) {
         return ok().body(shippingRepository.findAll(), Shipping.class);
     }
 
     /**
-     * updates the planned products
+     * updates the shipping item
      *
      * @param req
      * @return

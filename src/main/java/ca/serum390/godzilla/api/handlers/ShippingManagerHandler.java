@@ -48,6 +48,13 @@ public class ShippingManagerHandler {
     }
 
 
+    /**
+     * validates the shipping request. If the shipping request is valid, it creates a shipping item in db and schedules
+     * the shipping
+     *
+     * @param req
+     * @return
+     */
     public Mono<ServerResponse> validateShipping(ServerRequest req) {
 
         if (validateOrderID(req) && salesOrder.getStatus().equals(Order.PACKAGED) && validateShippingDate(req) &&
@@ -62,6 +69,8 @@ public class ShippingManagerHandler {
                             Shipping.getPrice(salesOrder.getItems().size(), shippingMethod))).subscribe(shippingItem ->
             {
 
+                //set the order status to shipping process
+                ordersRepository.updateStatus(salesOrder.getId(), Order.SHIPPING_PROCESS).subscribe();
                 // schedule the shipping
                 ShippingEvent shippingEvent = new ShippingEvent(shippingItem.getId());
                 Runnable productionTask = () -> applicationEventPublisher.publishEvent(shippingEvent);
@@ -73,10 +82,13 @@ public class ShippingManagerHandler {
             });
         }
         return noContent().build();
-
     }
 
-    // cancel the shipping by setting the order status to packaged and the shipping item to canceled
+    /**
+     * cancels the shipping by setting the shipping item status to canceled and the order status to packaged
+     * @param req
+     * @return
+     */
     public Mono<ServerResponse> cancelShipping(ServerRequest req) {
         int shippingID = Integer.parseInt(req.pathVariable("id"));
         shippingRepository.updateStatus(shippingID, Shipping.CANCELED).subscribe(item ->
