@@ -1,4 +1,5 @@
-DELETE FROM PLANNED_PRODUCTS;
+DELETE FROM planned_products;
+DELETE FROM shippings;
 DELETE FROM orders;
 DELETE FROM contact;
 DELETE FROM inventory;
