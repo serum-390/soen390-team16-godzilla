@@ -1,5 +1,6 @@
 import { Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import CustomToolbar from './tables/CustomToolbar';
 import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
@@ -164,7 +165,7 @@ const FilledVendorView = (props) => {
     })));
 
   return (
-    <DataGrid rows={contacts} columns={vendorColumns} pageSize={9} />
+    <DataGrid rows={contacts} columns={vendorColumns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
   );
 };
 
@@ -183,7 +184,7 @@ const FilledOrderView = ({ orders, orderColumns, inventory }) => {
     })));
 
   return (
-    <DataGrid rows={purchases} columns={orderColumns} pageSize={9} />
+    <DataGrid rows={purchases} columns={orderColumns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
   );
 };
 
