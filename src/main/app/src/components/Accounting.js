@@ -1,10 +1,7 @@
 import React from "react";
 import { makeStyles } from '@material-ui/core';
-
-import {
-  DataGrid, GridToolbarContainer, GridToolbarExport, GridColumnsToolbarButton,
-  GridFilterToolbarButton
-} from '@material-ui/data-grid';
+import {DataGrid} from '@material-ui/data-grid';
+import CustomToolbar from './tables/CustomToolbar';
 import { SpinBeforeLoading } from './inventory/Inventory';
 
 
@@ -62,15 +59,6 @@ const purchaseRows = [
 
 ];
 
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridColumnsToolbarButton />
-      <GridFilterToolbarButton />
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
 const LoadedView = () => {
 
   return (
