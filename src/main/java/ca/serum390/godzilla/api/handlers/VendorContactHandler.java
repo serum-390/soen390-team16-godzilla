@@ -1,13 +1,10 @@
 package ca.serum390.godzilla.api.handlers;
 
-import static ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException.CANNOT_PROCESS_DUE_TO;
 import static java.lang.Integer.parseInt;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static org.springframework.web.reactive.function.server.ServerResponse.status;
-import static org.springframework.web.reactive.function.server.ServerResponse.unprocessableEntity;
 
 import java.util.Optional;
 
@@ -30,13 +27,6 @@ public class VendorContactHandler {
         this.vendorContacts = vendorContact;
     }
     
-    /**
-     * get all vendor contact
-     */
-    public Mono<ServerResponse> all(ServerRequest req) {
-        return ok().contentType(APPLICATION_JSON).body(vendorContacts.findAllVendor(), VendorContact.class);
-    }
-
     /**
      * create a vendor contact
      */
@@ -79,7 +69,7 @@ public class VendorContactHandler {
    }
 
    /**
-    * get a vendor by id
+    * get a vendor by name
     */
     private Mono<ServerResponse> queryVendorByName(String name) {
         return vendorContacts.findByNameVendor(name)
@@ -94,7 +84,7 @@ public class VendorContactHandler {
      * get all vendor
      */
     private Mono<ServerResponse> getAllVendor(){
-        return ok().body(vendorContacts.findAll(), VendorContact.class);
+        return ok().body(vendorContacts.findAllVendor(), VendorContact.class);
     }
 
     /**
