@@ -1,6 +1,6 @@
 package ca.serum390.godzilla.api.handlers;
 
-import static ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException.CANNOT_PROCESS_DUE_TO;
+import static ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException.CANNOT_PROCESS_DUE_TO;
 import static ca.serum390.godzilla.util.BuildableJsonMap.map;
 import static java.lang.Integer.parseInt;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException;
+import ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException;
 import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.domain.orders.SalesContact;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,6 @@ public class SalesContactHandler {
     public Mono<ServerResponse> all(ServerRequest req) {
         return ok().body(salesContacts.findAll(), SalesContact.class);
     }
-
     /**
      * Add a new {@link SalesContact} to the system.
      *
@@ -41,7 +40,7 @@ public class SalesContactHandler {
     public Mono<ServerResponse> create(ServerRequest req) {
         return req
                 .bodyToMono(SalesContact.class)
-                .handle(NegativeSalesContactIdException::errorIfNegativeContactId)
+                .handle(NegativeIdException::errorIfNegativeContactId)
                 .flatMap(salesContacts::save)
                 .flatMap(salesContact -> ok().bodyValue(salesContact))
                 .onErrorResume(e -> unprocessableEntity()
@@ -83,13 +82,13 @@ public class SalesContactHandler {
 
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink) {
         if (value < 0) {
-            sink.error(new NegativeSalesContactIdException(
+            sink.error(new NegativeIdException(
                 "Negative id " +  value + " is prohibited for SalesContact"));
         } else {
             sink.next(value);
         }
     }
-
+    
     /**
      * Update a sales contact
      *
@@ -103,7 +102,7 @@ public class SalesContactHandler {
 
         Mono<SalesContact> received = req
                 .bodyToMono(SalesContact.class)
-                .handle(NegativeSalesContactIdException::errorIfNegativeContactId);
+                .handle(NegativeIdException::errorIfNegativeContactId);
 
         return Mono
                 .zip(this::combineSalesContacts, existed, received)

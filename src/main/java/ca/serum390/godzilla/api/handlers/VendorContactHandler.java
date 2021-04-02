@@ -1,18 +1,25 @@
 package ca.serum390.godzilla.api.handlers;
 
+import static ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException.CANNOT_PROCESS_DUE_TO;
+import static java.lang.Integer.parseInt;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
+import static org.springframework.web.reactive.function.server.ServerResponse.unprocessableEntity;
+
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException;
 import ca.serum390.godzilla.data.repositories.VendorContactRepository;
 import ca.serum390.godzilla.domain.vendor.VendorContact;
 import reactor.core.publisher.Mono;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import reactor.core.publisher.SynchronousSink;
 
 @Component
 public class VendorContactHandler {
@@ -40,12 +47,54 @@ public class VendorContactHandler {
     }
 
     /**
-     * get a vendor contact
+     * @param req
+     * @return
      */
-    public Mono<ServerResponse> getVendor(ServerRequest req) {
-        return vendorContacts.findByIdVendor(Integer.parseInt(req.pathVariable("id")))
-        .flatMap(contact -> ok().body(Mono.just(contact), VendorContact.class))
-        .switchIfEmpty(notFound().build());
+    public Mono<ServerResponse> getBy(ServerRequest req){
+        Optional<String> name = req.queryParam("name");
+        Optional<String> id = req.queryParam("id");
+
+        if (name.isPresent()){
+            return queryVendorByName(name.get());
+        } else if (id.isPresent()) {
+            return queryVendorById(id.get());
+        } else {
+            return getAllVendor();
+        }
+    }
+    /**
+     * get a vendor contact by id
+     */
+    private Mono<ServerResponse> queryVendorById(String id) {
+        // return vendorContacts.findByIdVendor(Integer.parseInt(req.pathVariable("id")))
+        // .flatMap(contact -> ok().body(Mono.just(contact), VendorContact.class))
+        // .switchIfEmpty(notFound().build());
+        return Mono
+            .fromCallable(() -> parseInt(id))
+            .handle(this::errorIfNegativeId)
+            .flatMap(vendorContacts::findByIdVendor)
+            .flatMap(vendorContact -> ok().body(Mono.just(vendorContacts), VendorContact.class))
+            .switchIfEmpty(notFound().build());
+            //.onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+   }
+
+   /**
+    * get a vendor by id
+    */
+    private Mono<ServerResponse> queryVendorByName(String name) {
+        return vendorContacts.findByNameVendor(name)
+            .collectList()
+            .flatMap(l -> l.isEmpty() ? Mono.empty() : Mono.just(l))
+            .map(l -> l.size() == 1 ? l.get(0) : l)
+            .flatMap(vendorContact -> ok().bodyValue(vendorContacts))
+            .switchIfEmpty(Mono.defer(() -> status(404).bodyValue("Vendor Contact with name " + name + " does not exist.")));
+    }
+
+    /**
+     * get all vendor
+     */
+    private Mono<ServerResponse> getAllVendor(){
+        return ok().body(vendorContacts.findAll(), VendorContact.class);
     }
 
     /**
@@ -78,4 +127,15 @@ public class VendorContactHandler {
                         contact.getId()))
                 .flatMap(rows -> noContent().build());
     }   
+
+    /**
+     * Handle if ID is negative
+     */
+    private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink){
+        if(value < 0){
+            sink.error(new NegativeIdException("Negative id " + value + " id prohibited for VendorContact"));
+        } else {
+            sink.next(value);
+        }
+    }
 }

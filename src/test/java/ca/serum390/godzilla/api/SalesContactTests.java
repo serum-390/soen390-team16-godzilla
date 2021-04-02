@@ -1,6 +1,6 @@
 package ca.serum390.godzilla.api;
 
-import static ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException.CANNOT_PROCESS_DUE_TO;
+import static ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException.CANNOT_PROCESS_DUE_TO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

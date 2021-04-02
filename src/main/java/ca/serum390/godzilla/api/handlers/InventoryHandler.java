@@ -91,8 +91,14 @@ public class InventoryHandler {
     }
 
     private Mono<ServerResponse> queryItemsByName(String name) {
-        return ok().contentType(APPLICATION_JSON)
-                .body(items.findByName(name), Item.class);
+        // return ok().contentType(APPLICATION_JSON)
+        //         .body(items.findByName(name), Item.class);
+        return items.findByName(name)
+                .collectList()
+                .flatMap(l -> l.isEmpty() ? Mono.empty() : Mono.just(l))
+                .map(l -> l.size() == 1 ? l.get(0) : l)
+                .flatMap(item -> ok().bodyValue(item))
+                .switchIfEmpty(Mono.defer(() -> status(404).bodyValue("Item with name : " + name + " does not exist.")));
     }
 
     private Mono<ServerResponse> queryItemsById(String id) {
