@@ -76,7 +76,8 @@ public class ProductionManagerHandler {
                 Item orderItem = inventoryRepository.findById(orderItemID).block();
 
                 if (orderItemQuantity <= orderItem.getQuantity()) {
-                    inventoryRepository.updateQuantity(orderItemID, orderItem.getQuantity() - orderItemQuantity).block();
+                    inventoryRepository.updateQuantity(orderItemID, orderItem.getQuantity() - orderItemQuantity)
+                            .block();
                     plannedProduct.getUsedItems().put(orderItemID, orderItemQuantity);
                 } else {
                     isOrderReady = false;
@@ -94,7 +95,7 @@ public class ProductionManagerHandler {
             }
             processOrder();
         } else {
-            logger.info("The order ID is invalid or it is already in pipeline");
+            logger.info("The order ID is invalid or it is already planned for production");
         }
         return noContent().build();
     }
@@ -199,7 +200,7 @@ public class ProductionManagerHandler {
         if (isOrderReady) {
             ordersRepository.updateStatus(salesOrder.getId(), Order.READY).block();
         } else {
-            ordersRepository.updateStatus(salesOrder.getId(), Order.PROCESSING).block();
+            ordersRepository.updateStatus(salesOrder.getId(), Order.PRODUCTION_PROCESS).block();
             plannedProduct.setStatus(isOrderBlocked ? PlannedProduct.BLOCKED : PlannedProduct.SCHEDULED);
             PlannedProduct product = plannedProductsRepository.save(
                     plannedProduct.getOrderID(),
@@ -251,16 +252,16 @@ public class ProductionManagerHandler {
         ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduler = new ConcurrentTaskScheduler(localExecutor);
         scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
-        Logger.getLogger("EventLog").info("production " + productionID + " is scheduled");
+        logger.info("production " + productionID + " is scheduled");
     }
 
 
     // Setups logger to log production info
     private void setupLogger() {
-        logger = Logger.getLogger("EventLog");
+        logger = Logger.getLogger("ProductionLog");
         FileHandler fh;
         try {
-            fh = new FileHandler(new File("eventsLog.log").getAbsolutePath());
+            fh = new FileHandler(new File("productionLog.log").getAbsolutePath());
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
