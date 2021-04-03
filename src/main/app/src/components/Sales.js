@@ -1,4 +1,5 @@
 import { DataGrid } from "@material-ui/data-grid";
+//import CustomToolbar from './tables/CustomToolbar';
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { SpinBeforeLoading } from "./inventory/Inventory";
@@ -6,47 +7,6 @@ import CustomerForm from "../Forms/CustomerForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-
-
-
-const cols = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'companyName', headerName: 'Company Name', width: 120 },
-  { field: 'customerName', headerName: 'Customer', width: 120 },
-  { field: 'customerAddress', headerName: 'Address', width: 120 },
-  { field: 'customerPhone', headerName: 'Contact #', width: 120 },
-  {
-    headerName: 'Modify',
-    width: 120,
-    renderCell: params => (
-
-
-      <div style={{ margin: 'auto' }}>
-        {
-          /*<Button variant='contained'
-           color='secondary'
-           onClick={params.value.onClick}>
-           show</Button> 
-           */
-          <CustomerForm
-            initialButton='Edit'
-            dialogTitle={'Customer Information: ID(' + params.getValue('id') + ')'}
-            dialogContentText='Please enter any information you would like to modify: '
-            customerCompanyName={params.getValue('companyName') || ''}
-            customerName={params.getValue('customerName') || ''}
-            customerAddress={params.getValue('customerAddress').split(",")[0] || ''}
-            customerCity={params.getValue('customerAddress').split(",")[1] || ''}
-            customerPostal={params.getValue('customerAddress').split(",")[2] || ''}
-            customerProvince={params.getValue('customerAddress').split(",")[3] || ''}
-            customerPhone={params.getValue('customerPhone') || ''}
-            submitButton='Update'
-            deleteButton='Delete'
-          />
-        }
-      </div>
-    ),
-  },
-];
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -103,36 +63,6 @@ const deleteSales = async id => {
   }
 };
 
-
-const SalesGrid = ({ className, columns, rows, onRowClick }) => {
-  return (
-
-    <div className={className}>
-      <h1>Sales</h1>
-      <div style={{ height: 600, width: '45%', float: 'left' }}>
-        <div>
-          <h2 style={{ float: 'left' }}>Customer</h2>
-          <CustomerForm
-            initialButton='Add New Customer'
-            dialogTitle='Add New Customer '
-            dialogContentText='Please enter the following information below to add a new customer: '
-            submitButton='Save' />
-        </div>
-        <DataGrid
-          columns={columns}
-          rows={customerRows}
-          onRowClick={onRowClick}
-        />
-      </div>
-    </div>
-  );
-};
-
-const customerRows = [
-  { id: 1, companyName: 'Company A', customerName: 'Customer1', customerAddress: '1444 Rue Mackay,Montreal,H3G2M2,QC', customerPhone: "1234567000" },
-  { id: 2, companyName: 'Company B', customerName: 'Customer2', customerAddress: '666 Ontario St,Toronto,M4X1N1,ON', customerPhone: "1233207000" }
-];
-
 const salesColumns = [
   { field: 'id', headerName: 'Order #', width: 110 },
   { field: 'createdDate', headerName: 'Created Date', width: 130 },
@@ -171,7 +101,6 @@ const salesColumns = [
   }
 ];
 
-
 const FilledSalesView = ({ salesOrders, classes }) => {
   let orders = [];
 
@@ -202,47 +131,226 @@ const FilledSalesView = ({ salesOrders, classes }) => {
     })));
 
   return (
-    <DataGrid rows={orders} columns={salesColumns} pageSize={9} />
+    <DataGrid
+      rows={orders}
+      columns={salesColumns}
+      pageSize={9}
+      /*components={{ Toolbar: CustomToolbar}}*/
+    />
   );
 };
 
-const LoadedSalesView = ({ classes, order }) => {
+const LoadedSalesView = ({ classes, order, salesContacts, reload}) => {
   return (
-    <div style={{ height: 600, width: '50%', float: 'right' }}>
-      <h2 style={{ float: 'left' }}>Sales Orders</h2>
-      <NewSalesOrderForm
-        initialButton='Add New Sales Order'
-        dialogTitle='New Sales Order '
-        dialogContentText='Please enter the following information below to add a new sales order: '
-        submitButton='Submit'
-        onSubmit={(data) => insertSales(data)}
-      />
-      <FilledSalesView
-        salesOrders={order}
-        classes={classes}
-      />
-    </div>
+  <div style={{ height: 600, width: '100%' }}>
+      <h1 style={{ textAlign: "center" }}>Sales Department</h1>
+      <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
+
+      <div style={{width: '100%', display: 'table-row' }}>
+        <h2 style={{ float: 'left'}}>Customers</h2>
+        <div style={{ float: 'right'}}>
+            <CustomerForm
+            onSubmit={(data) => insertContact(data, reload)}
+            initialButton='Add New Customer'
+            dialogTitle='Add New Customer '
+            dialogContentText='Please enter the following information below to add a new customer: '
+            submitButton='Save' />
+        </div>
+      </div>
+      <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+        <FilledContactView
+            salesContacts={salesContacts}
+            classes={classes}
+            reload={reload}
+        />
+       </div>
+
+      </div>
+
+      <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
+        <div style={{width: '100%', display: 'table-row' }}>
+          <h2 style={{ float: 'left' }}>Sales Orders</h2>
+          <div style={{ float: 'right'}}>
+            <NewSalesOrderForm
+              initialButton='Add New Sales Order'
+              dialogTitle='New Sales Order '
+              dialogContentText='Please enter the following information below to add a new sales order: '
+              submitButton='Submit'
+              onSubmit={(data) => insertSales(data)}
+            />
+          </div>
+        </div>
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <FilledSalesView
+            salesOrders={order}
+            classes={classes}
+          />
+        </div>
+      </div>
+  </div>
+
+
   );
 };
 
+const FilledContactView = (props) => {
+  let contacts = [];
+  let updateRow = (item, updatedItem, toUpdate) => {
+    if (toUpdate) {
+      updateContact({
+        id: item.id,
+        companyName: updatedItem.companyName === "" ? item.companyName : updatedItem.companyName,
+        contactName: updatedItem.contactName === "" ? item.contactName : updatedItem.contactName,
+        address: updatedItem.address === "" ? item.address : updatedItem.address,
+        contact: updatedItem.contact === "" ? item.contact : updatedItem.contact
+      }, props.reload)
+    }
+    return item;
+  };
+
+  props.salesContacts.map(item => (
+    contacts.push({
+      id: item.id,
+      companyName: item.companyName,
+      contactName: item.contactName,
+      address: item.address,
+      contact: item.contact,
+      modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
+      delete: () => deleteContact(item.id, props.reload)
+    })));
+
+  return (
+    <DataGrid rows={contacts} columns={contactColumn} pageSize={9} /*components={{ Toolbar: CustomToolbar}}*//>
+  );
+};
+
+const contactColumn = [
+  { field: 'id', headerName: 'ID', width: 70 },
+  { field: 'companyName', headerName: 'Company Name', width: 130 },
+  { field: 'contactName', headerName: 'Customer', width: 130 },
+  { field: 'address', headerName: 'Address', width: 130 },
+  { field: 'contact', headerName: 'Contact #', width: 130 },
+  {
+    field: 'modify',
+    headerName: 'Modify',
+    width: 100,
+    renderCell: params => (
+      <div style={{ margin: 'auto' }}>
+        {
+          <CustomerForm
+            onSubmit={params.value}
+            splitAddress={params.getValue('address').split(",")[0] || ''}
+            splitCity={params.getValue('address').split(",")[1] || ''}
+            splitPostal={params.getValue('address').split(",")[2] || ''}
+            splitProvince={params.getValue('address').split(",")[3] || ''}
+            initialButton='Edit'
+            dialogTitle={'Customer Information: ID(' + params.getValue('id') + ')'}
+            dialogContentText='Please enter any information you would like to modify: '
+            submitButton='Update'
+          />
+        }
+      </div>
+    ),
+  },
+  {
+    field: 'delete',
+    headerName: 'Delete',
+    width: 120,
+    renderCell: params => (
+      <div style={{ margin: 'auto' }}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
+          Delete
+        </Button>
+      </div>
+    ),
+  },
+];
+
+
+const getContact = async () => {
+  const api = '/api/salescontact/';
+  const got = await fetch(api);
+  const json = await got.json();
+  return json || [];
+};
+
+const updateContact = async (data, reload) => {
+  try {
+    const api = `/api/salescontact/${data.id}`;
+    const updated = await axios.put(api, data);
+    console.log(`STATUS CODE: ${updated.status}`);
+    console.log(`DATA: ${updated.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  reload();
+};
+
+
+const insertContact = async (data, reload) => {
+  try {
+    const api = `/api/vendorcontact/`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+  
+  reload();
+};
+
+
+const deleteContact = async (id, reload) => {
+  try {
+    const api = `/api/vendorcontact/${id}`;
+    const inserted = await axios.delete(api);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  reload();
+};
 
 
 const Sales = () => {
   const classes = useStyles();
+  const [salesContacts, setContact] = useState([]);//added
   const [order, setSales] = useState([]);
+  const [loading, setDoneLoading] = useState(true); 
+  
+  
 
-  const waitForGetRequest = async () => getSales().then(sales => setSales(sales));
+
+  const waitForGetRequest = async () => {
+    getContact().then(ven => setContact(ven)); //added
+    getSales().then(sales => setSales(sales));
+    setDoneLoading(false);
+  }
+
+  //added
+  function reload(){
+    setDoneLoading(true);
+  }
 
   return (
+    (loading) ?
     <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
 
-      <SalesGrid
-        className={classes.root}
-        columns={cols}
-      />
-      <LoadedSalesView classes={classes} order={order} />
-    </SpinBeforeLoading>
+      <LoadedSalesView classes={classes} order={order} salesContacts={salesContacts} reload={reload}/> 
+    </SpinBeforeLoading> :
+    <div>
+      
+      <LoadedSalesView classes={classes}  order={order}  salesContacts={salesContacts} reload={reload} />
+    </div>
+   
   );
 }
-export { Sales, FilledSalesView, SpinBeforeLoading };
+export { Sales, FilledSalesView, FilledContactView, SpinBeforeLoading };
 export default Sales;
