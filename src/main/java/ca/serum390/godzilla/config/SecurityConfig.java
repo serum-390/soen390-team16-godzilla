@@ -22,7 +22,9 @@ public class SecurityConfig {
                 .authorizeExchange()
                     .pathMatchers("/api/docs/**",
                                   "/api/healthcheck",
-                                  "/favicon.ico")
+                                  "/favicon.ico",
+                                  "/api/signup/**",
+                                  "/signup/**")
                     .permitAll()
                 .anyExchange()
                 .authenticated().and()

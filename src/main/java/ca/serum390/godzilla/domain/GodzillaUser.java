@@ -30,6 +30,7 @@ public class GodzillaUser implements UserDetails {
     private String username;
     private String password;
     private String authorities;
+    private String email;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
