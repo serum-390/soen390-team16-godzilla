@@ -185,8 +185,6 @@ const LoadedSalesView = ({ classes, order, salesContacts, reload}) => {
         </div>
       </div>
   </div>
-
-
   );
 };
 
