@@ -14,18 +14,18 @@ function App() {
     <div>
       {
         desktop ? <NavBar />
-                : <NavBarMobile />
+          : <NavBarMobile />
       }
     </div>
   );
 }
 
-function AppRouter(){
+function AppRouter() {
   return (
     <Router on >
       <Switch>
-       <Route exact path="/" component={App} />
-      <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/" component={App} />
+        <Route exact path="/signup" component={SignUp} />
       </Switch>
     </Router>
   )
