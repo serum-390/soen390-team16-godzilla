@@ -1,6 +1,7 @@
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { Route, Router, Switch } from 'react-router';
+import { Route, Switch } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import NavBarMobile from './components/NavBarMobile';
 import SignUp from './components/SignUp';
@@ -28,15 +29,13 @@ function App() {
 
 function AppRouter() {
   return (
-    <Router on >
+    <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={App} />
-        <Route exact path="/signup" component={SignUp} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/" component={App} />
       </Switch>
-    </Router>
+    </BrowserRouter>
   )
-
-
 }
 
 export default AppRouter;
