@@ -1,5 +1,6 @@
-import { Button, makeStyles, TextField } from '@material-ui/core';
+import { Button, makeStyles} from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import CustomToolbar from './tables/CustomToolbar';
 import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 
@@ -103,15 +104,21 @@ const LoadedView = ({ classes, materialRows, productRows }) => {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Production Department</h1>
-      <div style={{ height: 600, width: '35%', float: 'left' }}>
-        <h2 style={{ float: 'left' }}>Materials</h2>
-        <TextField id="filled-basic" label="Search" variant="filled" style={{ float: 'right' }} />
-        <DataGrid rows={materialRows} columns={materialColumns} pageSize={9} />
+      <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
+        <div style={{width: '100%', display: 'table-row' }}>
+          <h2 style={{ float: 'left' }}>Materials</h2>
+        </div>
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <DataGrid rows={materialRows} columns={materialColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
+        </div>
       </div>
-      <div style={{ height: 600, width: '55%', float: 'right' }}>
-        <h2 style={{ float: 'left' }}>Products</h2>
-        <TextField id="filled-basic" label="Search" variant="filled" style={{ float: 'right' }} />
-        <DataGrid rows={productRows} columns={productColumns} pageSize={9} />
+      <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
+        <div style={{width: '100%', display: 'table-row' }}>
+          <h2 style={{ float: 'left' }}>Products</h2>
+        </div>
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <DataGrid rows={productRows} columns={productColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
+        </div>
       </div>
     </div>
   );
@@ -121,16 +128,20 @@ function Production() {
   const classes = useStyles();
   const [materialRows, setMaterialRows] = useState([]);
   const [productRows, setProductRows] = useState([]);
+  const [loading, setDoneLoading] = useState(true);
 
   const waitForGetRequest = async () => {
     getMaterials().then(materials => setMaterialRows(materials));
     getProducts().then(products => setProductRows(products));
+    setDoneLoading(false);
   }
 
   return (
+    (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
       <LoadedView classes={classes} materialRows={materialRows} productRows={productRows} />
-    </SpinBeforeLoading>
+    </SpinBeforeLoading> :
+    <LoadedView classes={classes} materialRows={materialRows} productRows={productRows} />
   );
 }
 

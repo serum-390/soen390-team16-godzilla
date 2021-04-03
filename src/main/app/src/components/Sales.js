@@ -1,4 +1,5 @@
 import { DataGrid } from "@material-ui/data-grid";
+import CustomToolbar from './tables/CustomToolbar';
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { SpinBeforeLoading } from "./inventory/Inventory";
@@ -6,8 +7,6 @@ import CustomerForm from "../Forms/CustomerForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-
-
 
 const cols = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -107,21 +106,26 @@ const deleteSales = async id => {
 const SalesGrid = ({ className, columns, rows, onRowClick }) => {
   return (
     <div className={className}>
-      <h1>Sales</h1>
-      <div style={{ height: 600, width: '45%', float: 'left' }}>
-        <div>
+      <h1 style={{ textAlign: "center" }}>Sales</h1>
+      <div style={{ height: 720, width: '45%', float: 'left', display: 'table' }}>
+       <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Customer</h2>
-          <CustomerForm
-            initialButton='Add New Customer'
-            dialogTitle='Add New Customer '
-            dialogContentText='Please enter the following information below to add a new customer: '
-            submitButton='Save' />
+          <div style={{ float: 'right'}}>
+            <CustomerForm
+              initialButton='Add New Customer'
+              dialogTitle='Add New Customer '
+              dialogContentText='Please enter the following information below to add a new customer: '
+              submitButton='Save' />
+          </div>  
         </div>
-        <DataGrid
-          columns={columns}
-          rows={customerRows}
-          onRowClick={onRowClick}
-        />
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <DataGrid
+            columns={columns}
+            rows={customerRows}
+            onRowClick={onRowClick}
+            components={{ Toolbar: CustomToolbar}}
+          />
+        </div>
       </div>
     </div>
   );
@@ -205,25 +209,32 @@ const FilledSalesView = ({ salesOrders, classes }) => {
       rows={orders}
       columns={salesColumns}
       pageSize={9}
+      components={{ Toolbar: CustomToolbar}}
     />
   );
 };
 
 const LoadedSalesView = ({ classes, order }) => {
   return (
-    <div style={{ height: 600, width: '50%', float: 'right' }}>
-      <h2 style={{ float: 'left' }}>Sales Orders</h2>
-      <NewSalesOrderForm
-        initialButton='Add New Sales Order'
-        dialogTitle='New Sales Order '
-        dialogContentText='Please enter the following information below to add a new sales order: '
-        submitButton='Submit'
-        onSubmit={(data) => insertSales(data)}
-      />
-      <FilledSalesView
-        salesOrders={order}
-        classes={classes}
-      />
+    <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
+      <div style={{width: '100%', display: 'table-row' }}>
+        <h2 style={{ float: 'left' }}>Sales Orders</h2>
+        <div style={{ float: 'right'}}>
+          <NewSalesOrderForm
+            initialButton='Add New Sales Order'
+            dialogTitle='New Sales Order '
+            dialogContentText='Please enter the following information below to add a new sales order: '
+            submitButton='Submit'
+            onSubmit={(data) => insertSales(data)}
+          />
+        </div>
+      </div>
+      <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+        <FilledSalesView
+          salesOrders={order}
+          classes={classes}
+        />
+      </div>
     </div>
   );
 };
@@ -231,17 +242,30 @@ const LoadedSalesView = ({ classes, order }) => {
 const Sales = () => {
   const classes = useStyles();
   const [order, setSales] = useState([]);
+  const [loading, setDoneLoading] = useState(true);
 
-  const waitForGetRequest = async () => getSales().then(sales => setSales(sales));
+  const waitForGetRequest = async () => {
+    getSales().then(sales => setSales(sales));
+    setDoneLoading(false);
+  }
 
   return (
+    (loading) ?
     <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
       <SalesGrid
         className={classes.root}
         columns={cols}
       />
       <LoadedSalesView classes={classes} order={order} />
-    </SpinBeforeLoading>
+    </SpinBeforeLoading> :
+    <div>
+      <SalesGrid
+        className={classes.root}
+        columns={cols}
+      />
+      <LoadedSalesView classes={classes} order={order} />
+    </div>
+   
   );
 }
 export { Sales, FilledSalesView, SpinBeforeLoading };

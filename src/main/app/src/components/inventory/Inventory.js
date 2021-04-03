@@ -4,6 +4,7 @@ import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
 import { spinnyBoi } from '../About';
 import { DataGrid } from "@material-ui/data-grid";
+import CustomToolbar from '../tables/CustomToolbar';
 import InventoryForm from "../../Forms/InventoryForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
@@ -138,7 +139,7 @@ const FilledInventoryView = ({ inventoryItems, classes }) => {
     })));
 
   return (
-    <DataGrid rows={items} columns={inventoryCols} pageSize={9} />
+    <DataGrid rows={items} columns={inventoryCols} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
   );
 };
 
@@ -163,8 +164,8 @@ const LoadedView = ({ classes, inventory }) => {
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>Inventory</h1>
-      <div style={{ height: 800, width: '85%', float: "left" }}>
-        <div style={{ float: "left" }}>
+      <div style={{ height: 800, width: '85%', display: 'table' }}>
+        <div style={{ display: 'table-row', float: 'left' }}>
           <InventoryForm
             initialButton='Insert'
             dialogTitle='Inventory Information '
@@ -173,12 +174,13 @@ const LoadedView = ({ classes, inventory }) => {
             onSubmit={(data) => insertItem(data)}
           />
         </div>
-        <FilledInventoryView
-          inventoryItems={inventory}
-          classes={classes}
-        />
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <FilledInventoryView
+            inventoryItems={inventory}
+            classes={classes}
+          />
+        </div>
       </div>
-
     </div>
   );
 };
@@ -206,12 +208,19 @@ const Inventory = () => {
 
   const classes = useStyles();
   const [inventory, setInventory] = useState([]);
-  const waitForGetRequest = async () => getInventory().then(inv => setInventory(inv));
+  const [loading, setDoneLoading] = useState(true);
+
+  const waitForGetRequest = async () => {
+    getInventory().then(inv => setInventory(inv));
+    setDoneLoading(false);
+  }
 
   return (
+    (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
       <LoadedView classes={classes} inventory={inventory} />
-    </SpinBeforeLoading>
+    </SpinBeforeLoading> :
+    <LoadedView classes={classes} inventory={inventory} />
   );
 };
 
