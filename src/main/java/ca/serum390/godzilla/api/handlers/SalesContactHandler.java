@@ -149,7 +149,7 @@ public class SalesContactHandler {
     public Mono<ServerResponse> update(ServerRequest req) {
         Mono<SalesContact> existed = Mono
                 .fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
-                .flatMap(salesContacts::findById);
+                .flatMap(salesContacts::findByIdCustomer);
 
         Mono<SalesContact> received = req
                 .bodyToMono(SalesContact.class)
