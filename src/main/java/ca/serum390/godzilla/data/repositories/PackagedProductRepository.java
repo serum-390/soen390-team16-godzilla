@@ -1,6 +1,6 @@
 package ca.serum390.godzilla.data.repositories;
 
-import ca.serum390.godzilla.domain.packaging.packaged_products;
+import ca.serum390.godzilla.domain.packaging.PackagedProduct;
 import jdk.jfr.FlightRecorderListener;
 
 import org.springframework.data.r2dbc.repository.Modifying;
@@ -19,5 +19,5 @@ public interface PackagedProductRepository extends ReactiveCrudRepository<Packag
     @Modifying
     @Query("UPDATE packaged_products SET LENGTH = $1, WIDTH = $2, HEIGHT= $3, WEIGHT=$4 , PACKAGE_TYPE = $6  WHERE ID = $5")
     Mono<Integer> update(Float length, Float width, Float height, Float weight,
-                         String package_type, Integer id);
+                         String packageType, Integer id);
 }

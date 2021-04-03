@@ -1,4 +1,4 @@
-package ca.serum390.godzilla.domain.orders;
+package ca.serum390.godzilla.domain.packaging;
 
 import org.springframework.data.annotation.Id;
 
@@ -21,11 +21,12 @@ import lombok.With;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackagedProduct {
-    @Id
+    @Id 
     private Integer id;
     private float length;
     private float width;
     private float height;
     private float weight;
-    private String packageType; 
+    private String packageType;  
+   
 }

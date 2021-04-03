@@ -1,5 +1,6 @@
 package ca.serum390.godzilla.api.handlers;
 
+import static ca.serum390.godzilla.api.handlers.exceptions.NegativePackagedProductIdException.CANNOT_PROCESS_DUE_TO;
 import static ca.serum390.godzilla.util.BuildableJsonMap.map;
 import static java.lang.Integer.parseInt;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import ca.serum390.godzilla.api.handlers.exceptions.NegativePackagedProductIdException;
 import ca.serum390.godzilla.data.repositories.PackagedProductRepository;
 import ca.serum390.godzilla.domain.packaging.PackagedProduct;
 import lombok.AllArgsConstructor;
@@ -21,7 +23,7 @@ import reactor.core.publisher.SynchronousSink;
 
 @Component
 @AllArgsConstructor
-public class SalesContactHandler {
+public class PackagedProductHandler {
 
     private final PackagedProductRepository packagedProduct;
 
@@ -39,7 +41,7 @@ public class SalesContactHandler {
     public Mono<ServerResponse> create(ServerRequest req) {
         return req
                 .bodyToMono(PackagedProduct.class)
-                .handle(NegativePackagedProductIdException::errorIfNegativevePackageId)
+                .handle(NegativePackagedProductIdException::errorIfNegativePackageId)
                 .flatMap(packagedProduct::save)
                 .flatMap(packagedProduct -> ok().bodyValue(packagedProduct))
                 .onErrorResume(e -> unprocessableEntity()
@@ -81,8 +83,8 @@ public class SalesContactHandler {
 
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink) {
         if (value < 0) {
-            sink.error(new NegativeSalesContactIdException(
-                "Negative id " +  value + " is prohibited for SalesContact"));
+            sink.error(new NegativePackagedProductIdException(
+                "Negative id " +  value + " is prohibited for a packaged product"));
         } else {
             sink.next(value);
         }
@@ -116,7 +118,7 @@ public class SalesContactHandler {
         PackagedProduct g = (PackagedProduct) products[0];
         PackagedProduct g2 = (PackagedProduct) products[1];
         if (g2 != null) {
-            g.setLength(g2.length());
+            g.setLength(g2.getLength());
             g.setWidth(g2.getWidth());
             g.setHeight(g2.getHeight());
             g.setWeight(g2.getWeight());

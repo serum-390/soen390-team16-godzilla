@@ -6,12 +6,12 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.packagedproducthandler;
+import ca.serum390.godzilla.api.handlers.PackagedProductHandler;
 import lombok.AllArgsConstructor;
 
 @Configuration
 @AllArgsConstructor
-public class OrderRouter {
+public class PackagedProductRouter {
 
     PackagedProductHandler productHandler;
 
