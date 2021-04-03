@@ -50,7 +50,6 @@ const insertSales = async data => {
   }
 };
 
-
 const deleteSales = async id => {
   try {
     const api = `/api/orders/${id}`;
@@ -86,7 +85,6 @@ const salesColumns = [
       </div>
     ),
   },
-
   {
     field: 'delete',
     headerName: 'Delete',
@@ -164,7 +162,6 @@ const LoadedSalesView = ({ classes, order, salesContacts, reload}) => {
             reload={reload}
         />
        </div>
-
       </div>
 
       <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
@@ -346,7 +343,7 @@ const Sales = () => {
     </SpinBeforeLoading> :
     <div>
       
-      <LoadedSalesView classes={classes}  order={order}  salesContacts={salesContacts} reload={reload} />
+      <LoadedSalesView classes={classes}  order={order}  salesContacts={salesContacts} reload={reload}/>
     </div>
    
   );

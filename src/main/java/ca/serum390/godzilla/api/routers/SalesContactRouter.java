@@ -22,8 +22,8 @@ public class SalesContactRouter {
                 .path("/salescontact/", builder -> builder
                     .GET("/", salesContactHandler::getBy)
                     .POST("/", salesContactHandler::create)
-                    .PUT(ID, salesContactHandler::update)
-                    .DELETE(ID, salesContactHandler::delete))
+                    .PUT("/{id}", salesContactHandler::update)
+                    .DELETE("/{id}", salesContactHandler::delete))
                 .build();
     }
 }
