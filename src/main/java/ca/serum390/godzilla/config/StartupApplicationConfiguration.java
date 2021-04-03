@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import ca.serum390.godzilla.SendEmailService;
 import ca.serum390.godzilla.data.repositories.GodzillaUserRepository;
 import ca.serum390.godzilla.domain.GodzillaUser;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,9 @@ public class StartupApplicationConfiguration {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    SendEmailService sendEmailService;
+
     /**
      * Add some demo users to the database on application startup
      *
@@ -30,13 +34,10 @@ public class StartupApplicationConfiguration {
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Running post start up configuration...");
-        Flux.just("demo", "jeff", "test")
-                .filterWhen(this::filterPreExistingUsers)
-                .map(this::buildDemoUser)
-                .collectList()
-                .subscribe(users -> godzillaUserRepository.saveAll(users)
-                    .doOnError(log::error)
-                    .subscribe(this::logDemoUserCreation));
+        sendEmailService.sendEmail("amneet.s.270@gmail.com", "test", "this is a test").subscribe();
+        Flux.just("demo", "jeff", "test").filterWhen(this::filterPreExistingUsers).map(this::buildDemoUser)
+                .collectList().subscribe(users -> godzillaUserRepository.saveAll(users).doOnError(log::error)
+                        .subscribe(this::logDemoUserCreation));
     }
 
     /**
@@ -46,18 +47,12 @@ public class StartupApplicationConfiguration {
      * @return
      */
     private Mono<Boolean> filterPreExistingUsers(String username) {
-        return godzillaUserRepository
-                .findByUsername(username)
-                .map(u -> false)
-                .defaultIfEmpty(true);
+        return godzillaUserRepository.findByUsername(username).map(u -> false).defaultIfEmpty(true);
     }
 
     private GodzillaUser buildDemoUser(String username) {
-        return GodzillaUser.builder()
-                .username(username)
-                .password(passwordEncoder.encode("demo"))
-                .authorities("ROLE_USER")
-                .build();
+        return GodzillaUser.builder().username(username).password(passwordEncoder.encode("demo"))
+                .authorities("ROLE_USER").build();
     }
 
     private void logDemoUserCreation(GodzillaUser user) {
