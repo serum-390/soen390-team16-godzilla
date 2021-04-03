@@ -16,7 +16,7 @@ public class ProductionManagerRouter {
         return RouterFunctions.route()
                 .path("/production-manager/", builder -> builder
                         .POST("/validate", productionManagerHandler::validateProduction)
-                        .POST("/cancel/"+ID, productionManagerHandler::cancelProduction))
+                        .POST("/cancel"+ID, productionManagerHandler::cancelProduction))
                 .build();
     }
 }

@@ -39,12 +39,12 @@ public class PurchaseOrderEventHandler {
                 inventoryRepository.addToQuantity(itemID, itemQuantity).subscribe();
             }
 
-            Logger.getLogger("EventLog").info("Purchase order " + orderID + " is received in the inventory");
-            ordersRepository.updateStatus(purchaseOrder.getId(), Order.COMPLETED).subscribe();
+            Logger.getLogger("ProductionLog").info("Purchase order " + orderID + " is received in the inventory");
+            ordersRepository.updateStatus(purchaseOrder.getId(), Order.DELIVERED).subscribe();
             InventoryEvent inventoryEvent = new InventoryEvent(purchaseOrder.getProductionID(), purchaseOrder.getId());
             applicationEventPublisher.publishEvent(inventoryEvent);
         } else {
-            Logger.getLogger("EventLog").info("Purchase order " + orderID + " is invalid");
+            Logger.getLogger("ProductionLog").info("Purchase order " + orderID + " is invalid");
         }
     }
 

@@ -14,7 +14,11 @@ import java.util.Map;
 public interface PlannedProductsRepository extends ReactiveCrudRepository<PlannedProduct, Integer> {
     @Modifying
     @Query("UPDATE PLANNED_PRODUCTS SET ORDER_ID = $2, PRODUCTION_DATE = $3, STATUS = $4, USED_ITEMS =$5  WHERE ID = $1")
-    Mono<Integer> update(Integer id, Integer orderID, LocalDate productionDate, String status, Map<Integer, Integer> usedItems);
+    Mono<Integer> update(
+            Integer id, Integer orderID,
+            LocalDate productionDate,
+            String status, Map<Integer,
+            Integer> usedItems);
 
     @Modifying
     @Query("UPDATE PLANNED_PRODUCTS SET  STATUS = $2 WHERE ID = $1")
@@ -26,7 +30,11 @@ public interface PlannedProductsRepository extends ReactiveCrudRepository<Planne
 
     @Transactional
     @Query("INSERT INTO PLANNED_PRODUCTS( ORDER_ID, PRODUCTION_DATE, STATUS, USED_ITEMS) VALUES ($1,$2,$3,$4) RETURNING *")
-    Mono<PlannedProduct> save( Integer orderID, LocalDate productionDate, String status, Map<Integer, Integer> usedItems);
+    Mono<PlannedProduct> save(
+            Integer orderID,
+            LocalDate productionDate,
+            String status,
+            Map<Integer, Integer> usedItems);
 
     @Query("Select * FROM plannedProducts WHERE STATUS = $1")
     Flux<PlannedProduct> findAllByStatus(String status);
