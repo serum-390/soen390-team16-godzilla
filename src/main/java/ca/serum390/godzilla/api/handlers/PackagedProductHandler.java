@@ -25,10 +25,10 @@ import reactor.core.publisher.SynchronousSink;
 @AllArgsConstructor
 public class PackagedProductHandler {
 
-    private final PackagedProductRepository packagedProduct;
+    private final PackagedProductRepository packagedProductRepository;
 
     public Mono<ServerResponse> all(ServerRequest req) {
-        return ok().body(packagedProduct.findAll(), PackagedProduct.class);
+        return ok().body(packagedProductRepository.findAll(), PackagedProduct.class);
     }
 
     /**
@@ -39,13 +39,10 @@ public class PackagedProductHandler {
      *         message if the {@link PackagedProduct} violates business rules
      */
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req
-                .bodyToMono(PackagedProduct.class)
+        return req.bodyToMono(PackagedProduct.class)
                 .handle(NegativePackagedProductIdException::errorIfNegativePackageId)
-                .flatMap(packagedProduct::save)
-                .flatMap(packagedProduct -> ok().bodyValue(packagedProduct))
-                .onErrorResume(e -> unprocessableEntity()
-                    .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+                .flatMap(packagedProductRepository::save).flatMap(packagedProducts -> ok().bodyValue(packagedProducts))
+                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
     }
 
     /**
@@ -55,14 +52,10 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> get(ServerRequest req) {
-        return Mono
-                .fromCallable(() -> parseInt(req.pathVariable("id")))
-                .handle(this::errorIfNegativeId)
-                .flatMap(packagedProduct::findById)
-                .flatMap(c -> ok().body(Mono.just(c), PackagedProduct.class))
-                .switchIfEmpty(notFound().build())
-                .onErrorResume(e -> unprocessableEntity()
-                    .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return Mono.fromCallable(() -> parseInt(req.pathVariable("id"))).handle(this::errorIfNegativeId)
+                .flatMap(packagedProductRepository::findById)
+                .flatMap(c -> ok().body(Mono.just(c), PackagedProduct.class)).switchIfEmpty(notFound().build())
+                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
     }
 
     /**
@@ -72,19 +65,15 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return Mono
-                .fromCallable(() -> parseInt(req.pathVariable("id")))
-                .handle(this::errorIfNegativeId)
-                .map(packagedProduct::deleteById)
-                .flatMap(nothing -> noContent().build())
-                .onErrorResume(e -> unprocessableEntity()
-                    .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return Mono.fromCallable(() -> parseInt(req.pathVariable("id"))).handle(this::errorIfNegativeId)
+                .map(packagedProductRepository::deleteById).flatMap(nothing -> noContent().build())
+                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
     }
 
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink) {
         if (value < 0) {
             sink.error(new NegativePackagedProductIdException(
-                "Negative id " +  value + " is prohibited for a packaged product"));
+                    "Negative id " + value + " is prohibited for a packaged product"));
         } else {
             sink.next(value);
         }
@@ -97,21 +86,15 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> update(ServerRequest req) {
-        Mono<PackagedProduct> existed = Mono
-                .fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
-                .flatMap(packagedProduct::findById);
+        Mono<PackagedProduct> existed = Mono.fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
+                .flatMap(packagedProductRepository::findById);
 
-        Mono<PackagedProduct> received = req
-                .bodyToMono(PackagedProduct.class)
+        Mono<PackagedProduct> received = req.bodyToMono(PackagedProduct.class)
                 .handle(NegativePackagedProductIdException::errorIfNegativePackageId);
 
-        return Mono
-                .zip(this::combinePackagedProducts, existed, received)
-                .flatMap(this::savePackagedProduct)
-                .flatMap(rows -> ok()
-                    .body(map("rowsUpdated", rows).toMono(), Map.class))
-                .onErrorResume(e -> unprocessableEntity()
-                    .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return Mono.zip(this::combinePackagedProducts, existed, received).flatMap(this::savePackagedProduct)
+                .flatMap(rows -> ok().body(map("rowsUpdated", rows).toMono(), Map.class))
+                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
     }
 
     private PackagedProduct combinePackagedProducts(Object[] products) {
@@ -128,12 +111,12 @@ public class PackagedProductHandler {
     }
 
     private Mono<Integer> savePackagedProduct(PackagedProduct packagedProduct) {
-        return packagedProduct.update(
-                packagedProduct.getLength(),
-                packagedProduct.getWidth(),
-                packagedProduct.getHeight(),
-                packagedProduct.getWeight(),
-                packagedProduct.getPackageType(),
-                packagedProduct.getId());
+        return packagedProductRepository.update(
+            packagedProduct.getLength(), 
+            packagedProduct.getWidth(),
+            packagedProduct.getHeight(), 
+            packagedProduct.getWeight(), 
+            packagedProduct.getPackageType(),
+            packagedProduct.getId());
     }
 }

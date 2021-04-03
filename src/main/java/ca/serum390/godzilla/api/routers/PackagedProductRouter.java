@@ -16,10 +16,10 @@ public class PackagedProductRouter {
     PackagedProductHandler productHandler;
 
     @Bean
-    public RouterFunction<ServerResponse> orderRoute() {
+    public RouterFunction<ServerResponse> packagedRoute() {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/packagedproduct/", builder -> builder
+                .path("/packagedproduct/",builder -> builder
                         .GET("/", productHandler::all)
                         .POST("/", productHandler::create)
                         .GET(ID, productHandler::get)
