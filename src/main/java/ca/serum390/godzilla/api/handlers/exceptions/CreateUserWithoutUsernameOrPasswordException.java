@@ -2,7 +2,7 @@ package ca.serum390.godzilla.api.handlers.exceptions;
 
 import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.PASSWORD_FIELD;
 import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.USERNAME_FIELD;
-import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.EMAIL_FIELD;;
+import static ca.serum390.godzilla.api.handlers.GodzillaUserHandler.EMAIL_FIELD;
 
 import org.springframework.util.MultiValueMap;
 
