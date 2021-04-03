@@ -88,7 +88,6 @@ function PhoneNumberInput({contact, setContact}) {
       ...values,
       [event.target.name]: event.target.value,
     });
-
     setContact(event.target.value);
   };
 

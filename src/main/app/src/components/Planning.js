@@ -47,8 +47,6 @@ const LoadedView = (classes) => {
   const [organiserName, setOrganiserName] = useState();
 
   const activityTableRef = useRef();
-  //className={classes.invisible}
-
   const [openAlert, setOpenAlert] = React.useState(false);
   const [alertText, setAlertText] = React.useState();
 
@@ -77,13 +75,12 @@ const LoadedView = (classes) => {
 
   const changeDay = (d, m, y, aName, aDesc, freq, oName) => {
     m = (Number.parseInt(m, 10) +1);
-    //let day = new Date(m + "/" + d + "/" + y);
-    setDate(m + "/" + d + "/" + y); 
+    setDate(m + "/" + d + "/" + y);
     setActivityName(aName);
     setActivityDesc(aDesc);
     setFrequency(freq);
     setOrganiserName(oName);
-    
+
     if(!showTable)
       showTable = true;
   }
@@ -97,7 +94,7 @@ const LoadedView = (classes) => {
   ];
 
   function SavePlanning() {
-    showAlert("Now saving planning...\n" 
+    showAlert("Now saving planning...\n"
           + [date] + "\n"
           + [activityName] + "\n"
           + [activityDesc] + "\n"
@@ -167,8 +164,6 @@ const LoadedView = (classes) => {
         </TableContainer>
       );
     }
-  
-    
   }
 
   return (
@@ -196,6 +191,5 @@ const Planning = props => {
     </SpinBeforeLoading>
   );
 }
-
 
 export default Planning;

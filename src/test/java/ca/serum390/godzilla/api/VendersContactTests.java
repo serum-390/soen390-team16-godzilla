@@ -1,11 +1,7 @@
 package ca.serum390.godzilla.api;
 
-import static ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException.CANNOT_PROCESS_DUE_TO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -17,14 +13,11 @@ import static org.springframework.restdocs.webtestclient.WebTestClientRestDocume
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
@@ -34,10 +27,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.data.repositories.VendorContactRepository;
 import ca.serum390.godzilla.domain.vendor.VendorContact;
-import ca.serum390.godzilla.util.BuildableJsonMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;

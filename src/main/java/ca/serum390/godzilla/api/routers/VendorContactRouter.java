@@ -17,14 +17,12 @@ public class VendorContactRouter {
 
     @Bean
     public RouterFunction<ServerResponse> vendorContactRoute() {
-        final String ID = "/{id}";
         return RouterFunctions.route()
                 .path("/vendorcontact/", builder -> builder
-                    .GET("/", vendorContactHandler::all)
+                    .GET("/", vendorContactHandler::getBy)
                     .POST("/", vendorContactHandler::create)
-                    .GET(ID, vendorContactHandler::getVendor)
-                    .PUT(ID, vendorContactHandler::updateVendor)
-                    .DELETE(ID, vendorContactHandler::delete))
+                    .PUT("/{id}", vendorContactHandler::updateVendor)
+                    .DELETE("/{id}", vendorContactHandler::delete))
                 .build();
     }
 }

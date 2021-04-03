@@ -17,7 +17,6 @@ export default function InventoryForm(props) {
   const [quantity, setQuantity] = React.useState("");
   const [goodType, setGoodType] = React.useState("");
 
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -39,7 +38,6 @@ export default function InventoryForm(props) {
     };
     props.onSubmit(data, true);
     setOpen(false);
-    // want to update the table after clicking this
   };
 
   return (

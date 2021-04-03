@@ -1,6 +1,6 @@
 package ca.serum390.godzilla.api;
 
-import static ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException.CANNOT_PROCESS_DUE_TO;
+import static ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException.CANNOT_PROCESS_DUE_TO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -66,7 +66,7 @@ class SalesContactTests {
     @WithMockUser("test")
     void getAllSalesContactsTest() {
         Flux<SalesContact> contacts = buildContactFlux(1).limitRequest(2);
-        when(salesContactRepository.findAll()).thenReturn(contacts);
+        when(salesContactRepository.findAllCustomer()).thenReturn(contacts);
         Mono<List<SalesContact>> collected = contacts.collectList();
 
         StepVerifier.create(collected)
@@ -87,7 +87,7 @@ class SalesContactTests {
                 .verifyThenAssertThat()
                 .tookLessThan(Duration.ofSeconds(1));
 
-        verify(salesContactRepository, times(1)).findAll();
+        verify(salesContactRepository, times(1)).findAllCustomer();
     }
 
     @ParameterizedTest
@@ -95,11 +95,11 @@ class SalesContactTests {
     @MethodSource("goodIdMethodSource")
     void getSalesContactByIdTest(final int id) {
         Mono<SalesContact> contact = buildContactFlux(id).limitRequest(1).shareNext();
-        when(salesContactRepository.findById(id)).thenReturn(contact);
+        when(salesContactRepository.findByIdCustomer(id)).thenReturn(contact);
 
         StepVerifier.create(contact)
                 .consumeNextWith(c -> client.get()
-                    .uri(SALES_CONTACT_API + id)
+                    .uri(SALES_CONTACT_API + "?id="+ id)
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(APPLICATION_JSON)
@@ -112,20 +112,20 @@ class SalesContactTests {
                 .verifyThenAssertThat()
                 .tookLessThan(Duration.ofSeconds(1));
 
-        verify(salesContactRepository).findById(id);
+        verify(salesContactRepository).findByIdCustomer(id);
     }
 
     @ParameterizedTest
     @WithMockUser("test")
     @MethodSource("goodIdMethodSource")
     void getNonExistentSalesContactByIdTest(final int id) {
-        when(salesContactRepository.findById(id)).thenReturn(Mono.empty());
+        when(salesContactRepository.findByIdCustomer(id)).thenReturn(Mono.empty());
         client.get()
-                .uri(SALES_CONTACT_API + id)
+                .uri(SALES_CONTACT_API + "?id="+ id)
                 .exchange()
                 .expectStatus().isEqualTo(404)
                 .expectBody().isEmpty();
-        verify(salesContactRepository).findById(id);
+        verify(salesContactRepository).findByIdCustomer(id);
     }
 
     @ParameterizedTest
@@ -133,9 +133,9 @@ class SalesContactTests {
     @MethodSource("badIdMethodSource")
     void getSalesContactBadIdTest(final String id) {
         client.get()
-                .uri(SALES_CONTACT_API + id)
+                .uri(SALES_CONTACT_API + "?id="+ id)
                 .exchange()
-                .expectStatus().isEqualTo(422)
+                .expectStatus().is4xxClientError()
                 .expectBody(String.class)
                 .consumeWith(err -> assertThat(err
                     .getResponseBody())
@@ -201,9 +201,9 @@ class SalesContactTests {
                 .withContact("New Contact")
                 .withContactName("New Contact Name"));
 
-        when(salesContactRepository.findById(id)).thenReturn(contact1);
+        when(salesContactRepository.findByIdCustomer(id)).thenReturn(contact1);
         when(salesContactRepository.update(
-            any(), any(), any(), any(), any(), eq(id))
+            any(), any(), any(), any(), eq(id))
         ).thenReturn(Mono.just(1));
 
         StepVerifier.create(contact2)
@@ -220,9 +220,9 @@ class SalesContactTests {
                 .verifyThenAssertThat()
                 .tookLessThan(Duration.ofSeconds(1));
 
-        verify(salesContactRepository).findById(id);
+        verify(salesContactRepository).findByIdCustomer(id);
         verify(salesContactRepository).update(
-                any(), any(), any(), any(), any(), eq(id));
+                any(), any(), any(), any(), eq(id));
     }
 
     @ParameterizedTest

@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import DisplaySettings from './settingMiniPages/DisplaySettings';
 import UserManagement from './settingMiniPages/UserManagement';
 
-
 const useStyles = makeStyles((theme) => ({
   menu: {
     display: 'flex',
@@ -33,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
 }));
-
 
 const SettingsMenu = () => {
   const classes = useStyles();
@@ -65,7 +63,6 @@ const SettingsMenu = () => {
   );
 };
 
-
 const SettingsDisplay = () => {
   const classes = useStyles();
   return (
@@ -77,7 +74,6 @@ const SettingsDisplay = () => {
   );
 };
 
-
 const ContentSwitch = () => {
   return (
     <Switch>
@@ -86,7 +82,6 @@ const ContentSwitch = () => {
     </Switch>
   );
 };
-
 
 function SettingsPage() {
   return (

@@ -1,11 +1,10 @@
 import { Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
 import NewPurchaseOrderForm from "../Forms/NewPurchaseOrderForm";
 import PurchaseOrderDetailsForm from "../Forms/PurchaseOrderDetailsForm";
-/*import DeleteButton from "./forms/DeleteButton";*/
 import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
@@ -32,18 +31,12 @@ const vendorColumns = [
     renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
-          /*<Button variant='contained'
-           color='secondary'
-           onClick={params.value.onClick}>
-           show</Button> 
-           */
-
           <VendorDetailsForm
             onSubmit={params.value}
             splitAddress={params.getValue('address').split(",")[0] || ''}
             splitCity={params.getValue('address').split(",")[1] || ''}
             splitPostal={params.getValue('address').split(",")[2] || ''}
-            splitProvince ={params.getValue('address').split(",")[3] || ''}
+            splitProvince={params.getValue('address').split(",")[3] || ''}
             initialButton='Edit'
             dialogTitle={'Vendor Information - (' + params.getValue('id') + ") " + params.getValue('contactName')}
             dialogContentText='Please enter any information you would like to modify: '
@@ -58,51 +51,13 @@ const vendorColumns = [
     headerName: 'Delete',
     width: 120,
     renderCell: params => (
-      // RE-ADD THIS LATER
-      /*<DeleteButton
-        vendorName={params.getValue('vendorName') || ''}
-      />*/
-      
-      <div style={{margin: 'auto'}}>
-        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
+      <div style={{ margin: 'auto' }}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
           Delete
         </Button>
       </div>
     ),
   },
-];
-
-const orderColumns = [
-  { field: 'id', headerName: 'Order #', width: 70 },
-  { field: 'createdDate', headerName: 'Create Date', width: 120 },
-  { field: 'dueDate', headerName: 'Due Date', width: 120 },
-  { field: 'deliveryLocation', headerName: 'Location', width: 130 },
-  { field: 'status', headerName: 'Status', width: 110 },
-  { field: 'items', headerName: 'Items', width: 110 },
-  {
-    field: 'purchaseOrderDetails',
-    headerName: 'Details',
-    width: 130,
-    renderCell: params => (
-      <div style={{ margin: 'auto' }}>
-        {
-          <PurchaseOrderDetailsForm
-            orderID={params.getValue('id') || ''}
-            createdDate={params.getValue('createdDate') || ''}
-            dueDate={params.getValue('dueDate') || ''}
-            deliveryLocation={params.getValue('deliveryLocation') || ''}
-            status={params.getValue('status') || ''}
-            items={params.getValue('items') || ''}
-            initialButton='View'
-            dialogTitle={'Order Information - Order #' + params.getValue('id')}
-            dialogContentText={'Data: '}
-            submitButton='Cancel Order'
-            TypeName = 'Company'
-          />
-        }
-      </div>
-    ),
-  }
 ];
 
 const getVendors = async () => {
@@ -112,7 +67,7 @@ const getVendors = async () => {
   return json || [];
 };
 
-const updateVendor = async data => {
+const updateVendor = async (data, reload) => {
   try {
     const api = `/api/vendorcontact/${data.id}`;
     const updated = await axios.put(api, data);
@@ -122,9 +77,11 @@ const updateVendor = async data => {
     console.log(err);
     return err;
   }
+
+  reload();
 };
 
-const insertVendor = async data => {
+const insertVendor = async (data, reload) => {
   try {
     const api = `/api/vendorcontact/`;
     const inserted = await axios.post(api, data);
@@ -134,9 +91,11 @@ const insertVendor = async data => {
     console.log(err);
     return err;
   }
+  
+  reload();
 };
 
-const deleteVendor = async id => {
+const deleteVendor = async (id, reload) => {
   try {
     const api = `/api/vendorcontact/${id}`;
     const inserted = await axios.delete(api);
@@ -146,16 +105,18 @@ const deleteVendor = async id => {
     console.log(err);
     return err;
   }
+
+  reload();
 };
 
 const getPurchaseOrders = async () => {
-  const api = '/api/orders/?type=purchase';
+  const api = '/api/orders/?type=purchases';
   const got = await fetch(api);
   const json = await got.json();
   return json || [];
 };
 
-const insertPurchaseOrder = async data => {
+const insertPurchaseOrder = async (data, reload) => {
   try {
     const api = `/api/orders/`;
     const inserted = await axios.post(api, data);
@@ -165,11 +126,19 @@ const insertPurchaseOrder = async data => {
     console.log(err);
     return err;
   }
+
+  reload();
 };
 
-const FilledVendorView = ({vendors}) => {
-  let contacts = [];
+const getInventory = async () => {
+  const api = '/api/inventory/';
+  const got = await fetch(api);
+  const json = await got.json();
+  return json || [];
+};
 
+const FilledVendorView = (props) => {
+  let contacts = [];
   let updateRow = (item, updatedItem, toUpdate) => {
     if (toUpdate) {
       updateVendor({
@@ -178,12 +147,12 @@ const FilledVendorView = ({vendors}) => {
         contactName: updatedItem.contactName === "" ? item.contactName : updatedItem.contactName,
         address: updatedItem.address === "" ? item.address : updatedItem.address,
         contact: updatedItem.contact === "" ? item.contact : updatedItem.contact
-      })
+      }, props.reload)
     }
     return item;
   };
 
-  vendors.map(item => (
+  props.vendors.map(item => (
     contacts.push({
       id: item.id,
       companyName: item.companyName,
@@ -191,7 +160,7 @@ const FilledVendorView = ({vendors}) => {
       address: item.address,
       contact: item.contact,
       modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
-      delete: () => deleteVendor(item.id)
+      delete: () => deleteVendor(item.id, props.reload)
     })));
 
   return (
@@ -199,7 +168,7 @@ const FilledVendorView = ({vendors}) => {
   );
 };
 
-const FilledOrderView = ({orders}) => {
+const FilledOrderView = ({ orders, orderColumns, inventory }) => {
   let purchases = [];
 
   orders.map(item => (
@@ -209,6 +178,7 @@ const FilledOrderView = ({orders}) => {
       dueDate: item.dueDate,
       deliveryLocation: item.deliveryLocation,
       status: item.status,
+      itemsVisible: ShowItems(item.items, inventory),
       items: item.items,
     })));
 
@@ -217,38 +187,110 @@ const FilledOrderView = ({orders}) => {
   );
 };
 
-function LoadedView({classes, vendors, orders}) {
+function ShowItems(items, inventory){
+  let allItems = "";
+  let count = 0;
+
+  for(let i = 0; i < inventory.length; i++){
+    let id = inventory[i]["id"];
+    if(items[id] !== undefined){
+      if(count > 0)
+        allItems += ", ";
+
+      allItems += inventory[i]["itemName"] + " ("+items[id]+")";
+
+      count++;
+    }
+  }
+
+  return allItems;
+}
+
+function LoadedView(props) {
+  const orderColumns = [
+    { field: 'id', headerName: '#', width: 60 },
+    { field: 'createdDate', headerName: 'Create Date', width: 120 },
+    { field: 'dueDate', headerName: 'Due Date', width: 120 },
+    { field: 'deliveryLocation', headerName: 'Location', width: 130 },
+    { field: 'status', headerName: 'Status', width: 110 },
+    { field: 'itemsVisible', headerName: 'Items', width: 260 },
+    { field: 'items', headerName: 'Items', width: 0, hide: true},
+    {
+      field: 'purchaseOrderDetails',
+      headerName: 'Details',
+      width: 120,
+      renderCell: params => (
+        <div style={{ margin: 'auto' }}>
+          {
+            <PurchaseOrderDetailsForm
+              orderID={params.getValue('id') || ''}
+              createdDate={params.getValue('createdDate') || ''}
+              dueDate={params.getValue('dueDate') || ''}
+              deliveryLocation={params.getValue('deliveryLocation') || ''}
+              status={params.getValue('status') || ''}
+              items={params.getValue('items') || ''}
+              initialButton='View'
+              dialogTitle={'Order Information - Order #' + params.getValue('id')}
+              dialogContentText={'Data: '}
+              submitButton='Cancel Order'
+              TypeName='Company'
+              inventory={props.inventory}
+            />
+          }
+        </div>
+      ),
+    }
+  ];
+
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Purchase Department</h1>
-      <div style={{ height: 600, width: '45%', float: 'left' }}>
-        <h2 style={{ float: 'left' }}>Vendors</h2>
-        <VendorDetailsForm
-            onSubmit={(data) => insertVendor(data)}
-            initialButton='Add New Vendor'
-            dialogTitle='Add New Vendor'
-            dialogContentText='Please enter any information you would like to add: '
-            submitButton='Confirm'
+      <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
+
+        <div style={{width: '100%', display: 'table-row' }}>
+          <h2 style={{ float: 'left'}}>Vendors</h2>
+          <div style={{ float: 'right'}}>
+            <VendorDetailsForm
+              onSubmit={(data) => insertVendor(data, props.reload)}
+              initialButton='Add New Vendor'
+              dialogTitle='Add New Vendor'
+              dialogContentText='Please enter any information you would like to add: '
+              submitButton='Confirm'
+            />
+          </div>
+        </div>
+
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <FilledVendorView
+            vendors={props.vendors}
+            reload={props.reload}
           />
-        <FilledVendorView
-          vendors={vendors}
-        />
+        </div>
       </div>
-      <div style={{ height: 600, width: '45%', float: 'right' }}>
-        <div>
+      <div style={{ height: 720, width: '52%', float: 'right', display: 'table' }}>
+
+        <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Purchase Orders</h2>
-          <NewPurchaseOrderForm
-            onSubmit={(data) => insertPurchaseOrder(data)}
-            initialButton='Add New Purchase Order'
-            dialogTitle='New Purchase Order'
-            dialogContentText='Please enter any information you would like to modify: '
-            submitButton='Order'
-            vendors={vendors}
-          />       
-        </div>  
-        <FilledOrderView
-            orders={orders}
+          <div style={{ float: 'right'}}>
+            <NewPurchaseOrderForm
+              onSubmit={(data) => insertPurchaseOrder(data, props.reload)}
+              initialButton='Add New Purchase Order'
+              dialogTitle='New Purchase Order'
+              dialogContentText='Please enter any information you would like to modify: '
+              submitButton='Order'
+              vendors={props.vendors}
+              inventory={props.inventory}
+            />
+          </div>
+        </div>
+
+        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+          <FilledOrderView
+            orders={props.orders}
+            orderColumns={orderColumns}
+            inventory={props.inventory}
           />
+        </div>     
       </div>
     </div>
   );
@@ -258,16 +300,26 @@ function Purchase() {
   const classes = useStyles();
   const [vendors, setVendors] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [inventory, setInventory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const waitForGetRequest = async () => {
-    getPurchaseOrders().then(ord => setOrders(ord));
     getVendors().then(ven => setVendors(ven));
-  } 
+    getPurchaseOrders().then(ord => setOrders(ord));
+    getInventory().then(inv => setInventory(inv));
+    setLoading(false);
+  }
+
+  function reload(){
+    setLoading(true);
+  }
 
   return (
+    (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} vendors={vendors} orders={orders}/>
-    </SpinBeforeLoading>
+      <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} reload={reload} />
+    </SpinBeforeLoading> :
+    <LoadedView classes={classes} vendors={vendors} orders={orders} inventory={inventory} reload={reload} />
   );
 }
 
