@@ -110,3 +110,15 @@ INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) 
 
 --VendorContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'vendor');
+
+--Packaging 
+INSERT INTO packaged_products(LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE, ITEM_ID) VALUES (10, 11, 12, 14.2, 'small box',(
+            SELECT
+                id
+            FROM
+                inventory
+            WHERE
+                id=4
+                ));
+
+                
