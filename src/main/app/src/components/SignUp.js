@@ -2,9 +2,6 @@ import { Button, Grid, TextField, makeStyles, Paper, useMediaQuery, useTheme } f
 import axios from 'axios';
 import React, { useState } from 'react';
 
-
-//TODO Make Inline Styling
-
 const useStyles = makeStyles(theme => ({
   divStyle: {
     alignContent: 'centre',
@@ -20,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const postMe = async data => {
+const sendSignupData = async data => {
   try {
     const api = '/api/signup/';
     const posted = await axios.post(api, data);
@@ -33,7 +30,6 @@ const postMe = async data => {
   }
 };
 
-
 const SignUpForm = () => {
   const classes = useStyles();
   const [userName, setUserName] = useState("");
@@ -44,7 +40,7 @@ const SignUpForm = () => {
     sendData.append("username", userName)
     sendData.append("password", password)
     sendData.append("email", email)
-    postMe(sendData)
+    sendSignupData(sendData)
   }
   return (
     <Paper className={classes.divStyle} square={false} variant="outlined" >
@@ -66,7 +62,16 @@ const DesktopLogin = () => {
   return (
     <div>
       <Grid container style={{ minHeight: '100vh' }}>
-        <Grid container item xs={12} sm={6} alignItems="center" direction="column" justify="space-between" style={{ padding: 10 }} >
+        <Grid
+          container
+          item
+          xs={12}
+          sm={6}
+          alignItems="center"
+          direction="column"
+          justify="space-between"
+          style={{ padding: 10, }}
+        >
           <div />
           <SignUpForm />
           <div />
@@ -82,19 +87,10 @@ const DesktopLogin = () => {
   );
 }
 
-
 function SignUp() {
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('sm'));
-
-  return (
-    <div>
-      {
-        desktop ? <DesktopLogin />
-          : <SignUpForm />
-      }
-    </div>
-  );
+  return <div>{desktop ? <DesktopLogin /> : <SignUpForm />}</div>;
 }
 
 export default SignUp;

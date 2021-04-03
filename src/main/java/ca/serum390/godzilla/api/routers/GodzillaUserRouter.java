@@ -16,8 +16,10 @@ public class GodzillaUserRouter {
     GodzillaUserHandler godzillaUserHandler;
 
     @Bean
-    public RouterFunction<ServerResponse> godzillaUserRoute(){
-        return RouterFunctions.route().path("/signup/", builder -> builder.POST("/",godzillaUserHandler::create)).build();
+    public RouterFunction<ServerResponse> godzillaUserRoute() {
+        return RouterFunctions.route()
+                .path("/signup/", builder -> builder
+                    .POST("/",godzillaUserHandler::create))
+                .build();
     }
-    
 }
