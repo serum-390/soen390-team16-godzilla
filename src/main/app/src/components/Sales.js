@@ -220,7 +220,12 @@ const FilledContactView = (props) => {
     })));
 
   return (
-    <DataGrid rows={contacts} columns={contactColumn} pageSize={9} /*components={{ Toolbar: CustomToolbar}}*//>
+    <DataGrid 
+      rows={contacts} 
+      columns={contactColumn} 
+      pageSize={9} 
+      /*components={{ Toolbar: CustomToolbar}}*/
+    />
   );
 };
 
@@ -266,7 +271,6 @@ const contactColumn = [
   },
 ];
 
-
 const getContact = async () => {
   const api = '/api/salescontact/';
   const got = await fetch(api);
@@ -287,7 +291,6 @@ const updateContact = async (data, reload) => {
 
   reload();
 };
-
 
 const insertContact = async (data, reload) => {
   try {
@@ -321,20 +324,16 @@ const deleteContact = async (id, reload) => {
 
 const Sales = () => {
   const classes = useStyles();
-  const [salesContacts, setContact] = useState([]);//added
+  const [salesContacts, setContact] = useState([]);
   const [order, setSales] = useState([]);
   const [loading, setDoneLoading] = useState(true); 
-  
-  
-
 
   const waitForGetRequest = async () => {
-    getContact().then(ven => setContact(ven)); //added
+    getContact().then(ven => setContact(ven));
     getSales().then(sales => setSales(sales));
     setDoneLoading(false);
   }
 
-  //added
   function reload(){
     setDoneLoading(true);
   }
