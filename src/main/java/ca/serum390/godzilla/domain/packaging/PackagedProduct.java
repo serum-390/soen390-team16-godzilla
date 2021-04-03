@@ -21,7 +21,7 @@ import lombok.With;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackagedProduct {
-    @Id 
+    @Id
     private Integer id;
     private float length;
     private float width;
