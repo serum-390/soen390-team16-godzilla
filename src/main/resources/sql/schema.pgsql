@@ -1,7 +1,18 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TYPE orderType AS ENUM ('purchase', 'sale');
-CREATE TYPE contactType AS ENUM ('vendor', 'customer');
+-- Create type: OrderType
+DO 'BEGIN
+    CREATE TYPE OrderType AS ENUM (''purchase'', ''sale'');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END';
+
+-- Create type: ContactType
+DO 'BEGIN
+    CREATE TYPE ContactType AS ENUM (''vendor'', ''customer'');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END';
 
 CREATE TABLE IF NOT EXISTS good_type(
     ID INT PRIMARY KEY NOT NULL,
@@ -45,7 +56,8 @@ CREATE TABLE IF NOT EXISTS erp_user(
     ID SERIAL PRIMARY KEY NOT NULL,
     username VARCHAR NOT NULL UNIQUE,
     password VARCHAR NOT NULL,
-    authorities VARCHAR NOT NULL
+    authorities VARCHAR NOT NULL,
+    email VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS planned_products(

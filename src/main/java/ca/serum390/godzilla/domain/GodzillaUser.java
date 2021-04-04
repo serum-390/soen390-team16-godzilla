@@ -1,8 +1,9 @@
 package ca.serum390.godzilla.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -30,12 +31,14 @@ public class GodzillaUser implements UserDetails {
     private String username;
     private String password;
     private String authorities;
+    private String email;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(authorities.split(","))
+                .filter(a -> a.length() > 0)
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
