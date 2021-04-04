@@ -1,6 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-
 -- Create type: OrderType
 DO 'BEGIN
     CREATE TYPE OrderType AS ENUM (''purchase'', ''sale'');

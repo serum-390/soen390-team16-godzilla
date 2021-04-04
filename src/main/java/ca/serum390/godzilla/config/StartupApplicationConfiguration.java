@@ -34,7 +34,7 @@ public class StartupApplicationConfiguration {
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Running post start up configuration...");
         Flux.just("demo", "jeff", "test")
-                .filterWhen(this::filterPreExistingUsers)
+                .filterWhen(this::userAlreadyExists)
                 .map(this::buildDemoUser)
                 .collectList()
                 .subscribe(users -> godzillaUserRepository.saveAll(users)
@@ -48,11 +48,14 @@ public class StartupApplicationConfiguration {
      * @param user
      * @return
      */
-    private Mono<Boolean> filterPreExistingUsers(String username) {
-        return godzillaUserRepository
-                .findByUsername(username)
-                .map(u -> false)
-                .defaultIfEmpty(true);
+    private Mono<Boolean> userAlreadyExists(String username) {
+        var found = godzillaUserRepository.findByUsername(username);
+        return found == null
+                ? Mono.just(false)
+                : godzillaUserRepository
+                    .findByUsername(username)
+                    .map(u -> false)
+                    .defaultIfEmpty(true);
     }
 
     private GodzillaUser buildDemoUser(String username) {

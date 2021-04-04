@@ -1,12 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Link, Switch, useLocation } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import DisplaySettings from './settingMiniPages/DisplaySettings';
-import UserManagement from './settingMiniPages/UserManagement';
+import React from 'react';
+import { BrowserRouter as Router, Link, Route, Switch, useLocation } from 'react-router-dom';
+import DisplaySettings from './settings-mini-pages/DisplaySettings';
+import { DemoGrid } from './settings-mini-pages/usermanagement/UserGrid';
+import UserManagement from './settings-mini-pages/usermanagement/UserManagement';
 
 const useStyles = makeStyles((theme) => ({
   menu: {
@@ -21,11 +22,6 @@ const useStyles = makeStyles((theme) => ({
   mainDisplay: {
     display: 'flex',
     flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: theme.spacing(120),
-      height: theme.spacing(50),
-    },
   },
   link: {
     textDecoration: 'none',
@@ -38,21 +34,18 @@ const SettingsMenu = () => {
   const location = useLocation();
   return (
     <div className={classes.menu}>
-      <Paper elevation={3}>
+      <Paper
+        elevation={0}
+        variant='outlined'
+        style={{
+          borderRadius: '1em',
+        }}
+      >
         <MenuList>
-          <Link to='/settings/userManagement'
-            selected={location.pathname === '/settings/userManagement'}
-            className={classes.link}
-          >
-            <MenuItem>
+          <Link to='/settings/users' className={classes.link}>
+            <MenuItem selected={location.pathname === '/settings/users'}>
               User Management
             </MenuItem>
-          </Link>
-          <Link to='/settings/displaySettings'
-            selected={location.pathname === '/settings/displaySettings'}
-            className={classes.link}
-          >
-            <MenuItem>Display Settings</MenuItem>
           </Link>
           <MenuItem>Authentication Settings</MenuItem>
           <MenuItem>Notification Settings</MenuItem>
@@ -67,9 +60,7 @@ const SettingsDisplay = () => {
   const classes = useStyles();
   return (
     <div className={classes.mainDisplay}>
-      <Paper elevation={3}>
-        <ContentSwitch />
-      </Paper >
+      <ContentSwitch />
     </div>
   );
 };
@@ -79,6 +70,7 @@ const ContentSwitch = () => {
     <Switch>
       <Route exact path="/settings/displaySettings" component={DisplaySettings} />
       <Route exact path="/settings/userManagement" component={UserManagement} />
+      <Route exact path="/settings/users" component={DemoGrid} />
     </Switch>
   );
 };
@@ -91,13 +83,12 @@ function SettingsPage() {
           <Grid item>
             <SettingsMenu />
           </Grid>
-          <Grid item>
+          <Grid item style={{ width: '80%', margin: 'auto', }}>
             <SettingsDisplay />
           </Grid>
         </Grid>
       </Router>
     </div>
-
   );
 }
 
