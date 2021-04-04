@@ -32,20 +32,14 @@ public class PackagedProductHandler {
     }
 
     /**
-     * Add a new {@link PackagedProduct} to the system.
-     *
-     * @param req {@link ServerRequest} object containing the new PackagedProduct
-     * @return 200 OK + the new entity created, 422 Unprocessable Entity + error
-     *         message if the {@link PackagedProduct} violates business rules
+     * Create a packaged product
+     * 
      */
     public Mono<ServerResponse> create(ServerRequest req) {
-        return req
-            .bodyToMono(PackagedProduct.class)
-            .handle(NegativePackagedProductIdException::errorIfNegativePackageId)
-            .flatMap(packagedProductRepository::save)
-            .flatMap(packagedProducts -> ok().bodyValue(packagedProducts))
-            .onErrorResume(e -> unprocessableEntity()
-                .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return req.bodyToMono(PackagedProduct.class)
+        .flatMap(product -> packagedProductRepository.save(product.getId(),
+            product.getLength(), product.getWidth(), product.getHeight(), product.getWeight(), product.getPackageType(), product.getPackageDate()))
+        .flatMap(id -> noContent().build());
     }
 
     /**
@@ -72,13 +66,7 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return Mono
-        .fromCallable(() -> parseInt(req.pathVariable("id")))
-        .handle(this::errorIfNegativeId)
-        .map(packagedProductRepository::deleteById)
-        .flatMap(nothing -> noContent().build())
-        .onErrorResume(e -> unprocessableEntity()
-            .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return packagedProductRepository.deleteById(Integer.parseInt(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
     }
 
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink) {
@@ -91,7 +79,7 @@ public class PackagedProductHandler {
     }
 
     /**
-     * Update a packaged product
+     * Update a packaged contact
      *
      * @param req
      * @return
@@ -101,9 +89,9 @@ public class PackagedProductHandler {
             .fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
             .flatMap(packagedProductRepository::findById);
 
-        Mono<PackagedProduct> received = req
-        .bodyToMono(PackagedProduct.class)
-        .handle(NegativePackagedProductIdException::errorIfNegativePackageId);
+        Mono<PackagedProduct> received = req.
+        bodyToMono(PackagedProduct.class)
+                .handle(NegativePackagedProductIdException::errorIfNegativePackageId);
 
                 return Mono
                 .zip(this::combinePackagedProducts, existed, received)
@@ -123,6 +111,7 @@ public class PackagedProductHandler {
             g.setHeight(g2.getHeight());
             g.setWeight(g2.getWeight());
             g.setPackageType(g2.getPackageType());
+            g.setPackageDate(g2.getPackageDate());
         }
         return g;
     }
@@ -134,6 +123,7 @@ public class PackagedProductHandler {
             packagedProduct.getHeight(), 
             packagedProduct.getWeight(), 
             packagedProduct.getPackageType(),
+            packagedProduct.getPackageDate(),
             packagedProduct.getId());
     }
 }

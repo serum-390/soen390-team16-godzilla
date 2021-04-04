@@ -1,5 +1,7 @@
 package ca.serum390.godzilla.domain.packaging;
 
+import java.time.LocalDate;
+
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.relational.core.mapping.Table;
@@ -28,5 +30,5 @@ public class PackagedProduct {
     private float height;
     private float weight;
     private String packageType;  
-   
+    private LocalDate packageDate;
 }
