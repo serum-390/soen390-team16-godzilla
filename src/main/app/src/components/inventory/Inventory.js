@@ -103,8 +103,8 @@ const inventoryCols = [
 const getInventory = async () => {
   const api = '/api/inventory/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const FilledInventoryView = ({ inventoryItems, classes }) => {

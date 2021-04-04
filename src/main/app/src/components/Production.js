@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 const getMaterials = async () => {
   const api = '/api/materials/';
   const got = await fetch(api);
-  const json = await got.json();
+  const json = got.status === 200 ? await got.json() : [];
 
   if (!json.materials) return [];
 
@@ -34,7 +34,7 @@ const getMaterials = async () => {
 const getProducts = async () => {
   const api = '/api/products/';
   const got = await fetch(api);
-  const json = await got.json();
+  const json = got.status === 200 ? await got.json() : [];
 
   if (!json.products) return [];
 
