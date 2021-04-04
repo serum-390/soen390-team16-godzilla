@@ -108,7 +108,7 @@ public class ProductionManagerHandler {
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
         if (plannedProduct != null && !plannedProduct.getStatus().equals(PlannedProduct.COMPLETED)) {
             // set status to cancelled
-            plannedProductsRepository.updateStatus(productionID, PlannedProduct.CANCELED).block();
+            plannedProductsRepository.updateStatus(productionID, PlannedProduct.CANCELLED).block();
             logger.info("Production " + productionID + " is canceled");
             ordersRepository.updateStatus(plannedProduct.getOrderID(), Order.NEW).block();
             // return all the used items to inventory
