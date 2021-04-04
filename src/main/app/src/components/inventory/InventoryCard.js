@@ -1,6 +1,4 @@
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, makeStyles, Typography } from "@material-ui/core";
-import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike';
-import BuildIcon from '@material-ui/icons/Build';
 import { useState } from "react";
 
 const useStyles = makeStyles(theme => ({

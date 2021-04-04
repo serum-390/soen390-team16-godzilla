@@ -57,7 +57,8 @@ public class OrderHandler {
 
     // Delete an order
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return ordersRepository.deleteById(Integer.parseInt(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
+        return ordersRepository.deleteById(Integer.parseInt(req.pathVariable("id")))
+                .flatMap(deleted -> noContent().build());
     }
 
     // Update an order
