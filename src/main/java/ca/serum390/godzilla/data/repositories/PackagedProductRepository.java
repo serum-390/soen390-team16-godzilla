@@ -11,6 +11,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface PackagedProductRepository extends ReactiveCrudRepository<PackagedProduct, Integer> {
     @Modifying
-    @Query("UPDATE packaged_products SET LENGTH = $1, WIDTH = $2, HEIGHT= $3, WEIGHT=$4 , PACKAGE_TYPE = $6  WHERE ID = $5")
+    @Query("UPDATE packaged_products SET LENGTH = $1, WIDTH = $2, HEIGHT= $3, WEIGHT=$4 , PACKAGE_TYPE = $5  WHERE ID = $6")
     Mono<Integer> update(Float length, Float width, Float height, Float weight, String packageType, Integer id);
 }

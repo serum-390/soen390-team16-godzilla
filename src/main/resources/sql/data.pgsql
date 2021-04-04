@@ -114,13 +114,6 @@ INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) 
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'vendor');
 
 --Packaging 
-INSERT INTO packaged_products(LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE, ID) VALUES (10, 11, 12, 14.2, 'small box',(
-            SELECT
-                id
-            FROM
-                inventory
-            WHERE
-                item_name='Skill Brake'
-                ));
+INSERT INTO packaged_products(ID, LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE) VALUES (7 ,10, 11, 12, 14.2, 'small box');
 
                 
