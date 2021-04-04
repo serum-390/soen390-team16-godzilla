@@ -4,7 +4,7 @@ import ca.serum390.godzilla.domain.packaging.PackagedProduct;
 import reactor.core.publisher.SynchronousSink;
 
 /**
- * Indicates the a {@link } has a negative Id
+ * Indicates the a {@link PackagedProduct} has a negative Id
  */
 public class NegativePackagedProductIdException extends RuntimeException {
     private static final long serialVersionUID = -4949643334214000453L;
