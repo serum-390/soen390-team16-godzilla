@@ -269,8 +269,8 @@ const contactColumn = [
 const getContact = async () => {
   const api = '/api/salescontact/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const updateContact = async (data, reload) => {
