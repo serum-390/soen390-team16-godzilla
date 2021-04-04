@@ -54,7 +54,7 @@ public class InventoryEventHandler {
                 Integer itemQuantity = entry.getValue();
                 Integer inventoryQuantity = inventoryRepository.findById(itemID).block().getQuantity();
                 if (inventoryQuantity < itemQuantity) {
-                    Logger.getLogger("EventLog").info("production cannot get the required items from inventory");
+                    Logger.getLogger("ProductionLog").info("production cannot get the required items from inventory");
                     // TODO cancel production -> return all the received items to inventory, update the status of sales order to new
                     return;
                 }
@@ -68,7 +68,7 @@ public class InventoryEventHandler {
             }
             plannedProductsRepository.updateUsedItems(productionID, plannedProduct.getUsedItems()).block();
             ProductionEvent productionEvent = new ProductionEvent(productionID);
-            Logger.getLogger("EventLog").info("production " + productionID + " is unblocked and scheduled");
+            Logger.getLogger("ProductionLog").info("production " + productionID + " is unblocked and scheduled");
 
             //TODO set real time
             Runnable productionTask = () -> applicationEventPublisher.publishEvent(productionEvent);
@@ -77,7 +77,7 @@ public class InventoryEventHandler {
             scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
             //scheduler.schedule(exampleRunnable, Date.from(plannedProduct.getProductionDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         } else {
-            Logger.getLogger("EventLog").info("production " + productionID + " cannot be scheduled");
+            Logger.getLogger("ProductionLog").info("production " + productionID + " cannot be scheduled");
         }
     }
 }
