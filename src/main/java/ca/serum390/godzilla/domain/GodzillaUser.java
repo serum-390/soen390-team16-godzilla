@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 @Data
-@Builder
 @With
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table("erp_user")
 public class GodzillaUser implements UserDetails {
     private static final long serialVersionUID = -336666572414315874L;
@@ -31,6 +31,7 @@ public class GodzillaUser implements UserDetails {
     private String username;
     private String password;
     private String authorities;
+    private Boolean isAdmin;
     private String email;
 
     @Override

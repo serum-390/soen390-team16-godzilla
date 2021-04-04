@@ -8,13 +8,11 @@ import static reactor.core.publisher.Mono.fromCallable;
 
 import java.util.Map;
 
-import org.springframework.boot.devtools.remote.server.Handler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
 
 import ca.serum390.godzilla.api.handlers.exceptions.CreateUserWithoutUsernameOrPasswordException;
 import ca.serum390.godzilla.data.repositories.GodzillaUserRepository;
@@ -65,24 +63,34 @@ public class GodzillaUserHandler {
     }
 
     private void handleUserNameTooShort(
-            MultiValueMap<String, String> data, 
-            SynchronousSink<MultiValueMap<String, String>> sink){
+            MultiValueMap<String, String> data,
+            SynchronousSink<MultiValueMap<String, String>> sink) {
         var username = data.getFirst(USERNAME_FIELD);
-        if(username.length() >= MIN_USERNAME_LENGTH) {
+        if ((username != null ? username.length() : -1) >= MIN_USERNAME_LENGTH) {
             sink.next(data);
         } else {
-            sink.error(new RuntimeException("username '"+ username + "' to short, must be at least "+ MIN_USERNAME_LENGTH + " characters long." ));
+            sink.error(new RuntimeException(
+                    "username '"
+                    + username
+                    + "' to short, must be at least "
+                    + MIN_USERNAME_LENGTH
+                    + " characters long."));
         }
     }
 
     private void handleInvalidEmail(
-            MultiValueMap<String, String> data, 
-            SynchronousSink<MultiValueMap<String, String>> sink){
+            MultiValueMap<String, String> data,
+            SynchronousSink<MultiValueMap<String, String>> sink) {
+
         var email = data.getFirst(EMAIL_FIELD);
-        if(email.matches(EMAIL_VALIDATOR)){
+        if ((email != null ? email : "" ).matches(EMAIL_VALIDATOR)){
             sink.next(data);
         } else {
-            sink.error(new RuntimeException("email'"+ email + "' does not comply to the standards."));
+            sink.error(new RuntimeException(
+                    "email'"
+                    + email
+                    + "' does not match regular expression: '"
+                    + EMAIL_VALIDATOR + "'"));
         }
     }
 
@@ -94,6 +102,6 @@ public class GodzillaUserHandler {
         String password = passwordEncoder.encode(map.getFirst(PASSWORD_FIELD));
         String email = map.getFirst(EMAIL_FIELD);
         log.info("Creating new user: " + username);
-        return userRepository.save(username, password, DEFAULT_AUTHORITIES,email);
+        return userRepository.save(username, password, DEFAULT_AUTHORITIES, false, email);
     }
 }

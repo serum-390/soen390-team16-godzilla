@@ -7,14 +7,14 @@ CREATE TABLE IF NOT EXISTS good_type(
 );
 
 CREATE TABLE IF NOT EXISTS inventory (
-    ID SERIAL PRIMARY KEY NOT NULL,
-    ITEM_NAME VARCHAR NOT NULL,
-    GOOD_TYPE INT references good_type(ID) NOT NULL,
-    QUANTITY INT NOT NULL,
-    BUY_PRICE FLOAT,
-    SELL_PRICE FLOAT,
-    LOCATION VARCHAR NOT NULL,
-    BILL_OF_MATERIAL jsonb
+    id               SERIAL PRIMARY KEY NOT NULL,
+    item_name        VARCHAR NOT NULL,
+    good_type        INTEGER REFERENCES good_type NOT NULL,
+    quantity         INTEGER NOT NULL,
+    buy_price        FLOAT,
+    sell_price       FLOAT,
+    location         VARCHAR NOT NULL,
+    bill_of_material JSONB
 );
 
 
@@ -38,28 +38,29 @@ CREATE TABLE IF NOT EXISTS orders(
     ITEMS jsonb
 );
 
-CREATE TABLE IF NOT EXISTS erp_user(
-    ID SERIAL PRIMARY KEY NOT NULL,
-    username VARCHAR NOT NULL UNIQUE,
-    password VARCHAR NOT NULL,
+CREATE TABLE IF NOT EXISTS erp_user (
+    id          SERIAL PRIMARY KEY NOT NULL,
+    username    VARCHAR NOT NULL UNIQUE,
+    password    VARCHAR NOT NULL,
     authorities VARCHAR NOT NULL,
-    email VARCHAR NOT NULL
+    is_admin    BOOLEAN,
+    email       VARCHAR NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS planned_products(
-    ID SERIAL PRIMARY KEY NOT NULL,
-    STATUS VARCHAR NOT NULL,
-    PRODUCTION_DATE DATE NOT NULL,
-    ORDER_ID  INT references orders(ID) NOT NULL,
-    USED_ITEMS jsonb
+CREATE TABLE IF NOT EXISTS planned_products (
+    id              SERIAL PRIMARY KEY NOT NULL,
+    status          VARCHAR NOT NULL,
+    production_date DATE NOT NULL,
+    order_id        INTEGER REFERENCES orders NOT NULL,
+    used_items      JSONB
 );
 
 CREATE TABLE IF NOT EXISTS packaged_products(
     ID SERIAL PRIMARY KEY NOT NULL,
-    LENGTH FLOAT NOT NULL, 
+    LENGTH FLOAT NOT NULL,
     WIDTH FLOAT NOT NULL,
     HEIGHT FLOAT NOT NULL,
-    WEIGHT FLOAT NOT NULL,    
+    WEIGHT FLOAT NOT NULL,
     PACKAGE_TYPE VARCHAR NOT NULL,
     PACKAGE_DATE DATE NOT NULL
 );
