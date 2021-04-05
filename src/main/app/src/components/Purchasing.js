@@ -111,7 +111,7 @@ const deleteVendor = async (id, reload) => {
 };
 
 const getPurchaseOrders = async () => {
-  const api = '/api/orders/?type=purchases';
+  const api = '/api/orders/?type=purchase';
   const got = await fetch(api);
   const json = got.status === 200 ? await got.json() : [];
   return json;
