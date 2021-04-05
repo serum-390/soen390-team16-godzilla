@@ -6,9 +6,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import NativeSelect from "@material-ui/core/NativeSelect";
+import InputLabel from "@material-ui/core/InputLabel";
 
 export default function ShippingForm(props) {
-  const item = props.onSubmit(null, false);
   const [open, setOpen] = React.useState(false);
   const [shippingDate, setShippingDate] = React.useState("");
   const [orderID, setOrderID] = React.useState("");
@@ -49,9 +50,11 @@ export default function ShippingForm(props) {
             margin="dense"
             id="shippingDate"
             label="Shipping Date"
-            type="string"
-            defaultValue={item.shippingDate}
+            type="date"
             onChange={(event) => setShippingDate(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
           <TextField
@@ -59,21 +62,20 @@ export default function ShippingForm(props) {
             margin="dense"
             id="orderID"
             label="Order ID"
-            type="string"
-            defaultValue={item.orderID}
+            type="number"
             onChange={(event) => setOrderID(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{inputProps: {min: 1}}}
             fullWidth
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="shippingMethod"
-            label="Shipping Method"
-            onChange={(event) => setShippingMethod(event.target.value)}
-            fullWidth
-            type="string"
-            defaultValue={item.shippingMethod}
-          />
+          <InputLabel htmlFor="select" shrink={true}>Shipping Method</InputLabel>
+          <NativeSelect id="select" defaultValue="air" onChange={(event) => setShippingMethod(event.target.value)}>
+            <option value="air">Air</option>
+            <option value="ferry">Ferry</option>
+            <option value="car">Car</option>
+          </NativeSelect>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">

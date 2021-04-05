@@ -22,10 +22,12 @@ const useStyles = makeStyles(theme => ({
 
 const addShippingItem = async data => {
   try {
-    const api = `/api/shipping-manager/validate/?orderID=` + data.orderID + '&shippingDate=' + data.shippingDate + '&method=' + data.shippingMethod;
+    const api = `/api/shipping-manager/validate/?orderID=` + data.orderID + '&shippingDate=' + data.shippingDate +
+      '&method=' + data.shippingMethod;
     const inserted = await axios.post(api);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
+    alert(`${inserted.data || "Success"}`);
   } catch (err) {
     console.log(err);
     return err;
@@ -49,11 +51,11 @@ const cancelShipping = async id => {
 const shippingCols = [
   {field: 'id', headerName: 'Item', width: 100},
   {field: 'OrderID', headerName: 'Order ID', width: 130},
-  {field: 'Status', headerName: 'status', width: 100},
-  {field: 'DueDate', headerName: 'due date', width: 130},
-  {field: 'ShippingDate', headerName: 'shipping date', width: 130},
-  {field: 'ShippingMethod', headerName: 'shipping method', width: 130},
-  {field: 'ShippingPrice', headerName: 'shipping price', width: 130},
+  {field: 'Status', headerName: 'Status', width: 100},
+  {field: 'DueDate', headerName: 'Due date', width: 130},
+  {field: 'ShippingDate', headerName: 'Shipping date', width: 150},
+  {field: 'ShippingMethod', headerName: 'Shipping method', width: 160},
+  {field: 'ShippingPrice', headerName: 'Shipping price', width: 150},
   {
     field: 'cancel',
     headerName: 'Cancel',
@@ -118,10 +120,10 @@ const LoadedView = ({classes, shipping}) => {
   return (
     <div>
       <h1 style={{textAlign: "center"}}>Shipping</h1>
-      <div style={{height: 800, width: '85%', display: 'table'}}>
-        <div style={{display: 'table-row', float: 'left'}}>
+      <div style={{height: 720, width: '75%', display: 'table', margin:'0 auto'}}>
+        <div style={{ display: 'table-row', float: 'right'}}>
           <ShippingForm
-            initialButton='schedule shipping item'
+            initialButton='schedule shipping'
             dialogTitle='Shipping Information '
             dialogContentText='Please enter shipping information:'
             submitButton='schedule'

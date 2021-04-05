@@ -6,6 +6,7 @@ import ca.serum390.godzilla.domain.orders.Order;
 import ca.serum390.godzilla.domain.shipping.Shipping;
 import ca.serum390.godzilla.util.Events.ShippingEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
 public class ShippingManagerHandler {
@@ -38,6 +40,7 @@ public class ShippingManagerHandler {
     private String shippingMethod;
     private TaskScheduler scheduler;
     private Logger logger;
+    private String message;
 
     public ShippingManagerHandler(ApplicationEventPublisher applicationEventPublisher,
                                   OrdersRepository ordersRepository, ShippingRepository shippingRepository) {
@@ -56,7 +59,7 @@ public class ShippingManagerHandler {
      * @return
      */
     public Mono<ServerResponse> validateShipping(ServerRequest req) {
-
+        message = "";
         if (validateOrderID(req) && salesOrder.getStatus().equals(Order.PACKAGED) && validateShippingDate(req) &&
                 validateShippingMethod(req)) {
             shippingRepository.save(
@@ -81,22 +84,24 @@ public class ShippingManagerHandler {
                         logger.info("shipping " + shippingItem.getId() + " is scheduled"));
             });
         }
-        return noContent().build();
+        return ok().contentType(MediaType.TEXT_PLAIN).bodyValue(message);
     }
 
     /**
      * cancels the shipping by setting the shipping item status to canceled and the order status to packaged
+     *
      * @param req
      * @return
      */
     public Mono<ServerResponse> cancelShipping(ServerRequest req) {
         int shippingID = Integer.parseInt(req.pathVariable("id"));
-        shippingRepository.updateStatus(shippingID, Shipping.CANCELED).subscribe(item ->
-                logger.info("shipping item " + shippingID + " is cancelled"));
         shippingRepository
                 .findById(shippingID)
-                .subscribe(shipping ->
-                        ordersRepository.updateStatus(shipping.getOrderID(), Order.PACKAGED).subscribe());
+                .subscribe(shipping -> {
+                    shippingRepository.updateStatus(shippingID, Shipping.CANCELED).subscribe(item ->
+                            logger.info("shipping item " + shippingID + " is cancelled"));
+                    ordersRepository.updateStatus(shipping.getOrderID(), Order.PACKAGED).subscribe();
+                });
         return noContent().build();
     }
 
@@ -106,10 +111,17 @@ public class ShippingManagerHandler {
         // get the sales order object
         if (orderID.isPresent()) {
             salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
-            logger.info("orderID is valid");
-            return salesOrder != null;
+            if (salesOrder != null) {
+                logger.info("orderID is valid");
+                return true;
+            } else {
+                logger.info("orderID is invalid");
+                message += "\n orderID is invalid";
+                return false;
+            }
         } else {
             logger.info("orderID is not entered");
+            message += "\n orderID is not entered";
         }
         return false;
     }
@@ -121,8 +133,10 @@ public class ShippingManagerHandler {
             LocalDate input = LocalDate.parse(shippingDateReq.get());
             if (input.compareTo(LocalDate.now()) < 0) {
                 logger.info("the entered shipping date is past.");
+                message += "\n the entered shipping date is past";
             } else if (input.compareTo(salesOrder.getDueDate()) >= 0) {
                 logger.info("the entered shipping date does not meet the order due date");
+                message += "\n the entered shipping date does not meet the order due date";
             } else {
                 shippingDate = input;
                 logger.info("shippingDate is valid");
@@ -130,6 +144,7 @@ public class ShippingManagerHandler {
             }
         } else {
             logger.info("no shipping date is entered");
+            message += "\n no shipping date is entered";
         }
         return false;
     }
@@ -147,10 +162,12 @@ public class ShippingManagerHandler {
                     logger.info("shipping method is valid");
                     return true;
                 default:
-                    logger.info("invalid shipping method");
+                    logger.info("shipping method " + shippingMethodReq.get() + " is invalid");
+                    message += "\n shipping method is invalid";
             }
         } else {
             logger.info("no shipping method is entered");
+            message += "\n no shipping method is entered";
         }
         return false;
     }
