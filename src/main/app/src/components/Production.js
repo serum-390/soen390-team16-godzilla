@@ -56,7 +56,7 @@ const cancelProduction = async (id, reload) => {
 
 const insertProduction = async (data, reload) => {
   try {
-    const api = `/api/production-manager/validate`;
+    const api = `/api/production-manager/validate/?id=${data.id}&date=${data.date}`;
     const inserted = await axios.post(api, data);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
@@ -64,10 +64,9 @@ const insertProduction = async (data, reload) => {
     console.log(err);
     return err;
   }
-
+  
   reload();
 };
-
 
 const getInventory = async () => {
   const api = '/api/inventory/';

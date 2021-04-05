@@ -62,7 +62,7 @@ public class ProductionManagerHandler {
     // If all the finished items in the order are available, no production item is created -> order is ready
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
         setup(req);
-
+        
         // Analyze the items in the order item list and the inventory
         if (salesOrder != null && salesOrder.getStatus().equals(Order.NEW)) {
 

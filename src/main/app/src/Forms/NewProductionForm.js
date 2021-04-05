@@ -6,25 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import PropTypes from 'prop-types';
-import MaskedInput from 'react-text-mask';
-import Input from '@material-ui/core/Input';
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    display: 'block',
-  },
-  formControl: {
-    margin: theme.spacing(2),
-    minWidth: 120,
-  },
-}));
 
 export default function NewProductionForm(props) {
   const [open, setOpen] = React.useState(false);
@@ -46,7 +27,6 @@ export default function NewProductionForm(props) {
     };
     props.onSubmit(data, true);
     setOpen(false);
-    // want to update the table after clicking this
   };
 
   return (

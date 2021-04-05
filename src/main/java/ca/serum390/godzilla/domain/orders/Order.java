@@ -19,13 +19,13 @@ import java.util.Map;
 public class Order {
 
     // Status values
-    public static final String READY = "READY";
-    public static final String NEW = "NEW";
-    public static final String PRODUCTION_PROCESS = "PRODUCTION PROCESS";
-    public static final String SHIPPING_PROCESS = "SHIPPING PROCESS";
-    public static final String PACKAGED = "PACKAGED";
-    public static final String SHIPPED = "SHIPPED";
-    public static final String DELIVERED = "DELIVERED";
+    public static final String READY = "ready";
+    public static final String NEW = "new";
+    public static final String PRODUCTION_PROCESS = "production process";
+    public static final String SHIPPING_PROCESS = "shipping process";
+    public static final String PACKAGED = "packaged";
+    public static final String SHIPPED = "shipped";
+    public static final String DELIVERED = "delivered";
 
     @Id
     private Integer id;
