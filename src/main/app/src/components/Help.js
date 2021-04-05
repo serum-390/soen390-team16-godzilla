@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
       width: theme.spacing(120),
-      height: theme.spacing(75),
+      height: theme.spacing(100),
+      padding: theme.spacing(3),
     },
   },
   link: {
@@ -47,7 +48,7 @@ const HelpMenu = () => {
   const location = useLocation();
   return (
     <div className={classes.menu}>
-      <Paper elevation={3}>
+      <Paper elevation={3} >
         <MenuList>
           <Link to='/help/Accounting'
             selected={location.pathname === '/help/Accounting'}
