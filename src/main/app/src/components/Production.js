@@ -3,6 +3,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import CustomToolbar from './tables/CustomToolbar';
 import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
+import NewProductionForm from "../Forms/NewProductionForm";
 import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
@@ -52,6 +53,21 @@ const cancelProduction = async (id, reload) => {
 
   reload();
 };
+
+const insertProduction = async (data, reload) => {
+  try {
+    const api = `/api/production-manager/validate`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  reload();
+};
+
 
 const getInventory = async () => {
   const api = '/api/inventory/';
@@ -153,6 +169,15 @@ const LoadedView = (props) => {
       <div style={{ height: 720, width: '62%', float: 'right', display: 'table' }}>
         <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Productions</h2>
+          <div style={{ float: 'right'}}>
+            <NewProductionForm
+              onSubmit={(data, insert) => (insert) ? insertProduction(data, props.reload) : ''}
+              initialButton='Add New Production'
+              dialogTitle='Add New Production'
+              dialogContentText='Please enter any information you would like to add: '
+              submitButton='Confirm'
+            />
+          </div>
         </div>
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
         <FilledProductionView
