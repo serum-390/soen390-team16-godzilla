@@ -17,22 +17,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getMaterials = async () => {
-  const api = '/api/materials/';
-  const got = await fetch(api);
-  const json = got.status === 200 ? await got.json() : [];
-
-  if (!json.materials) return [];
-
-  return json.materials.map(materials => {
-    materials.allMaterials = {
-      onClick: () => {
-      },
-    };
-    return materials;
-  });
-};
-
 const getProductions = async () => {
   const api = '/api/planning/';
   const got = await fetch(api);
@@ -75,19 +59,12 @@ const getInventory = async () => {
   return json || [];
 };
 
-const materialColumns = [
-  { field: 'id', headerName: '', width: 0, hide: true },
-  { field: 'material', headerName: 'Material', width: 230 },
-  { field: 'mID', headerName: 'Material ID', width: 180 },
-  { field: 'status', headerName: 'Status', width: 180 }
-];
-
 const productionColumns = [
   { field: 'id', headerName: 'ID', width: 70},
   { field: 'orderID', headerName: 'Order ID', width: 110 },
   { field: 'productionDate', headerName: 'Production Date', width: 160},
   { field: 'status', headerName: 'Status', width: 120},
-  { field: 'usedItems', headerName: 'Used Items', width: 500 },
+  { field: 'usedItems', headerName: 'Used Items', width: 950 },
   {
     field: 'cancel',
     headerName: 'Cancel',
@@ -157,15 +134,7 @@ const LoadedView = (props) => {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Production Department</h1>
-      <div style={{ height: 720, width: '35%', float: 'left', display: 'table'}}>
-        <div style={{width: '100%', display: 'table-row' }}>
-          <h2 style={{ float: 'left' }}>Materials</h2>
-        </div>
-        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
-          <DataGrid rows={props.materialRows} columns={materialColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
-        </div>
-      </div>
-      <div style={{ height: 720, width: '62%', float: 'right', display: 'table' }}>
+      <div style={{ height: 720, width: '100%', float: 'right', display: 'table' }}>
         <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Productions</h2>
           <div style={{ float: 'right'}}>
@@ -192,13 +161,11 @@ const LoadedView = (props) => {
 
 function Production() {
   const classes = useStyles();
-  const [materialRows, setMaterialRows] = useState([]);
   const [productions, setProductions] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const waitForGetRequest = async () => {
-    getMaterials().then(materials => setMaterialRows(materials));
     getProductions().then(prods => setProductions(prods));
     getInventory().then(inv => setInventory(inv));
     setLoading(false);
@@ -211,9 +178,9 @@ function Production() {
   return (
     (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} materialRows={materialRows} productions={productions} inventory={inventory} reload={reload}/>
+      <LoadedView classes={classes} productions={productions} inventory={inventory} reload={reload}/>
     </SpinBeforeLoading> :
-    <LoadedView classes={classes} materialRows={materialRows} productions={productions} inventory={inventory} reload={reload}/>
+    <LoadedView classes={classes} productions={productions} inventory={inventory} reload={reload}/>
   );
 }
 
