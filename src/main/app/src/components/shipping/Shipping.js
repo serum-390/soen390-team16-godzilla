@@ -22,8 +22,8 @@ const useStyles = makeStyles(theme => ({
 
 const addShippingItem = async data => {
   try {
-    const api = `/api/shipping-manager/validate/`;
-    const inserted = await axios.post(api, data);
+    const api = `/api/shipping-manager/validate/?orderID=` + data.orderID + '&shippingDate=' + data.shippingDate + '&method=' + data.shippingMethod;
+    const inserted = await axios.post(api);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
   } catch (err) {
@@ -33,7 +33,7 @@ const addShippingItem = async data => {
 };
 
 
-const  cancelShipping = async id => {
+const cancelShipping = async id => {
   try {
     const api = `/api/shipping-manager/cancel/${id}`;
     const canceled = await axios.post(api);
@@ -89,7 +89,7 @@ const FilledShippingView = ({shippingItems, classes}) => {
       ShippingDate: item.shippingDate,
       ShippingMethod: item.shippingMethod,
       ShippingPrice: item.shippingPrice,
-      cancel: () =>  cancelShipping(item.id)
+      cancel: () => cancelShipping(item.id)
     })));
 
   return (

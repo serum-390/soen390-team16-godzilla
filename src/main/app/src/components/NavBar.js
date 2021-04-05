@@ -117,7 +117,7 @@ const ContentSwitch = () => {
   return (
     <Switch>
       <Route exact path="/" component={Home} />
-      <Route exact path="/planning" component={Planning} />
+      <Route exact path="/shipping" component={Shipping} />
       <Route exact path="/inventory" component={Inventory} />
       <Route exact path="/production" component={Production} />
       <Route exact path="/accounting" component={Accounting} />
