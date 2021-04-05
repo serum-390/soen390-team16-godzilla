@@ -1,20 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-
--- Create type: OrderType
-DO 'BEGIN
-    CREATE TYPE OrderType AS ENUM (''purchase'', ''sale'');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END';
-
--- Create type: ContactType
-DO 'BEGIN
-    CREATE TYPE ContactType AS ENUM (''vendor'', ''customer'');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END';
-
 CREATE TABLE IF NOT EXISTS good_type(
     ID INT PRIMARY KEY NOT NULL,
     type VARCHAR UNIQUE,
@@ -39,7 +24,7 @@ CREATE TABLE IF NOT EXISTS contact (
     CONTACT_NAME VARCHAR,
     ADDRESS VARCHAR NOT NULL,
     CONTACT VARCHAR NOT NULL,
-    CONTACT_TYPE contactType NOT NULL
+    CONTACT_TYPE VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS orders(
@@ -47,7 +32,7 @@ CREATE TABLE IF NOT EXISTS orders(
     CREATED_DATE DATE NOT NULL,
     DUE_DATE DATE NOT NULL,
     DELIVERY_LOCATION VARCHAR NOT NULL,
-    ORDER_TYPE orderType NOT NULL,
+    ORDER_TYPE VARCHAR NOT NULL,
     STATUS VARCHAR NOT NULL,
     PRODUCTION_ID INT,
     ITEMS jsonb

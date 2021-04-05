@@ -64,8 +64,8 @@ const vendorColumns = [
 const getVendors = async () => {
   const api = '/api/vendorcontact/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const updateVendor = async (data, reload) => {
@@ -113,8 +113,8 @@ const deleteVendor = async (id, reload) => {
 const getPurchaseOrders = async () => {
   const api = '/api/orders/?type=purchases';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const insertPurchaseOrder = async (data, reload) => {
@@ -134,8 +134,8 @@ const insertPurchaseOrder = async (data, reload) => {
 const getInventory = async () => {
   const api = '/api/inventory/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const FilledVendorView = (props) => {

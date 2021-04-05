@@ -59,10 +59,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getSales = async () => {
-  const api = '/api/orders/?type=sales';
+  const api = '/api/orders/?type=sale';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const updateSales = async data => {
