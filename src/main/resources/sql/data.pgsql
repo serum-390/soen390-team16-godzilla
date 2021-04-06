@@ -102,6 +102,7 @@ INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
             LIMIT 1), 10, 29.99, 'MONTREAL CONCORDIA');
 
 
+
 --SalesOrder
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-10-16','montreal','sale', 'packaged', '{ "2" : 7}');
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-10-16','montreal','sale', 'new', '{ "2" : 15, "3" : 15}');

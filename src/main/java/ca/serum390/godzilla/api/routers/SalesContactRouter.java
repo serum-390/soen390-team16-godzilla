@@ -20,9 +20,8 @@ public class SalesContactRouter {
         final String ID = "/{id}";
         return RouterFunctions.route()
                 .path("/salescontact/", builder -> builder
-                    .GET("/", salesContactHandler::all)
+                    .GET("/", salesContactHandler::getBy)
                     .POST("/", salesContactHandler::create)
-                    .GET(ID, salesContactHandler::get)
                     .PUT(ID, salesContactHandler::update)
                     .DELETE(ID, salesContactHandler::delete))
                 .build();
