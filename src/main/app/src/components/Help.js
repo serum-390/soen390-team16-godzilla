@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(1),
-      width: theme.spacing(30),
-      height: theme.spacing(38),
+      minWidth: theme.spacing(30),
+      borderRadius: '1em',
     },
   },
   mainDisplay: {
@@ -31,8 +31,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(1),
-      width: theme.spacing(120),
-      height: theme.spacing(105),
+      maxWidth: theme.spacing(120),
       padding: theme.spacing(3),
     },
   },
@@ -40,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: theme.palette.text.primary,
   },
+  orderImg: {
+    width: '13%',
+    resizeMode: "contain"
+  }
 }));
 
 
@@ -48,7 +51,7 @@ const HelpMenu = () => {
   const location = useLocation();
   return (
     <div className={classes.menu}>
-      <Paper elevation={3} >
+      <Paper variant="outlined" >
         <MenuList>
           <Link to='/help/Accounting'
             selected={location.pathname === '/help/Accounting'}
@@ -149,5 +152,5 @@ function Help() {
 
   );
 }
-
+export {Help,useStyles};
 export default Help;

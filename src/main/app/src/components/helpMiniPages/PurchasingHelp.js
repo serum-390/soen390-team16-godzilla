@@ -1,6 +1,8 @@
 import exportImage from "../../misc/helpPageImages/exporting.png";
 import orderingImage from "../../misc/helpPageImages/ordering.png";
+import useStyles from "../Help";
 function PurchasingHelp() {
+  const classes = useStyles();
   return (
     <div>
       <h1>Purchasing</h1>
@@ -26,7 +28,7 @@ function PurchasingHelp() {
       <img
         src={orderingImage}
         alt="img"
-        style={{ width: "10%", height: "10%", resizeMode: "contain" }}
+       classname={classes.orderImg}
       />
       <h2>Exporting as CSV</h2>
       <h4>
