@@ -36,7 +36,7 @@ import Accounting from './Accounting';
 import Help from './Help';
 import Home from './Home';
 import { Inventory } from './inventory/Inventory';
-import Planning from './Planning';
+import Shipping from './shipping/Shipping';
 import Production from './Production';
 import Purchase from './Purchasing';
 import Sales from './Sales';
@@ -89,7 +89,7 @@ const DrawerList = ({ className }) => {
       {
         [
           [HomeIcon, '/', 'Home'],
-          [EventIcon, '/planning', 'Planning'],
+          [EventIcon, '/shipping', 'Shipping'],
           [MotorcycleIcon, '/production', 'Production'],
           [AttachMoneyIcon, '/sales', 'Sales'],
           [ReceiptIcon, '/purchasing', 'Purchasing'],
@@ -117,7 +117,7 @@ const ContentSwitch = () => {
   return (
     <Switch>
       <Route exact path="/" component={Home} />
-      <Route exact path="/planning" component={Planning} />
+      <Route exact path="/shipping" component={Shipping} />
       <Route exact path="/inventory" component={Inventory} />
       <Route exact path="/production" component={Production} />
       <Route exact path="/accounting" component={Accounting} />
