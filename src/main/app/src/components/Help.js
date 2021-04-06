@@ -118,7 +118,7 @@ const HelpDisplay = () => {
 const ContentSwitch = () => {
   return (
     <Switch>
-      <Route exact path="/" component={AccountingHelp} />
+      <Route exact path="/help/" component={AccountingHelp} />
       <Route exact path="/help/Accounting" component={AccountingHelp} />
       <Route exact path="/help/Inventory" component={InventoryHelp} />
       <Route exact path="/help/Navbar" component={NavBarHelp} />
