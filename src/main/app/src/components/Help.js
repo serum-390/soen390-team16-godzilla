@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       maxWidth: theme.spacing(120),
       padding: theme.spacing(3),
+      borderRadius: '1em',
     },
   },
   link: {
@@ -53,53 +54,61 @@ const HelpMenu = () => {
     <div className={classes.menu}>
       <Paper variant="outlined" >
         <MenuList>
-          <Link to='/help/Accounting'
-            selected={location.pathname === '/help/Accounting'}
+          <Link to='/help/accounting'
             className={classes.link}
           >
-            <MenuItem>Accounting</MenuItem>
+            <MenuItem selected={location.pathname === '/help/accounting' || location.pathname === '/help'}>
+              Accounting
+            </MenuItem>
           </Link>
-          <Link to='/help/Inventory'
-            selected={location.pathname === '/help/Inventory'}
+          <Link to='/help/inventory'
             className={classes.link}
           >
-            <MenuItem>Inventory</MenuItem>
+            <MenuItem selected={location.pathname === '/help/inventory'}>
+              Inventory
+            </MenuItem>
           </Link>
-          <Link to='/help/Navbar'
-            selected={location.pathname === '/help/Navbar'}
+          <Link to='/help/navbar'
             className={classes.link}
           >
-            <MenuItem>Navigation Bar</MenuItem>
+            <MenuItem selected={location.pathname === '/help/navbar'}>
+              Navigation Bar
+            </MenuItem>
           </Link>
-          <Link to='/help/Planning'
-            selected={location.pathname === '/help/Planning'}
+          <Link to='/help/planning'
             className={classes.link}
           >
-            <MenuItem>Planning</MenuItem>
+            <MenuItem selected={location.pathname === '/help/planning'}>
+              Planning
+            </MenuItem>
           </Link>
-          <Link to='/help/Production'
-            selected={location.pathname === '/help/Production'}
+          <Link to='/help/production'
             className={classes.link}
           >
-            <MenuItem>Production</MenuItem>
+            <MenuItem selected={location.pathname === '/help/production'}>
+              Production
+            </MenuItem>
           </Link>
-          <Link to='/help/Purchasing'
-            selected={location.pathname === '/help/Purchasing'}
+          <Link to='/help/purchasing'
             className={classes.link}
           >
-            <MenuItem>Purchasing</MenuItem>
+            <MenuItem selected={location.pathname === '/help/purchasing'}>
+              Purchasing
+            </MenuItem>
           </Link>
-          <Link to='/help/Sales'
-            selected={location.pathname === '/help/Sales'}
+          <Link to='/help/sales'
             className={classes.link}
           >
-            <MenuItem>Sales</MenuItem>
+            <MenuItem selected={location.pathname === '/help/sales'}>
+              Sales
+            </MenuItem>
           </Link>
-          <Link to='/help/UserManagement'
-            selected={location.pathname === '/help/UserManagement'}
+          <Link to='/help/user-management'
             className={classes.link}
           >
-            <MenuItem>User Management</MenuItem>
+            <MenuItem selected={location.pathname === '/help/user-management'}>
+              User Management
+            </MenuItem>
           </Link>
         </MenuList>
       </Paper >
@@ -111,7 +120,7 @@ const HelpDisplay = () => {
   const classes = useStyles();
   return (
     <div className={classes.mainDisplay}>
-      <Paper elevation={3}>
+      <Paper variant="outlined">
         <ContentSwitch />
       </Paper >
     </div>
@@ -121,15 +130,15 @@ const HelpDisplay = () => {
 const ContentSwitch = () => {
   return (
     <Switch>
-      <Route exact path="/help/" component={AccountingHelp} />
-      <Route exact path="/help/Accounting" component={AccountingHelp} />
-      <Route exact path="/help/Inventory" component={InventoryHelp} />
-      <Route exact path="/help/Navbar" component={NavBarHelp} />
-      <Route exact path="/help/Planning" component={PlanningHelp} />
-      <Route exact path="/help/Production" component={ProductionHelp} />
-      <Route exact path="/help/Purchasing" component={PurchasingHelp} />
-      <Route exact path="/help/Sales" component={SalesHelp} />
-      <Route exact path="/help/UserManagement" component={UserManagementHelp} />
+      <Route exact path="/help" component={AccountingHelp} />
+      <Route exact path="/help/accounting" component={AccountingHelp} />
+      <Route exact path="/help/inventory" component={InventoryHelp} />
+      <Route exact path="/help/navbar" component={NavBarHelp} />
+      <Route exact path="/help/planning" component={PlanningHelp} />
+      <Route exact path="/help/production" component={ProductionHelp} />
+      <Route exact path="/help/purchasing" component={PurchasingHelp} />
+      <Route exact path="/help/sales" component={SalesHelp} />
+      <Route exact path="/help/user-management" component={UserManagementHelp} />
     </Switch>
   );
 };
@@ -152,5 +161,5 @@ function Help() {
 
   );
 }
-export {Help,useStyles};
+export { Help, useStyles };
 export default Help;
