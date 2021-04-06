@@ -1,17 +1,19 @@
 package ca.serum390.godzilla.api.handlers;
 
-import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.domain.inventory.Item;
+import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
+import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
+
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
+import ca.serum390.godzilla.data.repositories.InventoryRepository;
+import ca.serum390.godzilla.domain.inventory.Item;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.*;
 
 @Component
 public class InventoryHandler {
