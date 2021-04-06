@@ -35,8 +35,8 @@ import reactor.test.StepVerifier;
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class VendersContactTests {
-    
+class VendersContactTests {
+
     @MockBean
     VendorContactRepository vendorContactRepository;
     final String VENDOR_CONTACT_API = "/api/vendorcontact/";
@@ -99,7 +99,7 @@ public class VendersContactTests {
             .expectComplete()
             .verifyThenAssertThat()
             .tookLessThan(Duration.ofSeconds(1));
-        
+
         verify(vendorContactRepository).save(any());
     }
 

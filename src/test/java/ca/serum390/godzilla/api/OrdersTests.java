@@ -50,11 +50,11 @@ class OrdersTests {
     WebTestClient client;
 
     @BeforeEach
-    void setUp(ApplicationContext context, RestDocumentationContextProvider restDocProvider) {
+    void setUp(ApplicationContext context, RestDocumentationContextProvider provider) {
         client = WebTestClient
                 .bindToApplicationContext(context)
                 .configureClient()
-                .filter(documentationConfiguration(restDocProvider))
+                .filter(documentationConfiguration(provider))
                 .build();
     }
 
@@ -122,7 +122,10 @@ class OrdersTests {
                 .expectStatus()
                 .is2xxSuccessful()
                 .expectBody()
-                .consumeWith(document("api/orders/byid_POST", preprocessRequest(prettyPrint())))
+                .consumeWith(
+                    document(
+                        "api/orders/byid_POST",
+                        preprocessRequest(prettyPrint())))
                 .isEmpty();
 
         // Retrieve the item

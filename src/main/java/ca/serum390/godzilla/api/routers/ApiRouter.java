@@ -1,26 +1,27 @@
 package ca.serum390.godzilla.api.routers;
 
-import ca.serum390.godzilla.api.handlers.ProductionHandler;
-import lombok.AllArgsConstructor;
+import static org.springframework.http.MediaType.TEXT_HTML;
+import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.fromCallable;
+
+import java.time.Duration;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
+import ca.serum390.godzilla.api.handlers.ProductionHandler;
+import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
-
-import static ca.serum390.godzilla.util.BuildableJsonMap.map;
-import static org.springframework.http.MediaType.TEXT_HTML;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static org.springframework.web.reactive.function.server.ServerResponse.status;
-import static reactor.core.publisher.Mono.fromCallable;
 
 @Configuration
 @AllArgsConstructor
@@ -30,12 +31,16 @@ public class ApiRouter implements WebFluxConfigurer {
 
     ProductionHandler productionHandler;
     RouterFunction<ServerResponse> goodsRoute;
-    RouterFunction<ServerResponse> inventoryRoute;
+    RouterFunction<ServerResponse> usersRoute;
     RouterFunction<ServerResponse> orderRoute;
+    RouterFunction<ServerResponse> inventoryRoute;
     RouterFunction<ServerResponse> salesContactRoute;
     RouterFunction<ServerResponse> vendorContactRoute;
     RouterFunction<ServerResponse> plannedProductRoute;
     RouterFunction<ServerResponse> productionManagerRoute;
+    RouterFunction<ServerResponse> shippingRoute;
+    RouterFunction<ServerResponse> shippingManagerRoute;
+    RouterFunction<ServerResponse> godzillaUserRoute;
 
     /**
      * Router using the functional endpoints Spring WebFlux API
@@ -44,21 +49,11 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route() {
-        return RouterFunctions.route()
-                .path("/api", apiBuilder -> apiBuilder
-                        .GET("/materials", productionHandler::demoMaterials)
-                        .GET("/products", productionHandler::demoProducts)
-                        .GET("/healthcheck", this::healthCheck)
-                        .GET("/docs", this::docs)
-                        .add(goodsRoute)
-                        .add(inventoryRoute)
-                        .add(orderRoute)
-                        .add(salesContactRoute)
-                        .add(vendorContactRoute)
-                        .add(plannedProductRoute)
-                        .add(productionManagerRoute)
-                        .build())
-                .build();
+        return RouterFunctions.route().path("/api", apiBuilder -> apiBuilder.GET("/docs", this::docs)
+                .GET("/healthcheck", this::healthCheck).GET("/products", productionHandler::demoProducts)
+                .GET("/materials", productionHandler::demoMaterials).add(usersRoute).add(goodsRoute).add(orderRoute)
+                .add(shippingRoute).add(inventoryRoute).add(salesContactRoute).add(vendorContactRoute)
+                .add(plannedProductRoute).add(shippingManagerRoute).add(productionManagerRoute).build()).build();
     }
 
     /**
@@ -66,10 +61,15 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**")
-                .addResourceLocations("/public", "classpath:/static/", "classpath:/static/resources/");
-        registry.addResourceHandler("/api/docs/**")
-                .addResourceLocations("classpath:/static/docs/");
+
+        var cc = CacheControl.maxAge(Duration.ofDays(30)).staleIfError(Duration.ofMinutes(10));
+
+        registry.addResourceHandler("/resources/**").setCacheControl(cc).addResourceLocations("/public",
+                "classpath:/static/", "classpath:/static/resources/");
+
+        registry.addResourceHandler("/api/docs/**").setCacheControl(cc).addResourceLocations("classpath:/static/docs/");
+
+        registry.addResourceHandler("/static/**").setCacheControl(cc).addResourceLocations("classpath:/static/static/");
     }
 
     private Mono<ServerResponse> healthCheck(ServerRequest request) {
@@ -78,10 +78,7 @@ public class ApiRouter implements WebFluxConfigurer {
 
     private Mono<ServerResponse> docs(ServerRequest request) {
         return ok().contentType(TEXT_HTML)
-                .body(fromCallable(
-                        () -> new ClassPathResource("static/docs/index.html")),
-                        Resource.class)
-                .onErrorResume(e -> status(404).body(
-                        fromCallable(() -> map("error", e.getMessage())), Map.class));
+                .body(fromCallable(() -> new ClassPathResource("static/docs/index.html")), Resource.class)
+                .onErrorResume(e -> notFound().build());
     }
 }

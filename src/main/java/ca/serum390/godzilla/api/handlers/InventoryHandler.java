@@ -7,12 +7,13 @@ import static org.springframework.web.reactive.function.server.ServerResponse.st
 
 import java.util.Optional;
 
+import ca.serum390.godzilla.data.repositories.InventoryRepository;
+import ca.serum390.godzilla.domain.inventory.Item;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.domain.inventory.Item;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -32,7 +33,14 @@ public class InventoryHandler {
      */
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(Item.class)
-                .flatMap(item -> items.save(item.getItemName(), item.getLocation(), item.getBuyPrice(), item.getGoodType(), item.getQuantity(), item.getSellPrice(), item.getBillOfMaterial()))
+                .flatMap(item -> items.save(
+                        item.getItemName(),
+                        item.getLocation(),
+                        item.getBuyPrice(),
+                        item.getGoodType(),
+                        item.getQuantity(),
+                        item.getSellPrice(),
+                        item.getBillOfMaterial()))
                 .flatMap(id -> noContent().build());
     }
 
@@ -88,7 +96,15 @@ public class InventoryHandler {
                 existed,
                 req.bodyToMono(Item.class)
         ).cast(Item.class)
-                .flatMap(item -> items.update(item.getItemName(), item.getLocation(), item.getId(), item.getBuyPrice(), item.getGoodType(), item.getQuantity(), item.getSellPrice(), item.getBillOfMaterial()))
+                .flatMap(item -> items.update(
+                        item.getItemName(),
+                        item.getLocation(),
+                        item.getId(),
+                        item.getBuyPrice(),
+                        item.getGoodType(),
+                        item.getQuantity(),
+                        item.getSellPrice(),
+                        item.getBillOfMaterial()))
                 .flatMap(item -> noContent().build());
     }
 

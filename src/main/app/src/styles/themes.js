@@ -3,25 +3,28 @@ import React, { useMemo, useState } from 'react';
 
 const ThemeContext = React.createContext({});
 
+const darkPalette = {
+  light: '#484848',
+  main: '#212121',
+  dark: '#000000',
+  contrastText: '#fff',
+};
+const lightPalette = {
+  light: '#9162e4',
+  main: '#1a237e',
+  dark: '#280680',
+  contrastText: '#fff',
+};
+
 function useThisTheme() {
   const [darkMode, setDarkMode] = useState(false);
+
   const theme = useMemo(
     () =>
       createMuiTheme({
         palette: {
           type: darkMode ? 'dark' : 'light',
-          primary: darkMode ? {
-            light: '#484848',
-            main: '#212121',
-            dark: '#000000',
-            contrastText: '#fff',
-          } :
-            {
-              light: '#9162e4',
-              main: '#5e35b1',
-              dark: '#280680',
-              contrastText: '#fff',
-            },
+          primary: darkMode ? darkPalette : lightPalette,
         },
       }),
     [darkMode]);

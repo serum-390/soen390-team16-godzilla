@@ -18,12 +18,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     '& > *': {
-      margin: theme.spacing(1),
-      width: theme.spacing(120),
-      height: theme.spacing(105),
+      margin: 'auto',
+      maxWidth: theme.spacing(120),
       padding: theme.spacing(3),
-      textAlign: 'left'
+      textAlign: 'left',
+      borderRadius: '1em',
+
     },
+    justifyItems: 'center',
   },
   div: {
     textAlign: 'left'
@@ -39,7 +41,7 @@ function About() {
   const DesktopMarkDown = () => { //Desktop Version of the About Us Markdown Page
     return (
       <div className={classes.menu}>
-        <Paper p={2} m={2} pt={3} >
+        <Paper variant="outlined" >
           <div className={classes.div} >
             <AboutUsPara />
           </div>

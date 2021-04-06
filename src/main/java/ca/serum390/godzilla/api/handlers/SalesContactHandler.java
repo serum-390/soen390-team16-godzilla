@@ -42,7 +42,7 @@ public class SalesContactHandler {
     public Mono<ServerResponse> create(ServerRequest req) {
         return req
                 .bodyToMono(SalesContact.class)
-                .handle(NegativeSalesContactIdException::errorIfNegativeContactId)
+                .handle(NegativeSalesContactIdException::handle)
                 .flatMap(salesContacts::save)
                 .flatMap(salesContact -> ok().bodyValue(salesContact))
                 .onErrorResume(e -> unprocessableEntity()
@@ -136,7 +136,7 @@ public class SalesContactHandler {
 
         Mono<SalesContact> received = req
                 .bodyToMono(SalesContact.class)
-                .handle(NegativeSalesContactIdException::errorIfNegativeContactId);
+                .handle(NegativeSalesContactIdException::handle);
 
         return Mono
                 .zip(this::combineSalesContacts, existed, received)

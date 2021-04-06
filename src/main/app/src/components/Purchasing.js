@@ -1,5 +1,6 @@
 import { Button, makeStyles } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import CustomToolbar from './tables/CustomToolbar';
 import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 import VendorDetailsForm from "../Forms/VendorDetailsForm";
@@ -63,8 +64,8 @@ const vendorColumns = [
 const getVendors = async () => {
   const api = '/api/vendorcontact/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const updateVendor = async (data, reload) => {
@@ -112,8 +113,8 @@ const deleteVendor = async (id, reload) => {
 const getPurchaseOrders = async () => {
   const api = '/api/orders/?type=purchases';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const insertPurchaseOrder = async (data, reload) => {
@@ -133,8 +134,8 @@ const insertPurchaseOrder = async (data, reload) => {
 const getInventory = async () => {
   const api = '/api/inventory/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const FilledVendorView = (props) => {
@@ -164,7 +165,7 @@ const FilledVendorView = (props) => {
     })));
 
   return (
-    <DataGrid rows={contacts} columns={vendorColumns} pageSize={9} />
+    <DataGrid rows={contacts} columns={vendorColumns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
   );
 };
 
@@ -183,7 +184,7 @@ const FilledOrderView = ({ orders, orderColumns, inventory }) => {
     })));
 
   return (
-    <DataGrid rows={purchases} columns={orderColumns} pageSize={9} />
+    <DataGrid rows={purchases} columns={orderColumns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
   );
 };
 
