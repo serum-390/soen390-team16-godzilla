@@ -83,6 +83,8 @@ public class ShippingManagerHandler {
                 shippingRepository.updateStatus(shippingItem.getId(), Shipping.SCHEDULED).subscribe(item ->
                         logger.info("shipping " + shippingItem.getId() + " is scheduled"));
             });
+        } else {
+            message += "\n Invalid request: please check the order due date and status";
         }
         return ok().contentType(MediaType.TEXT_PLAIN).bodyValue(message);
     }

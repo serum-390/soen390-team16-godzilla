@@ -6,14 +6,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import NativeSelect from "@material-ui/core/NativeSelect";
 import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 export default function ShippingForm(props) {
   const [open, setOpen] = React.useState(false);
-  const [shippingDate, setShippingDate] = React.useState("");
-  const [orderID, setOrderID] = React.useState("");
-  const [shippingMethod, setShippingMethod] = React.useState("");
+  const [shippingDate, setShippingDate] = React.useState("2021-01-01");
+  const [orderID, setOrderID] = React.useState("1");
+  const [shippingMethod, setShippingMethod] = React.useState("air");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,6 +52,7 @@ export default function ShippingForm(props) {
             id="shippingDate"
             label="Shipping Date"
             type="date"
+            defaultValue= "2021-01-01"
             onChange={(event) => setShippingDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -63,6 +65,7 @@ export default function ShippingForm(props) {
             id="orderID"
             label="Order ID"
             type="number"
+            defaultValue={1}
             onChange={(event) => setOrderID(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -70,12 +73,14 @@ export default function ShippingForm(props) {
             InputProps={{inputProps: {min: 1}}}
             fullWidth
           />
-          <InputLabel htmlFor="select" shrink={true}>Shipping Method</InputLabel>
-          <NativeSelect id="select" defaultValue="air" onChange={(event) => setShippingMethod(event.target.value)}>
-            <option value="air">Air</option>
-            <option value="ferry">Ferry</option>
-            <option value="car">Car</option>
-          </NativeSelect>
+
+          <InputLabel id="label" shrink={true}>Shipping Method</InputLabel>
+          <Select labelId="label" id="select" value={shippingMethod}
+                  onChange={(event) => setShippingMethod(event.target.value)}>
+            <MenuItem value="air">Air</MenuItem>
+            <MenuItem value="car">Car</MenuItem>
+            <MenuItem value="ferry">Ferry</MenuItem>
+          </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">
