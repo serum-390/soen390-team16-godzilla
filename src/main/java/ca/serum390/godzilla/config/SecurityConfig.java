@@ -19,10 +19,12 @@ public class SecurityConfig {
         return http
                 .csrf()
                 .disable()
-                .authorizeExchange()
+                    .authorizeExchange()
                     .pathMatchers("/api/docs/**",
                                   "/api/healthcheck",
-                                  "/favicon.ico")
+                                  "/favicon.ico",
+                                  "/api/signup/**",
+                                  "/signup/**")
                     .permitAll()
                 .anyExchange()
                 .authenticated().and()

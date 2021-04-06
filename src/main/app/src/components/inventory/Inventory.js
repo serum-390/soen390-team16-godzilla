@@ -4,6 +4,7 @@ import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
 import { spinnyBoi } from '../About';
 import { DataGrid } from "@material-ui/data-grid";
+import CustomToolbar from '../tables/CustomToolbar';
 import InventoryForm from "../../Forms/InventoryForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
@@ -102,8 +103,8 @@ const inventoryCols = [
 const getInventory = async () => {
   const api = '/api/inventory/';
   const got = await fetch(api);
-  const json = await got.json();
-  return json || [];
+  const json = got.status === 200 ? await got.json() : [];
+  return json;
 };
 
 const FilledInventoryView = ({ inventoryItems, classes }) => {
@@ -138,7 +139,7 @@ const FilledInventoryView = ({ inventoryItems, classes }) => {
     })));
 
   return (
-    <DataGrid rows={items} columns={inventoryCols} pageSize={9} />
+    <DataGrid rows={items} columns={inventoryCols} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
   );
 };
 

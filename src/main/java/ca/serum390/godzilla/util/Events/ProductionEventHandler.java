@@ -27,11 +27,11 @@ public class ProductionEventHandler {
         Integer productionID = event.getProductionID();
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
         if (plannedProduct != null && plannedProduct.getStatus().equals(PlannedProduct.SCHEDULED)) {
-            Logger.getLogger("EventLog").info("production " + productionID + " completed");
+            Logger.getLogger("ProductionLog").info("production " + productionID + " completed");
             plannedProductsRepository.updateStatus(productionID, PlannedProduct.COMPLETED).subscribe();
             ordersRepository.updateStatus(plannedProduct.getOrderID(), Order.READY).subscribe();
         } else {
-            Logger.getLogger("EventLog").info("production " + productionID + " cannot be completed");
+            Logger.getLogger("ProductionLog").info("production " + productionID + " cannot be completed");
         }
     }
 }

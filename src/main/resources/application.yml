@@ -6,6 +6,18 @@ spring:
   config:
     activate:
       on-profile: dev
+  mail:
+    protocol: "smtp"
+    host: "smtp.gmail.com"
+    port: 587
+    username: "ERP.Godzilla@gmail.com"
+    password: "aqqxxdhlvfbgenvf"
+    properties: 
+      mail:
+        smtp:
+          auth: "true"
+          starttls:
+            enable: "true"
 logging:
   level:
     org.springframework.data.r2dbc: DEBUG
@@ -17,6 +29,18 @@ spring:
   config:
     activate:
       on-profile: prod
+  mail:
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 587
+    username: ERP.Godzilla@gmail.com
+    password: aqqxxdhlvfbgenvf
+    properties:
+      mail:
+        smtp:
+          auth: "true"
+          starttls:
+            enable: "true"
 ---
 spring:
   config:
@@ -24,3 +48,15 @@ spring:
       on-profile: test
   r2dbc:
     url: "r2dbc:h2:mem:///testdb"
+  mail:
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 587
+    username: ERP.Godzilla@gmail.com
+    password: aqqxxdhlvfbgenvf
+    properties:
+      mail:
+        smtp:
+          auth: "true"
+          starttls:
+            enable: "true"

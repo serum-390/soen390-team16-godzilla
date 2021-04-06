@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
-import  UserForm  from "../../Forms/UserForm";
+import  UserForm  from "../../../Forms/UserForm";
 
 const userRows = [
   { id: 1, userName: 'User1', userPassword: '*****', userRole: "Manager" },
@@ -20,9 +20,9 @@ const userColumns= [
     renderCell: params => (
       <div style={{ margin: 'auto',  float: 'right'}}>
       <UserForm
-        initialButton='Edit'  
+        initialButton='Edit'
         dialogTitle= {'User Information: ID('+ params.getValue('id')+')'}
-        dialogContentText='Please enter any information you would like to modify: ' 
+        dialogContentText='Please enter any information you would like to modify: '
         userName={params.getValue('userName') || ''}
         userPassword={params.getValue('userPassword') || ''}
         userRole={params.getValue('userRole') || ''}
@@ -52,21 +52,20 @@ function UserManagement() {
       <div><h1 style={{textAlign: "center" , margin: '20px'}} >User Management</h1></div>
       <div style={{ height: 30, margin: '20px' }}>
         <UserForm
-        initialButton='Add New User'  
-        dialogTitle='Add New User'  
-        dialogContentText='Please enter the following information below to add a new Employee: ' 
+        initialButton='Add New User'
+        dialogTitle='Add New User'
+        dialogContentText='Please enter the following information below to add a new Employee: '
         submitButton='Save'
         />
-       </div>  
-        <div style={{ height: 250, margin: '20px'}}> 
+       </div>
+        <div style={{ height: 250, margin: '20px'}}>
             <DataGrid
                 columns={userColumns}
                 rows={userRows}
             />
         </div>
-    </div>        
+    </div>
   );
 }
 
 export default UserManagement;
-

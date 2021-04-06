@@ -1,12 +1,18 @@
 import { AppBar, Button, CssBaseline, Dialog, DialogContentText, Drawer, Fade, Grid, IconButton, List, ListItemIcon, Toolbar } from '@material-ui/core';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import InputBase from '@material-ui/core/InputBase';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useTheme } from "@material-ui/core/styles";
+import Tooltip from '@material-ui/core/Tooltip';
 import { ChevronLeft } from '@material-ui/icons';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import Brightness4OutlinedIcon from '@material-ui/icons/Brightness4Outlined';
+import Brightness7OutlinedIcon from '@material-ui/icons/Brightness7Outlined';
 import DoubleArrowRoundedIcon from '@material-ui/icons/DoubleArrowRounded';
 import EventIcon from '@material-ui/icons/Event';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -18,10 +24,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MotorcycleIcon from '@material-ui/icons/Motorcycle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import SearchIcon from '@material-ui/icons/Search';
+import SettingsIcon from '@material-ui/icons/Settings';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Link, Route, Switch, useLocation } from 'react-router-dom';
 import useNavBarStyles from '../styles/navBarSyles';
+import { ThemeContext } from '../styles/themes';
+import useBooleanState from '../util/hooks';
 import About from './About';
 import Accounting from './Accounting';
 import Help from './Help';
@@ -31,14 +40,8 @@ import Planning from './Planning';
 import Production from './Production';
 import Purchase from './Purchasing';
 import Sales from './Sales';
-import UserAccount from './UserAccount';
 import SettingsPage from './SettingsPage';
-import Tooltip from '@material-ui/core/Tooltip';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useBooleanState from '../util/hooks';
-import SettingsIcon from '@material-ui/icons/Settings';
+import UserAccount from './UserAccount';
 
 const DelayedTooltip = ({ title, placement, ...props }) => {
   return (
@@ -143,10 +146,13 @@ const LogOutButton = () => {
           <Button onClick={handleClose} color="primary">
             Cancel
         </Button>
-          <Button onClick={() => {
-            handleClose();
-            Logout();
-          }} color="primary">
+          <Button
+            color="primary"
+            onClick={() => {
+              handleClose();
+              Logout();
+            }}
+          >
             Confirm Log Out
         </Button>
         </DialogActions>
@@ -155,9 +161,13 @@ const LogOutButton = () => {
   };
 
   return (
-    <div>
+    <div style={{ color: 'inherit', }}>
       <DelayedTooltip title="Logout">
-        <IconButton onClick={handleOpen}>
+        <IconButton
+          color='inherit'
+          aria-label='logout'
+          onClick={handleOpen}
+        >
           <ExitToAppIcon />
         </IconButton>
       </DelayedTooltip>
@@ -166,11 +176,15 @@ const LogOutButton = () => {
   );
 };
 
-const UserAccountButton = ({ className }) => {
+const UserAccountButton = ({ className, ...props }) => {
   return (
-    <Link to="/useraccount" className={className}>
+    <Link to="/useraccount" className={className} style={{ color: 'inherit' }}>
       <DelayedTooltip title="User Account">
-        <IconButton>
+        <IconButton
+          color='inherit'
+          aria-label='user account'
+          {...props}
+        >
           <AccountCircleIcon />
         </IconButton>
       </DelayedTooltip>
@@ -202,6 +216,26 @@ const SearchBar = ({ classes, searchBarFocused, focusSearchBar, unfocusSearchBar
   );
 };
 
+function DarkModeToggle({ ...props }) {
+  const ctx = useContext(ThemeContext);
+  const toggleDarkMode = () => ctx.setDarkMode(!ctx.darkMode);
+  return (
+    <Grid item style={{ marginLeft: '1em', }} {...props} >
+      <DelayedTooltip title="Toggle Dark Mode">
+        <IconButton
+          color='inherit'
+          aria-label='toggle darkmode'
+          onClick={toggleDarkMode}
+        >
+          {ctx.darkMode
+            ? <Brightness4OutlinedIcon />
+            : <Brightness7OutlinedIcon />}
+        </IconButton>
+      </DelayedTooltip>
+    </Grid>
+  );
+}
+
 function NavBar() {
 
   const classes = useNavBarStyles();
@@ -225,9 +259,7 @@ function NavBar() {
               aria-label='open drawer'
               onClick={handleDrawerOpen}
               edge='start'
-              className={
-                clsx(classes.menuButton, { [classes.hide]: open, })
-              }
+              className={clsx(classes.menuButton, { [classes.hide]: open })}
             >
               <MenuIcon />
             </IconButton>
@@ -244,10 +276,11 @@ function NavBar() {
                   unfocusSearchBar={unfocusSearchBar}
                 />
               </Grid>
-              <Grid item key={1}>
+              <DarkModeToggle key={1} />
+              <Grid item key={2}>
                 <UserAccountButton className={classes.link} />
               </Grid>
-              <Grid item key={2}>
+              <Grid item key={3}>
                 <LogOutButton />
               </Grid>
             </Grid>
