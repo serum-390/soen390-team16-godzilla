@@ -6,7 +6,7 @@ import reactor.core.publisher.SynchronousSink;
 /**
  * Indicates the a {@link SalesContact} has a negative Id
  */
-public class NegativeIdException extends RuntimeException {
+public class NegativeSalesContactIdException extends RuntimeException {
     private static final long serialVersionUID = -4949643334214000453L;
     public static final String CANNOT_PROCESS_DUE_TO = "Cannot process due to: ";
 
@@ -31,17 +31,17 @@ public class NegativeIdException extends RuntimeException {
         }
     }
 
-    public static NegativeIdException forContact(SalesContact contact) {
-        return new NegativeIdException(
+    public static NegativeSalesContactIdException forContact(SalesContact contact) {
+        return new NegativeSalesContactIdException(
                 "Negative Id not allowed for SalesContact " + contact);
     }
 
     // CONSTRUCTORS: Pass straight to RuntimeException
-    public NegativeIdException() {}
-    public NegativeIdException(Throwable cause) { super(cause); }
-    public NegativeIdException(String message) { super(message); }
-    public NegativeIdException(String message, Throwable cause) { super(message, cause); }
-    public NegativeIdException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public NegativeSalesContactIdException() {}
+    public NegativeSalesContactIdException(Throwable cause) { super(cause); }
+    public NegativeSalesContactIdException(String message) { super(message); }
+    public NegativeSalesContactIdException(String message, Throwable cause) { super(message, cause); }
+    public NegativeSalesContactIdException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

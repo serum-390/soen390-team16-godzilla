@@ -1,6 +1,6 @@
 package ca.serum390.godzilla.api.handlers;
 
-import static ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException.CANNOT_PROCESS_DUE_TO;
+import static ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException.CANNOT_PROCESS_DUE_TO;
 import static ca.serum390.godzilla.util.BuildableJsonMap.map;
 import static java.lang.Integer.parseInt;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException;
+import ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException;
 import ca.serum390.godzilla.data.repositories.SalesContactRepository;
 import ca.serum390.godzilla.domain.orders.SalesContact;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class SalesContactHandler {
     public Mono<ServerResponse> create(ServerRequest req) {
         return req
                 .bodyToMono(SalesContact.class)
-                .handle(NegativeIdException::errorIfNegativeContactId)
+                .handle(NegativeSalesContactIdException::errorIfNegativeContactId)
                 .flatMap(salesContacts::save)
                 .flatMap(salesContact -> ok().bodyValue(salesContact))
                 .onErrorResume(e -> unprocessableEntity()
@@ -98,23 +98,6 @@ public class SalesContactHandler {
         return ok().body(salesContacts.findAllCustomer(), SalesContact.class);
     }
 
-    // /**
-    //  * Get a sales contact by id
-    //  *
-    //  * @param req
-    //  * @return
-    //  */
-    // public Mono<ServerResponse> get(ServerRequest req) {
-    //     return Mono
-    //             .fromCallable(() -> parseInt(req.pathVariable("id")))
-    //             .handle(this::errorIfNegativeId)
-    //             .flatMap(salesContacts::findById)
-    //             .flatMap(c -> ok().body(Mono.just(c), SalesContact.class))
-    //             .switchIfEmpty(notFound().build())
-    //             .onErrorResume(e -> unprocessableEntity()
-    //                 .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
-    // }
-
     /**
      * Delete a sales contact
      *
@@ -133,7 +116,7 @@ public class SalesContactHandler {
 
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink) {
         if (value < 0) {
-            sink.error(new NegativeIdException(
+            sink.error(new NegativeSalesContactIdException(
                 "Negative id " +  value + " is prohibited for SalesContact"));
         } else {
             sink.next(value);
@@ -153,7 +136,7 @@ public class SalesContactHandler {
 
         Mono<SalesContact> received = req
                 .bodyToMono(SalesContact.class)
-                .handle(NegativeIdException::errorIfNegativeContactId);
+                .handle(NegativeSalesContactIdException::errorIfNegativeContactId);
 
         return Mono
                 .zip(this::combineSalesContacts, existed, received)

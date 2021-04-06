@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.exceptions.NegativeIdException;
+import ca.serum390.godzilla.api.handlers.exceptions.NegativeSalesContactIdException;
 import ca.serum390.godzilla.data.repositories.VendorContactRepository;
 import ca.serum390.godzilla.domain.vendor.VendorContact;
 import reactor.core.publisher.Mono;
@@ -123,7 +123,7 @@ public class VendorContactHandler {
      */
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink){
         if(value < 0){
-            sink.error(new NegativeIdException("Negative id " + value + " id prohibited for VendorContact"));
+            sink.error(new NegativeSalesContactIdException("Negative id " + value + " id prohibited for VendorContact"));
         } else {
             sink.next(value);
         }
