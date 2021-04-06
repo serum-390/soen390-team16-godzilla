@@ -65,7 +65,6 @@ public class VendorContactHandler {
             .flatMap(vendorContacts::findByIdVendor)
             .flatMap(vendorContact -> ok().body(Mono.just(vendorContact), VendorContact.class))
             .switchIfEmpty(notFound().build());
-            //.onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
    }
 
    /**

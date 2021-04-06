@@ -93,8 +93,7 @@ public class InventoryHandler {
     }
 
     private Mono<ServerResponse> queryItemsByName(String name) {
-        // return ok().contentType(APPLICATION_JSON)
-        //         .body(items.findByName(name), Item.class);
+
         return items.findByName(name)
                 .collectList()
                 .flatMap(l -> l.isEmpty() ? Mono.empty() : Mono.just(l))
