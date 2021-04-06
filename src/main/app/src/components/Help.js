@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
       width: theme.spacing(30),
-      height: theme.spacing(40),
+      height: theme.spacing(38),
     },
   },
   mainDisplay: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
       width: theme.spacing(120),
-      height: theme.spacing(100),
+      height: theme.spacing(105),
       padding: theme.spacing(3),
     },
   },
