@@ -82,39 +82,29 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> update(ServerRequest req) {
-        Mono<PackagedProduct> existed = Mono.fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
-                .flatMap(packagedProductRepository::findById);
-
-        Mono<PackagedProduct> received = req.bodyToMono(PackagedProduct.class)
-                .handle(NegativePackagedProductIdException::errorIfNegativePackageId);
-
-        return Mono.zip(this::combinePackagedProducts, existed, received).flatMap(this::savePackagedProduct)
-                .flatMap(rows -> ok().body(map("rowsUpdated", rows).toMono(), Map.class))
-                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        var existed = packagedProductRepository.findById(Integer.parseInt(req.pathVariable("id")));
+        return Mono.zip(data -> {
+            PackagedProduct g = (PackagedProduct) data[0];
+            PackagedProduct g2 = (PackagedProduct) data[1];
+            if (g2 != null) {
+                g.setLength(g2.getLength());
+                g.setWidth(g2.getWidth());
+                g.setHeight(g2.getHeight());
+                g.setWeight(g2.getWeight());
+                g.setPackageType(g2.getPackageType());
+                g.setPackageDate(g2.getPackageDate());
+            }
+            return g;
+        }, existed, req.bodyToMono(PackagedProduct.class)).cast(PackagedProduct.class)
+                .flatMap(packagedProduct -> packagedProductRepository.update(
+                    packagedProduct.getLength(), 
+                    packagedProduct.getWidth(),
+                    packagedProduct.getHeight(), 
+                    packagedProduct.getWeight(), 
+                    packagedProduct.getPackageType(),
+                    packagedProduct.getPackageDate(), 
+                    packagedProduct.getId()))
+                .flatMap(packagedProduct -> noContent().build());
     }
 
-    private PackagedProduct combinePackagedProducts(Object[] products) {
-        PackagedProduct g = (PackagedProduct) products[0];
-        PackagedProduct g2 = (PackagedProduct) products[1];
-        if (g2 != null) {
-            g.setLength(g2.getLength());
-            g.setWidth(g2.getWidth());
-            g.setHeight(g2.getHeight());
-            g.setWeight(g2.getWeight());
-            g.setPackageType(g2.getPackageType());
-            g.setPackageDate(g2.getPackageDate());
-        }
-        return g;
-    }
-
-    private Mono<Integer> savePackagedProduct(PackagedProduct packagedProduct) {
-        return packagedProductRepository.update(
-            packagedProduct.getLength(), 
-            packagedProduct.getWidth(),
-            packagedProduct.getHeight(), 
-            packagedProduct.getWeight(), 
-            packagedProduct.getPackageType(),
-            packagedProduct.getPackageDate(), 
-            packagedProduct.getId());
-    }
 }
