@@ -3,7 +3,6 @@ package ca.serum390.godzilla.api.handlers;
 import ca.serum390.godzilla.data.repositories.PlannedProductsRepository;
 import ca.serum390.godzilla.domain.inventory.Item;
 import ca.serum390.godzilla.domain.manufacturing.PlannedProduct;
-import ca.serum390.godzilla.domain.orders.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -54,14 +53,14 @@ public class PlannedProductHandler {
     public Mono<ServerResponse> getBy(ServerRequest req) {
         Optional<String> status = req.queryParam("status");
         if (status.isPresent()) {
-            return ok().body(plannedProducts.findAllByStatus(status.get()), Order.class);
+            return ok().body(plannedProducts.findAllByStatus(status.get()), PlannedProduct.class);
         } else {
             return ok().body(plannedProducts.findAll(), PlannedProduct.class);
         }
     }
 
     /**
-     * updates the planned products
+     * updates the planned product
      *
      * @param req
      * @return
@@ -80,7 +79,7 @@ public class PlannedProductHandler {
                     return original;
                 },
                 existed,
-                req.bodyToMono(Item.class)
+                req.bodyToMono(PlannedProduct.class)
         ).cast(PlannedProduct.class)
                 .flatMap(plannedProduct -> plannedProducts.update(
                         plannedProduct.getId(),

@@ -21,9 +21,7 @@ public class NegativeSalesContactIdException extends RuntimeException {
      *                signal if the {@link SalesContact#getId()} method returns a
      *                negative value
      */
-    public static void errorIfNegativeContactId(
-            SalesContact contact,
-            SynchronousSink<SalesContact> sink) {
+    public static void handle(SalesContact contact, SynchronousSink<SalesContact> sink) {
         if (contact.getId() < 0) {
             sink.error(forContact(contact));
         } else {

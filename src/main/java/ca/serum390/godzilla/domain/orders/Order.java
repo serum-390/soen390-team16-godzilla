@@ -21,8 +21,12 @@ public class Order {
     // Status values
     public static final String READY = "ready";
     public static final String NEW = "new";
-    public static final String PROCESSING = "processing";
-    public static final String COMPLETED = "completed";
+    public static final String PRODUCTION_PROCESS = "production process";
+    public static final String SHIPPING_PROCESS = "shipping process";
+    public static final String PACKAGED = "packaged";
+    public static final String SHIPPED = "shipped";
+    public static final String DELIVERED = "delivered";
+
     @Id
     private Integer id;
     private LocalDate createdDate;

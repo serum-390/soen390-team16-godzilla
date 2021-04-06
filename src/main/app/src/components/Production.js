@@ -1,5 +1,6 @@
-import { Button, makeStyles, TextField } from '@material-ui/core';
+import { Button, makeStyles} from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import CustomToolbar from './tables/CustomToolbar';
 import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
 
@@ -17,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 const getMaterials = async () => {
   const api = '/api/materials/';
   const got = await fetch(api);
-  const json = await got.json();
+  const json = got.status === 200 ? await got.json() : [];
 
   if (!json.materials) return [];
 
@@ -33,7 +34,7 @@ const getMaterials = async () => {
 const getProducts = async () => {
   const api = '/api/products/';
   const got = await fetch(api);
-  const json = await got.json();
+  const json = got.status === 200 ? await got.json() : [];
 
   if (!json.products) return [];
 
@@ -106,19 +107,17 @@ const LoadedView = ({ classes, materialRows, productRows }) => {
       <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
         <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Materials</h2>
-          <TextField id="filled-basic" label="Search" variant="filled" style={{ float: 'right' }} />
         </div>
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
-          <DataGrid rows={materialRows} columns={materialColumns} pageSize={9} />
+          <DataGrid rows={materialRows} columns={materialColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
         </div>
       </div>
       <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
         <div style={{width: '100%', display: 'table-row' }}>
           <h2 style={{ float: 'left' }}>Products</h2>
-          <TextField id="filled-basic" label="Search" variant="filled" style={{ float: 'right' }} />
         </div>
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
-          <DataGrid rows={productRows} columns={productColumns} pageSize={9} />
+          <DataGrid rows={productRows} columns={productColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
         </div>
       </div>
     </div>
