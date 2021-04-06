@@ -37,9 +37,9 @@ public class PackagedProductHandler {
      */
     public Mono<ServerResponse> create(ServerRequest req) {
         return req.bodyToMono(PackagedProduct.class)
-        .flatMap(product -> packagedProductRepository.save(product.getId(),
-            product.getLength(), product.getWidth(), product.getHeight(), product.getWeight(), product.getPackageType(), product.getPackageDate()))
-        .flatMap(id -> noContent().build());
+                .flatMap(product -> packagedProductRepository.save(product.getLength(), product.getWidth(),
+                        product.getHeight(), product.getWeight(), product.getPackageType(), product.getPackageDate()))
+                .flatMap(id -> noContent().build());
     }
 
     /**
@@ -49,14 +49,10 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> get(ServerRequest req) {
-        return Mono
-        .fromCallable(() -> parseInt(req.pathVariable("id")))
-        .handle(this::errorIfNegativeId)
-        .flatMap(packagedProductRepository::findById)
-        .flatMap(c -> ok().body(Mono.just(c), PackagedProduct.class))
-        .switchIfEmpty(notFound().build())
-        .onErrorResume(e -> unprocessableEntity()
-            .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return Mono.fromCallable(() -> parseInt(req.pathVariable("id"))).handle(this::errorIfNegativeId)
+                .flatMap(packagedProductRepository::findById)
+                .flatMap(c -> ok().body(Mono.just(c), PackagedProduct.class)).switchIfEmpty(notFound().build())
+                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
     }
 
     /**
@@ -66,7 +62,8 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return packagedProductRepository.deleteById(Integer.parseInt(req.pathVariable("id"))).flatMap(deleted -> noContent().build());
+        return packagedProductRepository.deleteById(Integer.parseInt(req.pathVariable("id")))
+                .flatMap(deleted -> noContent().build());
     }
 
     private void errorIfNegativeId(Integer value, SynchronousSink<Integer> sink) {
@@ -85,21 +82,15 @@ public class PackagedProductHandler {
      * @return
      */
     public Mono<ServerResponse> update(ServerRequest req) {
-        Mono<PackagedProduct> existed = Mono
-            .fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
-            .flatMap(packagedProductRepository::findById);
+        Mono<PackagedProduct> existed = Mono.fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
+                .flatMap(packagedProductRepository::findById);
 
-        Mono<PackagedProduct> received = req.
-        bodyToMono(PackagedProduct.class)
+        Mono<PackagedProduct> received = req.bodyToMono(PackagedProduct.class)
                 .handle(NegativePackagedProductIdException::errorIfNegativePackageId);
 
-                return Mono
-                .zip(this::combinePackagedProducts, existed, received)
-                .flatMap(this::savePackagedProduct)
-                .flatMap(rows -> ok()
-                    .body(map("rowsUpdated", rows).toMono(), Map.class))
-                .onErrorResume(e -> unprocessableEntity()
-                    .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+        return Mono.zip(this::combinePackagedProducts, existed, received).flatMap(this::savePackagedProduct)
+                .flatMap(rows -> ok().body(map("rowsUpdated", rows).toMono(), Map.class))
+                .onErrorResume(e -> unprocessableEntity().bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
     }
 
     private PackagedProduct combinePackagedProducts(Object[] products) {
@@ -123,7 +114,7 @@ public class PackagedProductHandler {
             packagedProduct.getHeight(), 
             packagedProduct.getWeight(), 
             packagedProduct.getPackageType(),
-            packagedProduct.getPackageDate(),
+            packagedProduct.getPackageDate(), 
             packagedProduct.getId());
     }
 }

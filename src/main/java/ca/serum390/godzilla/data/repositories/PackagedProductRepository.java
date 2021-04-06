@@ -16,6 +16,6 @@ public interface PackagedProductRepository extends ReactiveCrudRepository<Packag
     @Query("UPDATE packaged_products SET LENGTH = $1, WIDTH = $2, HEIGHT= $3, WEIGHT=$4 , PACKAGE_TYPE = $5, PACKAGE_DATE = $6  WHERE ID = $7")
     Mono<Integer> update(Float length, Float width, Float height, Float weight, String packageType, LocalDate packageDate, Integer id);
 
-    @Query("INSERT INTO packaged_products(ID, LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE, PACKAGE_DATE) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *")
-    Mono<PackagedProduct> save(Integer id,Float length, Float width, Float height, Float weight, String packageType, LocalDate packageDate);
+    @Query("INSERT INTO packaged_products(LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE, PACKAGE_DATE) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *")
+    Mono<PackagedProduct> save(Float length, Float width, Float height, Float weight, String packageType, LocalDate packageDate);
 }
