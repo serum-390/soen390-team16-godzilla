@@ -35,7 +35,6 @@ public class ShippingManagerHandler {
     private final OrdersRepository ordersRepository;
     private final ShippingRepository shippingRepository;
 
-    private Order salesOrder = null;
     private LocalDate shippingDate;
     private String shippingMethod;
     private TaskScheduler scheduler;
@@ -60,31 +59,40 @@ public class ShippingManagerHandler {
      */
     public Mono<ServerResponse> validateShipping(ServerRequest req) {
         message = "";
-        if (validateOrderID(req) && salesOrder.getStatus().equals(Order.PACKAGED) && validateShippingDate(req) &&
-                validateShippingMethod(req)) {
-            shippingRepository.save(
-                    new Shipping(
-                            shippingMethod,
-                            Shipping.NEW,
-                            salesOrder.getDueDate(),
-                            shippingDate,
-                            salesOrder.getId(),
-                            Shipping.getPrice(salesOrder.getItems().size(), shippingMethod))).subscribe(shippingItem ->
-            {
+        Optional<String> orderID = req.queryParam("orderID");
+        // get the sales order object
+        if (orderID.isPresent()) {
+            ordersRepository.findById(Integer.parseInt(orderID.get())).subscribe(salesOrder -> {
 
-                //set the order status to shipping process
-                ordersRepository.updateStatus(salesOrder.getId(), Order.SHIPPING_PROCESS).subscribe();
-                // schedule the shipping
-                ShippingEvent shippingEvent = new ShippingEvent(shippingItem.getId());
-                Runnable productionTask = () -> applicationEventPublisher.publishEvent(shippingEvent);
-                ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
-                scheduler = new ConcurrentTaskScheduler(localExecutor);
-                scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
-                shippingRepository.updateStatus(shippingItem.getId(), Shipping.SCHEDULED).subscribe(item ->
-                        logger.info("shipping " + shippingItem.getId() + " is scheduled"));
+                if (salesOrder != null && salesOrder.getStatus().equals(Order.PACKAGED) && validateShippingDate(req, salesOrder) &&
+                        validateShippingMethod(req)) {
+                    logger.info("orderID is valid");
+                    shippingRepository.save(
+                            new Shipping(
+                                    shippingMethod,
+                                    Shipping.NEW,
+                                    salesOrder.getDueDate(),
+                                    shippingDate,
+                                    salesOrder.getId(),
+                                    Shipping.getPrice(salesOrder.getItems().size(), shippingMethod))).subscribe(shippingItem ->
+                    {
+
+                        //set the order status to shipping process
+                        ordersRepository.updateStatus(salesOrder.getId(), Order.SHIPPING_PROCESS).subscribe();
+                        // schedule the shipping
+                        ShippingEvent shippingEvent = new ShippingEvent(shippingItem.getId());
+                        Runnable productionTask = () -> applicationEventPublisher.publishEvent(shippingEvent);
+                        ScheduledExecutorService localExecutor = Executors.newSingleThreadScheduledExecutor();
+                        scheduler = new ConcurrentTaskScheduler(localExecutor);
+                        scheduler.schedule(productionTask, new Date(System.currentTimeMillis() + 120000));
+                        shippingRepository.updateStatus(shippingItem.getId(), Shipping.SCHEDULED).subscribe(item ->
+                                logger.info("shipping " + shippingItem.getId() + " is scheduled"));
+                    });
+                } else {
+                    logger.info("Invalid request: please check the order id, due date and status");
+                    message += "\n Invalid request: please check the order id, due date and status";
+                }
             });
-        } else {
-            message += "\n Invalid request: please check the order due date and status";
         }
         return ok().contentType(MediaType.TEXT_PLAIN).bodyValue(message);
     }
@@ -108,27 +116,27 @@ public class ShippingManagerHandler {
     }
 
 
-    private boolean validateOrderID(ServerRequest req) {
-        Optional<String> orderID = req.queryParam("orderID");
-        // get the sales order object
-        if (orderID.isPresent()) {
-            salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
-            if (salesOrder != null) {
-                logger.info("orderID is valid");
-                return true;
-            } else {
-                logger.info("orderID is invalid");
-                message += "\n orderID is invalid";
-                return false;
-            }
-        } else {
-            logger.info("orderID is not entered");
-            message += "\n orderID is not entered";
-        }
-        return false;
-    }
+//    private boolean validateOrderID(ServerRequest req) {
+//        Optional<String> orderID = req.queryParam("orderID");
+//        // get the sales order object
+//        if (orderID.isPresent()) {
+//            salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
+//            if (salesOrder != null) {
+//                logger.info("orderID is valid");
+//                return true;
+//            } else {
+//                logger.info("orderID is invalid");
+//                message += "\n orderID is invalid";
+//                return false;
+//            }
+//        } else {
+//            logger.info("orderID is not entered");
+//            message += "\n orderID is not entered";
+//        }
+//        return false;
+//    }
 
-    private boolean validateShippingDate(ServerRequest req) {
+    private boolean validateShippingDate(ServerRequest req, Order salesOrder) {
         Optional<String> shippingDateReq = req.queryParam("shippingDate");
         // shipping Date setup
         if (shippingDateReq.isPresent()) {
