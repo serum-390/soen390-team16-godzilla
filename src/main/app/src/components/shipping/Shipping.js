@@ -27,7 +27,6 @@ const addShippingItem = async data => {
     const inserted = await axios.post(api);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
-    alert(`${inserted.data || "Success"}`);
   } catch (err) {
     console.log(err);
     return err;
