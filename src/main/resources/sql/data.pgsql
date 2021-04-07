@@ -1,3 +1,4 @@
+DELETE FROM packaged_products;
 DELETE FROM planned_products;
 DELETE FROM shippings;
 DELETE FROM orders;
@@ -5,6 +6,7 @@ DELETE FROM contact;
 DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
+
 
 
 SELECT setval(pg_get_serial_sequence('inventory', 'id'), 1, true);
@@ -112,3 +114,8 @@ INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) 
 
 --VendorContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'vendor');
+
+--Packaging 
+INSERT INTO packaged_products(LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE, PACKAGE_DATE) VALUES (10, 11, 12, 14.2, 'small box','2021-02-15');
+
+                
