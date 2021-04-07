@@ -6,24 +6,25 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.SalesContactHandler;
+import ca.serum390.godzilla.api.handlers.PackagedProductHandler;
 import lombok.AllArgsConstructor;
 
 @Configuration
 @AllArgsConstructor
-public class SalesContactRouter {
+public class PackagedProductRouter {
 
-    SalesContactHandler salesContactHandler;
+    PackagedProductHandler productHandler;
 
     @Bean
-    public RouterFunction<ServerResponse> salesContactRoute() {
+    public RouterFunction<ServerResponse> packagedRoute() {
         final String ID = "/{id}";
         return RouterFunctions.route()
-                .path("/salescontact/", builder -> builder
-                    .GET("/", salesContactHandler::getBy)
-                    .POST("/", salesContactHandler::create)
-                    .PUT(ID, salesContactHandler::update)
-                    .DELETE(ID, salesContactHandler::delete))
+                .path("/packagedproduct/",builder -> builder
+                        .GET("/", productHandler::all)
+                        .POST("/", productHandler::create)
+                        .GET(ID, productHandler::get)
+                        .PUT(ID, productHandler::update)
+                        .DELETE(ID, productHandler::delete))
                 .build();
     }
 }

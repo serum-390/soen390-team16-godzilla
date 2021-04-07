@@ -111,7 +111,7 @@ const deleteVendor = async (id, reload) => {
 };
 
 const getPurchaseOrders = async () => {
-  const api = '/api/orders/?type=purchases';
+  const api = '/api/orders/?type=purchase';
   const got = await fetch(api);
   const json = got.status === 200 ? await got.json() : [];
   return json;
@@ -252,7 +252,7 @@ function LoadedView(props) {
           <h2 style={{ float: 'left'}}>Vendors</h2>
           <div style={{ float: 'right'}}>
             <VendorDetailsForm
-              onSubmit={(data) => insertVendor(data, props.reload)}
+              onSubmit={(data, insert) => (insert) ? insertVendor(data, props.reload) : ''}
               initialButton='Add New Vendor'
               dialogTitle='Add New Vendor'
               dialogContentText='Please enter any information you would like to add: '

@@ -1,16 +1,20 @@
 package ca.serum390.godzilla.api.handlers;
 
-import ca.serum390.godzilla.data.repositories.InventoryRepository;
-import ca.serum390.godzilla.domain.inventory.Item;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Mono;
+import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
+import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
 
 import java.util.Optional;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.*;
+import ca.serum390.godzilla.data.repositories.InventoryRepository;
+import ca.serum390.godzilla.domain.inventory.Item;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import reactor.core.publisher.Mono;
 
 @Component
 public class InventoryHandler {
@@ -105,8 +109,13 @@ public class InventoryHandler {
     }
 
     private Mono<ServerResponse> queryItemsByName(String name) {
-        return ok().contentType(APPLICATION_JSON)
-                .body(items.findByName(name), Item.class);
+
+        return items.findByName(name)
+                .collectList()
+                .flatMap(l -> l.isEmpty() ? Mono.empty() : Mono.just(l))
+                .map(l -> l.size() == 1 ? l.get(0) : l)
+                .flatMap(item -> ok().bodyValue(item))
+                .switchIfEmpty(Mono.defer(() -> status(404).bodyValue("Item with name : " + name + " does not exist.")));
     }
 
     private Mono<ServerResponse> queryItemsById(String id) {
