@@ -3,6 +3,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import CustomToolbar from './tables/CustomToolbar';
 import React, { useState } from 'react';
 import { SpinBeforeLoading } from './inventory/Inventory';
+import NewProductionForm from "../Forms/NewProductionForm";
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,76 +17,75 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getMaterials = async () => {
-  const api = '/api/materials/';
+const getProductions = async () => {
+  const api = '/api/planning/';
   const got = await fetch(api);
   const json = got.status === 200 ? await got.json() : [];
-
-  if (!json.materials) return [];
-
-  return json.materials.map(materials => {
-    materials.allMaterials = {
-      onClick: () => {
-      },
-    };
-    return materials;
-  });
+  return json;
 };
 
-const getProducts = async () => {
-  const api = '/api/products/';
+const cancelProduction = async (id, reload) => {
+  try {
+    const api = `/api/production-manager/cancel/${id}`;
+    const inserted = await axios.post(api, id);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  reload();
+};
+
+const insertProduction = async (data, reload) => {
+  try {
+    const api = `/api/production-manager/validate/?id=${data.id}&date=${data.date}`;
+    const inserted = await axios.post(api, data);
+    console.log(`STATUS CODE: ${inserted.status}`);
+    console.log(`DATA: ${inserted.data || "Nothing"}`);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+  
+  reload();
+};
+
+const getInventory = async () => {
+  const api = '/api/inventory/';
   const got = await fetch(api);
   const json = got.status === 200 ? await got.json() : [];
-
-  if (!json.products) return [];
-
-  return json.products.map(products => {
-    products.allProducts = {
-      onClick: () => {
-      },
-    };
-    return products;
-  });
+  return json || [];
 };
 
-const materialColumns = [
-  { field: 'id', headerName: '', width: 0, hide: true },
-  { field: 'material', headerName: 'Material', width: 230 },
-  { field: 'mID', headerName: 'Material ID', width: 180 },
-  { field: 'status', headerName: 'Status', width: 180 }
-];
-
-const productColumns = [
-  { field: 'id', headerName: '', width: 0, hide: true },
-  { field: 'product', headerName: 'Product', width: 230 },
-  { field: 'requiredMaterials', headerName: 'Required Materials (Material ID)', width: 560 },
-  { field: 'production', headerName: '', width: 0, hide: true },
+const productionColumns = [
+  { field: 'id', headerName: 'ID', width: 70},
+  { field: 'orderID', headerName: 'Order ID', width: 110 },
+  { field: 'productionDate', headerName: 'Production Date', width: 160},
+  { field: 'status', headerName: 'Status', width: 120},
+  { field: 'usedItems', headerName: 'Used Items', width: 950 },
   {
-    field: 'productionButton', headerName: 'Production', width: 130, renderCell: params => (
+    field: 'cancel',
+    headerName: 'Cancel',
+    width: 120,
+    renderCell: params => (
       <div style={{ margin: 'auto' }}>
         {
-          params.getValue("production") === 0
+          params.getValue("status") === 'CANCELLED' || params.getValue("status") === 'COMPLETED'
           ? <Button
+              disabled
               variant='contained'
               color='primary'
-              onClick={(newSelection) =>
-                toggleProduction(
-                    params.getValue("id"),
-                    params.getValue("production"))
-              }
             >
-              Start
+              Cancel
             </Button>
           : <Button
               variant='contained'
               color='primary'
-              onClick={newSelection =>
-                toggleProduction(
-                    params.getValue("id"),
-                    params.getValue("production"))
-              }
+              onClick={params.value}
             >
-              Stop
+              Cancel
             </Button>
         }
       </div>
@@ -92,32 +93,66 @@ const productColumns = [
   }
 ];
 
-function toggleProduction(id, prod) {
-  if (prod === 0) {
-    alert("Now starting production for Product #" + id + "...");
-  } else {
-    alert("Now stopping production for Product #" + id + "...");
+const FilledProductionView = (props) => {
+  let prod = [];
+
+  props.productions.map(item => (
+    prod.push({
+      id: item.id,
+      orderID: item.orderID,
+      productionDate: item.productionDate,
+      status: item.status,
+      usedItems: ShowItems(item.usedItems, props.inventory),
+      cancel: () => cancelProduction(item.id, props.reload)
+    })));
+
+  return (
+    <DataGrid rows={prod} columns={productionColumns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
+  );
+};
+
+function ShowItems(items, inventory){
+  let allItems = "";
+  let count = 0;
+
+  for(let i = 0; i < inventory.length; i++){
+    let id = inventory[i]["id"];
+    if(items[id] !== undefined){
+      if(count > 0)
+        allItems += ", ";
+
+      allItems += inventory[i]["itemName"] + " ("+items[id]+")";
+
+      count++;
+    }
   }
+
+  return allItems;
 }
 
-const LoadedView = ({ classes, materialRows, productRows }) => {
+const LoadedView = (props) => {
   return (
     <div style={{ height: 600, width: '100%' }}>
       <h1 style={{ textAlign: "center" }}>Production Department</h1>
-      <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
+      <div style={{ height: 720, width: '100%', float: 'right', display: 'table' }}>
         <div style={{width: '100%', display: 'table-row' }}>
-          <h2 style={{ float: 'left' }}>Materials</h2>
+          <h2 style={{ float: 'left' }}>Productions</h2>
+          <div style={{ float: 'right'}}>
+            <NewProductionForm
+              onSubmit={(data, insert) => (insert) ? insertProduction(data, props.reload) : ''}
+              initialButton='Add New Production'
+              dialogTitle='Add New Production'
+              dialogContentText='Please enter any information you would like to add: '
+              submitButton='Confirm'
+            />
+          </div>
         </div>
         <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
-          <DataGrid rows={materialRows} columns={materialColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
-        </div>
-      </div>
-      <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
-        <div style={{width: '100%', display: 'table-row' }}>
-          <h2 style={{ float: 'left' }}>Products</h2>
-        </div>
-        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
-          <DataGrid rows={productRows} columns={productColumns} pageSize={9} components={{ Toolbar: CustomToolbar}} />
+        <FilledProductionView
+            productions={props.productions}
+            inventory={props.inventory}
+            reload={props.reload}
+          />
         </div>
       </div>
     </div>
@@ -126,22 +161,26 @@ const LoadedView = ({ classes, materialRows, productRows }) => {
 
 function Production() {
   const classes = useStyles();
-  const [materialRows, setMaterialRows] = useState([]);
-  const [productRows, setProductRows] = useState([]);
-  const [loading, setDoneLoading] = useState(true);
+  const [productions, setProductions] = useState([]);
+  const [inventory, setInventory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const waitForGetRequest = async () => {
-    getMaterials().then(materials => setMaterialRows(materials));
-    getProducts().then(products => setProductRows(products));
-    setDoneLoading(false);
+    getProductions().then(prods => setProductions(prods));
+    getInventory().then(inv => setInventory(inv));
+    setLoading(false);
+  }
+
+  function reload(){
+    setLoading(true);
   }
 
   return (
     (loading) ?
     <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} materialRows={materialRows} productRows={productRows} />
+      <LoadedView classes={classes} productions={productions} inventory={inventory} reload={reload}/>
     </SpinBeforeLoading> :
-    <LoadedView classes={classes} materialRows={materialRows} productRows={productRows} />
+    <LoadedView classes={classes} productions={productions} inventory={inventory} reload={reload}/>
   );
 }
 

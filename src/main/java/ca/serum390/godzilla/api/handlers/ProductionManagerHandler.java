@@ -62,7 +62,7 @@ public class ProductionManagerHandler {
     // If all the finished items in the order are available, no production item is created -> order is ready
     public Mono<ServerResponse> validateProduction(ServerRequest req) {
         setup(req);
-
+        
         // Analyze the items in the order item list and the inventory
         if (salesOrder != null && salesOrder.getStatus().equals(Order.NEW)) {
 
@@ -108,7 +108,7 @@ public class ProductionManagerHandler {
         PlannedProduct plannedProduct = plannedProductsRepository.findById(productionID).block();
         if (plannedProduct != null && !plannedProduct.getStatus().equals(PlannedProduct.COMPLETED)) {
             // set status to cancelled
-            plannedProductsRepository.updateStatus(productionID, PlannedProduct.CANCELED).block();
+            plannedProductsRepository.updateStatus(productionID, PlannedProduct.CANCELLED).block();
             logger.info("Production " + productionID + " is canceled");
             ordersRepository.updateStatus(plannedProduct.getOrderID(), Order.NEW).block();
             // return all the used items to inventory

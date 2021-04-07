@@ -129,8 +129,8 @@ export default function NewPurchaseOrderForm(props) {
       createdDate: createdDate,
       dueDate: dueDate,
       deliveryLocation: deliveryLocation,
-      orderType: "purchases",
-      status: "New",
+      orderType: "purchase",
+      status: "new",
       items: itemsData,
       productionID: "0"
     };

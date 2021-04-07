@@ -19,11 +19,11 @@ import java.util.Map;
 public class PlannedProduct {
 
     // Status values
-    public static final String BLOCKED = "blocked";
-    public static final String NEW = "new";
-    public static final String SCHEDULED = "scheduled";
-    public static final String COMPLETED = "completed";
-    public static final String CANCELED = "canceled";
+    public static final String BLOCKED = "BLOCKED";
+    public static final String NEW = "NEW";
+    public static final String SCHEDULED = "SCHEDULED";
+    public static final String COMPLETED = "COMPLETED";
+    public static final String CANCELLED = "CANCELLED";
 
     @Id
     private Integer id;
