@@ -26,9 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProvinceOptions({province,setProvince,defaultValue}) {
+function ProvinceOptions({province, setProvince, defaultValue}) {
   const classes = useStyles();
-
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
@@ -79,26 +78,6 @@ function ProvinceOptions({province,setProvince,defaultValue}) {
   );
 }
 
-function TextMaskCustom(props) {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      ref={(ref) => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
-      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={'\u2000'}
-      showMask
-    />
-  );
-}
-
-TextMaskCustom.propTypes = {
-  inputRef: PropTypes.func.isRequired,
-};
-
 function PhoneNumberInput({contact, setContact}) {
   const [values, setValues] = React.useState({
     textmask: '(1  )    -    ',
@@ -109,6 +88,7 @@ function PhoneNumberInput({contact, setContact}) {
       ...values,
       [event.target.name]: event.target.value,
     });
+
     setContact(event.target.value);
   };
 
@@ -130,12 +110,58 @@ function PhoneNumberInput({contact, setContact}) {
   );
 }
 
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={(ref) => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+}
+
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+};
+
 export default function CustomerForm(props) {
   const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [province, setProvince] = React.useState(props.customerProvince);
-  const [contact, setContact] = React.useState(props.customerPhone);
+  const vendor = props.onSubmit(null, false);
+  const [companyName, setCompanyName] = React.useState("");
+  const [contactName, setContactName] = React.useState("");
+  const [address, setAddress] = React.useState(props.splitAddress);
+  const [city, setCity] = React.useState(props.splitCity);
+  const [postal, setPostal] = React.useState(props.splitPostal);
+  const [province, setProvince] = React.useState(props.splitProvince);
+  const [contact, setContact] = React.useState(vendor.contact);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = () => {
+    let data = {
+      id: "",
+      companyName: companyName,
+      contactName: contactName,
+      address: address+","+city+","+postal+","+province,
+      contact: contact,
+      contactType: "customer"
+    };
+    props.onSubmit(data, true);
+    setOpen(false);
+    // want to update the table after clicking this
+  };
 
   return (
     <div>
@@ -143,7 +169,7 @@ export default function CustomerForm(props) {
       {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
+        <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>   
         <DialogContent>
           <DialogContentText>
             {props.dialogContentText}
@@ -154,18 +180,18 @@ export default function CustomerForm(props) {
             id="company"
             label="Company Name"
             type="string"
-            defaultValue={props.customerCompanyName}
-
+            defaultValue={vendor.companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
             fullWidth
           />
           <TextField
             autoFocus
             margin="dense"
-            id="customer"
+            id="name"
             label="Customer Name"
             type="string"
-            defaultValue={props.customerName}
-
+            defaultValue={vendor.contactName}
+            onChange={(event) => setContactName(event.target.value)}
             fullWidth
           />
           <TextField
@@ -174,8 +200,8 @@ export default function CustomerForm(props) {
             id="address"
             label="Address"
             type="string"
-            defaultValue={props.customerAddress}
-
+            defaultValue={props.splitAddress}
+            onChange={(event) => setAddress(event.target.value)}
             fullWidth
           />
           <Grid container spacing={2}>
@@ -186,7 +212,8 @@ export default function CustomerForm(props) {
                 id="city"
                 label="City"
                 type="text"
-                defaultValue={props.customerCity}
+                defaultValue={props.splitCity}
+                onChange={(event) => setCity(event.target.value)} 
               />
             </Grid>
             <Grid item md={3}>
@@ -196,21 +223,19 @@ export default function CustomerForm(props) {
                 id="postalCode"
                 label="Postal Code"
                 inputProps={{ maxLength: 6 }}
-                type="text"
-                defaultValue={props.customerPostal}
+                type="text" 
+                defaultValue={props.splitPostal}
+                onChange={(event) => setPostal(event.target.value)} 
               />
             </Grid>
             <Grid item md={3}>
-            <ProvinceOptions province={province} setProvince={setProvince} defaultValue={props.customerProvince}  />
+            <ProvinceOptions province={province} setProvince={setProvince} defaultValue={props.splitProvince}/>
             </Grid>
           </Grid>
-          <PhoneNumberInput contact={contact} setContact={setContact} />
+          <PhoneNumberInput contact={contact} setContact={setContact}/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            {props.deleteButton}
-          </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             {props.submitButton}
           </Button>
           <Button onClick={handleClose} color="primary">
