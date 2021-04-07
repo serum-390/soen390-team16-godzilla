@@ -164,8 +164,8 @@ const LoadedView = ({ classes, inventory }) => {
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>Inventory</h1>
-      <div style={{ height: 800, width: '85%', display: 'table' }}>
-        <div style={{ display: 'table-row', float: 'left' }}>
+      <div style={{ height: 720, width: '78%', display: 'table',  margin:'0 auto'}}>
+        <div style={{ display: 'table-row', float: 'right'}}>
           <InventoryForm
             initialButton='Insert'
             dialogTitle='Inventory Information '

@@ -7,8 +7,10 @@ import static org.springframework.web.reactive.function.server.ServerResponse.no
 import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static org.springframework.web.reactive.function.server.ServerResponse.unprocessableEntity;
+import static org.springframework.web.reactive.function.server.ServerResponse.status;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -30,7 +32,6 @@ public class SalesContactHandler {
     public Mono<ServerResponse> all(ServerRequest req) {
         return ok().body(salesContacts.findAll(), SalesContact.class);
     }
-
     /**
      * Add a new {@link SalesContact} to the system.
      *
@@ -49,20 +50,52 @@ public class SalesContactHandler {
     }
 
     /**
-     * Get a sales contact
-     *
-     * @param req
-     * @return
+     * Get by id/name or all
      */
-    public Mono<ServerResponse> get(ServerRequest req) {
+    public Mono<ServerResponse> getBy (ServerRequest req){
+        Optional<String> name = req.queryParam("name");
+        Optional<String> id = req.queryParam("id");
+
+        if (name.isPresent()){
+            return queryCustomerByName(name.get());
+        } else if (id.isPresent()) {
+            return queryCustomerById(id.get());
+        } else {
+            return getAllCustomer();
+        }
+    }
+    /**
+     * get a customer contact by id
+     * 
+     */
+    private Mono<ServerResponse> queryCustomerById(String id){
         return Mono
-                .fromCallable(() -> parseInt(req.pathVariable("id")))
-                .handle(this::errorIfNegativeId)
-                .flatMap(salesContacts::findById)
-                .flatMap(c -> ok().body(Mono.just(c), SalesContact.class))
-                .switchIfEmpty(notFound().build())
-                .onErrorResume(e -> unprocessableEntity()
-                    .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+            .fromCallable(() -> parseInt(id))
+            .handle(this::errorIfNegativeId)
+            .flatMap(salesContacts::findByIdCustomer)
+            .flatMap(sc -> ok().body(Mono.just(sc), SalesContact.class))
+            .switchIfEmpty(notFound().build())
+            .onErrorResume(e -> unprocessableEntity()
+                .bodyValue(CANNOT_PROCESS_DUE_TO + e.getMessage()));
+    }
+
+    /**
+     * get a customer by name
+     */
+    private Mono<ServerResponse> queryCustomerByName(String name){
+        return salesContacts.findByNameCustomer(name)
+            .collectList()
+            .flatMap(l -> l.isEmpty() ? Mono.empty() : Mono.just(l))
+            .map(l -> l.size() == 1 ? l.get(0) : l)
+            .flatMap(sc -> ok().bodyValue(sc))
+            .switchIfEmpty(Mono.defer(() -> status(404).bodyValue("Sales Contact with name " + name + " does not exist.")));
+    }
+
+    /**
+     * get all customer
+     */
+    private Mono<ServerResponse> getAllCustomer(){
+        return ok().body(salesContacts.findAllCustomer(), SalesContact.class);
     }
 
     /**
@@ -89,7 +122,7 @@ public class SalesContactHandler {
             sink.next(value);
         }
     }
-
+    
     /**
      * Update a sales contact
      *
@@ -99,7 +132,7 @@ public class SalesContactHandler {
     public Mono<ServerResponse> update(ServerRequest req) {
         Mono<SalesContact> existed = Mono
                 .fromCallable(() -> Integer.parseInt(req.pathVariable("id")))
-                .flatMap(salesContacts::findById);
+                .flatMap(salesContacts::findByIdCustomer);
 
         Mono<SalesContact> received = req
                 .bodyToMono(SalesContact.class)
@@ -133,7 +166,6 @@ public class SalesContactHandler {
                 salesContact.getContactName(),
                 salesContact.getAddress(),
                 salesContact.getContact(),
-                salesContact.getContactType(),
                 salesContact.getId());
     }
 }

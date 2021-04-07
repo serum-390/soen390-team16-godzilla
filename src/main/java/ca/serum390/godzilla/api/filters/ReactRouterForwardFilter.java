@@ -30,6 +30,7 @@ public class ReactRouterForwardFilter implements WebFilter {
         String path = exchange.getRequest().getURI().getPath();
         return !path.startsWith("/api/") 
                 && !path.startsWith("/resources/")
+                && !path.startsWith("/static/")
                 && !path.endsWith(".js") 
                 && !path.endsWith(".css") 
                 && !path.endsWith(".svg");
@@ -44,11 +45,11 @@ public class ReactRouterForwardFilter implements WebFilter {
     private Mono<Void> forwardToReactRouter(ServerWebExchange exchange, WebFilterChain chain) {
         return chain.filter(
             exchange.mutate()
-                        .request(
-                            exchange.getRequest()
-                                 .mutate()
-                                 .path("/index.html")
-                                 .build()
-                        ).build());
+                .request(
+                    exchange.getRequest()
+                            .mutate()
+                            .path("/index.html")
+                            .build()
+                ).build());
     }
 }
