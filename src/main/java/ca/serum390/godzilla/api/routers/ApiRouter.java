@@ -51,27 +51,27 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route() {
+      
         return RouterFunctions.route()
-                .path("/api", apiBuilder -> apiBuilder
+  .path("/api", apiBuilder -> apiBuilder
+        .GET("/docs", this::docs)
+        .GET("/healthcheck", this::healthCheck)
+        .GET("/products", productionHandler::demoProducts)
+        .GET("/materials", productionHandler::demoMaterials)
+        .add(usersRoute)
+        .add(goodsRoute)
+        .add(orderRoute)
+        .add(shippingRoute)
+        .add(inventoryRoute)
+        .add(salesContactRoute)
+        .add(vendorContactRoute)
+        .add(plannedProductRoute)
+        .add(packagedRoute)
+        .add(shippingManagerRoute)
+        .add(productionManagerRoute).build())
+  
+              .build();
 
-                    .GET("/docs", this::docs)
-                    .GET("/healthcheck", this::healthCheck)
-                    .GET("/products", productionHandler::demoProducts)
-                    .GET("/materials", productionHandler::demoMaterials)
-                    .add(usersRoute)
-                    .add(goodsRoute)
-                    .add(orderRoute)
-                    .add(shippingRoute)
-                    .add(inventoryRoute)
-                    .add(salesContactRoute)
-                    .add(vendorContactRoute)
-                    .add(plannedProductRoute)
-                    .add(packagedRoute)
-                    .add(shippingManagerRoute)
-                    .add(productionManagerRoute)
-                    .build())
-
-                .build();
     }
 
     /**
@@ -80,19 +80,14 @@ public class ApiRouter implements WebFluxConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        var cc = CacheControl
-                .maxAge(Duration.ofDays(30))
-                .staleIfError(Duration.ofMinutes(10));
+        var cc = CacheControl.maxAge(Duration.ofDays(30)).staleIfError(Duration.ofMinutes(10));
 
-        registry.addResourceHandler("/resources/**")
-                .setCacheControl(cc)
-                .addResourceLocations("/public",
-                                      "classpath:/static/",
-                                      "classpath:/static/resources/");
+        registry.addResourceHandler("/resources/**").setCacheControl(cc).addResourceLocations("/public",
+                "classpath:/static/", "classpath:/static/resources/");
 
-        registry.addResourceHandler("/api/docs/**")
-                .setCacheControl(cc)
-                .addResourceLocations("classpath:/static/docs/");
+        registry.addResourceHandler("/api/docs/**").setCacheControl(cc).addResourceLocations("classpath:/static/docs/");
+
+        registry.addResourceHandler("/static/**").setCacheControl(cc).addResourceLocations("classpath:/static/static/");
     }
 
     private Mono<ServerResponse> healthCheck(ServerRequest request) {
@@ -100,11 +95,8 @@ public class ApiRouter implements WebFluxConfigurer {
     }
 
     private Mono<ServerResponse> docs(ServerRequest request) {
-        return ok()
-                .contentType(TEXT_HTML)
-                .body(fromCallable(
-                    () -> new ClassPathResource("static/docs/index.html")),
-                    Resource.class)
+        return ok().contentType(TEXT_HTML)
+                .body(fromCallable(() -> new ClassPathResource("static/docs/index.html")), Resource.class)
                 .onErrorResume(e -> notFound().build());
     }
 }

@@ -49,7 +49,7 @@ in the future to fit a more wide range of buisnesses , including custom features
 such as chart drawing,3D visuals , and much more. 
   `;
   return (
-    <div className="App">
+    <div>
       <ReactMarkDown source={markdown} />
     </div>
   );

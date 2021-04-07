@@ -60,6 +60,9 @@ export default function NewSalesOrderForm(props) {
             type="date"
             defaultValue={sales.createdDate}
             onChange={(event) => setCreatedDate(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
           <TextField
@@ -70,6 +73,9 @@ export default function NewSalesOrderForm(props) {
             type="date"
             defaultValue={sales.dueDate}
             onChange={(event) => setDueDate(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
           <TextField
@@ -80,6 +86,9 @@ export default function NewSalesOrderForm(props) {
             type="string"
             defaultValue={sales.deliveryLocation}
             onChange={(event) => setDeliveryLocation(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
           <TextField
@@ -90,6 +99,9 @@ export default function NewSalesOrderForm(props) {
             type="string"
             defaultValue={sales.orderType}
             onChange={(event) => setOrderType(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
           <TextField
@@ -100,6 +112,9 @@ export default function NewSalesOrderForm(props) {
             type="String"
             defaultValue={sales.status}
             onChange={(event) => setStatus(event.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
         </DialogContent>
