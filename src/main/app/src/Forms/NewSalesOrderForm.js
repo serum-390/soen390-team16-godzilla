@@ -6,7 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import CustomToolbar from '../components/tables/CustomToolbar';
+import { DataGrid } from '@material-ui/data-grid';
 
 
 export default function NewSalesOrderForm(props) {
@@ -117,6 +118,11 @@ export default function NewSalesOrderForm(props) {
             }}
             fullWidth
           />
+
+          <div style={{ height: 300, width: '100%' }}>
+            <h3>Bill Of Material</h3>
+            <DataGrid rows={rows} columns={columns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">
@@ -130,3 +136,16 @@ export default function NewSalesOrderForm(props) {
     </div>
   );
 }
+
+
+const rows = [
+  { id: 1, col1: 'Frame Speed A', col2: '2', col3: '$0' },
+  { id: 2, col1: 'Frame Speed B', col2: '3', col3: '$0'  },
+  { id: 3, col1: 'Frame Speed C', col2: '3', col3: '$0' },
+];
+
+const columns = [
+  { field: 'col1', headerName: 'Name', width: 150 },
+  { field: 'col2', headerName: 'Quality', width: 150 },
+  { field: 'col3', headerName: 'Price', width: 150 },
+];
