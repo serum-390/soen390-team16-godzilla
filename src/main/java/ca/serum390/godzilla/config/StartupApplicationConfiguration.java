@@ -37,14 +37,14 @@ public class StartupApplicationConfiguration {
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Running post start up configuration...");
-        sendEmailService.sendEmail("amneet.s.270@gmail.com", "test", "this is a test").subscribe();
+        sendEmailService.sendEmail("ERP.Godzilla@gmail.com", "test", "this is a test").subscribe();
         Flux.just("demo", "jeff", "test")
-                .filterWhen(this::userAlreadyExists)
-                .map(this::buildDemoUser)
-                .collectList()
-                .subscribe(users -> godzillaUserRepository.saveAll(users)
-                    .doOnError(log::error)
-                    .subscribe(this::logDemoUserCreation));
+            .filterWhen(this::userAlreadyExists)
+            .map(this::buildDemoUser)
+            .collectList()
+            .subscribe(users -> godzillaUserRepository.saveAll(users)
+                .doOnError(log::error)
+                .subscribe(this::logDemoUserCreation));
     }
 
     /**
@@ -64,12 +64,14 @@ public class StartupApplicationConfiguration {
     }
 
     private GodzillaUser buildDemoUser(String username) {
-        return GodzillaUser.builder()
+        return GodzillaUser
+            .builder()
                 .username(username)
                 .password(passwordEncoder.encode("demo"))
                 .authorities(DEFAULT_AUTHORITIES)
+                .isAdmin(true)
                 .email("demo@demomail.com")
-                .build();
+            .build();
     }
 
     private void logDemoUserCreation(GodzillaUser user) {

@@ -26,7 +26,7 @@ public class VendorContactHandler {
     public VendorContactHandler(VendorContactRepository vendorContact) {
         this.vendorContacts = vendorContact;
     }
-    
+
     /**
      * create a vendor contact
      */
@@ -90,10 +90,11 @@ public class VendorContactHandler {
      * Delete a vendor contact
      */
     public Mono<ServerResponse> delete(ServerRequest req) {
-        return vendorContacts.deleteById(Integer.parseInt(req.pathVariable("id")))
+        return vendorContacts
+                .deleteById(Integer.parseInt(req.pathVariable("id")))
                 .flatMap(deleted -> noContent().build());
-    } 
-    
+    }
+
     /**
      * Update a vendor contact
      */
@@ -111,11 +112,14 @@ public class VendorContactHandler {
             }
             return g;
         }, existed, req.bodyToMono(VendorContact.class)).cast(VendorContact.class)
-                .flatMap(contact -> vendorContacts.updateVendor(contact.getCompanyName(),
-                        contact.getContactName(), contact.getAddress(), contact.getContact(),
+                .flatMap(contact -> vendorContacts.updateVendor(
+                        contact.getCompanyName(),
+                        contact.getContactName(),
+                        contact.getAddress(),
+                        contact.getContact(),
                         contact.getId()))
                 .flatMap(rows -> noContent().build());
-    }   
+    }
 
     /**
      * Handle if ID is negative

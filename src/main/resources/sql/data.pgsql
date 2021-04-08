@@ -7,32 +7,31 @@ DELETE FROM inventory;
 DELETE FROM erp_user;
 DELETE FROM good_type;
 
-
-
 SELECT setval(pg_get_serial_sequence('inventory', 'id'), 1, true);
+
 --insert data for good_type
 INSERT INTO good_type (id,type, description)
-    VALUES (1,'fnmt', 'final product')
-    ON CONFLICT (type) DO NOTHING;
+VALUES (1,'fnmt', 'final product')
+ON CONFLICT (type) DO NOTHING;
 
-INSERT INTO good_type (id,type, description)
-    VALUES (2,'smsp', 'semi-final self-product')
-    ON CONFLICT (type) DO NOTHING;
-
-
-INSERT INTO good_type (id,type, description)
-    VALUES (3,'smbs', 'semi-final buy or self-product')
-    ON CONFLICT (type) DO NOTHING;
+INSERT INTO good_type (id, type, description)
+VALUES (2,'smsp', 'semi-final self-product')
+ON CONFLICT (type) DO NOTHING;
 
 
-INSERT INTO good_type (id,type, description)
-    VALUES (4,'smbp', 'semi-final buy-product')
-    ON CONFLICT (type) DO NOTHING;
+INSERT INTO good_type (id, type, description)
+VALUES (3,'smbs', 'semi-final buy or self-product')
+ON CONFLICT (type) DO NOTHING;
 
 
-INSERT INTO good_type (id,type, description)
-    VALUES (5,'rawm', 'raw material')
-    ON CONFLICT (type) DO NOTHING;
+INSERT INTO good_type (id, type, description)
+VALUES (4,'smbp', 'semi-final buy-product')
+ON CONFLICT (type) DO NOTHING;
+
+
+INSERT INTO good_type (id, type, description)
+VALUES (5,'rawm', 'raw material')
+ON CONFLICT (type) DO NOTHING;
 
 
 INSERT INTO good_type (id,type, description)
@@ -193,7 +192,6 @@ INSERT INTO inventory ( item_name, good_type, quantity, buy_price, LOCATION)
             LIMIT 1), 10, 19.99, 'MONTREAL CONCORDIA');
 
 --Semi-final buy-product = raw material
-
 INSERT INTO inventory (item_name, good_type, quantity, buy_price, LOCATION)
     VALUES ('Skill Brake A', (
             SELECT
@@ -230,12 +228,11 @@ INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS,
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-10-16','montreal','sale', 'new', '{ "2" : 15, "3" : 15}');
 INSERT INTO orders(CREATED_DATE, DUE_DATE, DELIVERY_LOCATION, ORDER_TYPE,STATUS, ITEMS) VALUES ('2021-02-15','2021-10-16','montreal','sale', 'new', '{ "2" : 4, "3" : 2}');
 --SalesContact
-INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
+INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE)
+VALUES ('walmart', 'bob', '72 avenue','contact', 'customer');
 
 --VendorContact
 INSERT INTO contact(COMPANY_NAME, CONTACT_NAME, ADDRESS, CONTACT, CONTACT_TYPE) VALUES ('walmart', 'bob', '72 avenue','contact', 'vendor');
 
---Packaging 
+--Packaging
 INSERT INTO packaged_products(LENGTH, WIDTH, HEIGHT, WEIGHT, PACKAGE_TYPE, PACKAGE_DATE) VALUES (10, 11, 12, 14.2, 'small box','2021-02-15');
-
-                
