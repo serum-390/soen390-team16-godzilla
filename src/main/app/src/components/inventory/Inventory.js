@@ -6,6 +6,7 @@ import { spinnyBoi } from '../About';
 import { DataGrid } from "@material-ui/data-grid";
 import CustomToolbar from '../tables/CustomToolbar';
 import InventoryForm from "../../Forms/InventoryForm";
+import QualityForm from "../../Forms/QualityForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 
@@ -95,7 +96,23 @@ const inventoryCols = [
         </Button>
       </div>
     ),
-  }
+  },
+  { field: 'Quality', headerName: 'Quality', width: 150,
+  renderCell: params => (
+    <div style={{ margin: 'auto' }}>
+    {
+      <QualityForm
+        initialButton='Quality Management'
+        dialogTitle='Quality Management'
+        dialogContentText='Set Quality of this item'
+        submitButton='Update'
+        onSubmit={params.value}
+      />
+    }
+  </div>
+  ),
+},
+  
 
 ];
 
