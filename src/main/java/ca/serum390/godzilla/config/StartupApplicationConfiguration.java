@@ -37,7 +37,7 @@ public class StartupApplicationConfiguration {
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Running post start up configuration...");
-        sendEmailService.sendEmail("amneet.s.270@gmail.com", "test", "this is a test").subscribe();
+        sendEmailService.sendEmail("ERP.Godzilla@gmail.com", "test", "this is a test").subscribe();
         Flux.just("demo", "jeff", "test")
             .filterWhen(this::userAlreadyExists)
             .map(this::buildDemoUser)
