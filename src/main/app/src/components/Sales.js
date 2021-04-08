@@ -274,7 +274,7 @@ const LoadedSalesView = ({ classes, order, salesContacts, reload}) => {
         <h2 style={{ float: 'left'}}>Customers</h2>
         <div style={{ float: 'right'}}>
             <CustomerForm
-            onSubmit={(data) => insertContact(data, reload)}
+            onSubmit={(data, insert) => (insert) ? insertContact(data, reload) : ''}
             initialButton='Add New Customer'
             dialogTitle='Add New Customer '
             dialogContentText='Please enter the following information below to add a new customer: '
@@ -300,7 +300,7 @@ const LoadedSalesView = ({ classes, order, salesContacts, reload}) => {
               dialogTitle='New Sales Order '
               dialogContentText='Please enter the following information below to add a new sales order: '
               submitButton='Submit'
-              onSubmit={(data) => insertSales(data)}
+              onSubmit={(data, insert) => (insert) ? insertSales(data) : ''}
             />
           </div>
         </div>
