@@ -38,9 +38,11 @@ public class ApiRouter implements WebFluxConfigurer {
     RouterFunction<ServerResponse> vendorContactRoute;
     RouterFunction<ServerResponse> plannedProductRoute;
     RouterFunction<ServerResponse> productionManagerRoute;
+    RouterFunction<ServerResponse> packagedRoute;
     RouterFunction<ServerResponse> shippingRoute;
     RouterFunction<ServerResponse> shippingManagerRoute;
     RouterFunction<ServerResponse> godzillaUserRoute;
+
 
     /**
      * Router using the functional endpoints Spring WebFlux API
@@ -49,11 +51,27 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route() {
-        return RouterFunctions.route().path("/api", apiBuilder -> apiBuilder.GET("/docs", this::docs)
-                .GET("/healthcheck", this::healthCheck).GET("/products", productionHandler::demoProducts)
-                .GET("/materials", productionHandler::demoMaterials).add(usersRoute).add(goodsRoute).add(orderRoute)
-                .add(shippingRoute).add(inventoryRoute).add(salesContactRoute).add(vendorContactRoute)
-                .add(plannedProductRoute).add(shippingManagerRoute).add(productionManagerRoute).build()).build();
+      
+        return RouterFunctions.route()
+  .path("/api", apiBuilder -> apiBuilder
+        .GET("/docs", this::docs)
+        .GET("/healthcheck", this::healthCheck)
+        .GET("/products", productionHandler::demoProducts)
+        .GET("/materials", productionHandler::demoMaterials)
+        .add(usersRoute)
+        .add(goodsRoute)
+        .add(orderRoute)
+        .add(shippingRoute)
+        .add(inventoryRoute)
+        .add(salesContactRoute)
+        .add(vendorContactRoute)
+        .add(plannedProductRoute)
+        .add(packagedRoute)
+        .add(shippingManagerRoute)
+        .add(productionManagerRoute).build())
+  
+              .build();
+
     }
 
     /**
