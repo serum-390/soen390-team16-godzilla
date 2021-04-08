@@ -32,7 +32,7 @@ export default function QualityForm(props) {
   function valuetext(value) {
     return `${value} `;
   }
-  
+
   function valueLabelFormat(value) {
     return marks.findIndex((mark) => mark.value === value);
   }
@@ -52,29 +52,29 @@ export default function QualityForm(props) {
 
   return (
     <div>
-      <Button variant="contained" color="primary" style={{float: 'right'}} onClick={handleClickOpen}>
+      <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
         {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{props.dialogTitle}</DialogTitle>
         <DialogContent>
           <h4> Current Item Quality</h4>
-          <Paper style = {{minHeight:'50px' ,maxHeight:'170px',padding :'10px'}}>
-          Quality of the item has not been set
-          </Paper> 
+          <Paper style={{ minHeight: '50px', maxHeight: '170px', padding: '10px' }}>
+            Quality of the item has not been set
+          </Paper>
           <div style={{ height: 20 }} />
           <h4> Edit Item Quality</h4>
           <Slider
-        defaultValue={0}
-        valueLabelFormat={valueLabelFormat}
-        getAriaValueText={valuetext}
-        aria-labelledby="discrete-slider-restrict"
-        step={1}
-        min={0}
-        max={3}
-        valueLabelDisplay="auto"
-        marks={marks}
-      />
+            defaultValue={0}
+            valueLabelFormat={valueLabelFormat}
+            getAriaValueText={valuetext}
+            aria-labelledby="discrete-slider-restrict"
+            step={1}
+            min={0}
+            max={3}
+            valueLabelDisplay="auto"
+            marks={marks}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">
