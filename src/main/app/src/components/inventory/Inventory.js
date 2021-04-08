@@ -104,8 +104,7 @@ const inventoryCols = [
       <QualityForm
         initialButton='Quality Management'
         dialogTitle='Quality Management'
-        dialogContentText='Set Quality of this item'
-        submitButton='Update'
+        submitButton='Save'
         onSubmit={params.value}
       />
     }
