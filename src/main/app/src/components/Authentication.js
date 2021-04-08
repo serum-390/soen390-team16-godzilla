@@ -1,11 +1,11 @@
-import { Button, makeStyles, TextField, useMediaQuery, useTheme } from '@material-ui/core';
+import { Button, makeStyles, TextField, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import axios from 'axios';
 import React, { Fragment, useState } from 'react';
 
 const borderWidth = '2em';
 const maxDimensions = x => ({ height: '100%', width: '100%', ...x });
 
-const useStyles = small => makeStyles(theme => ({
+const useStyles = (small = false, errorShown = false) => makeStyles(theme => ({
   root: {
     height: '100vh',
     width: '100vw',
@@ -72,7 +72,7 @@ const useStyles = small => makeStyles(theme => ({
       margin: 'auto',
       '& img': {
         alignSelf: 'center',
-      }
+      },
     },
 
     '&  button': {
@@ -86,7 +86,7 @@ const useStyles = small => makeStyles(theme => ({
     position: 'absolute',
     padding: '3em',
     width: '24.1em',
-    height: small ? '34em' : '39em',
+    height: small ? errorShown ? '36.1em' : '35.1em' : '39em',
     right: '-66.95em',
     zIndex: -1,
     background: 'transparent',
@@ -127,6 +127,25 @@ const useStyles = small => makeStyles(theme => ({
     objectFit: 'contain',
     animation: '$App-logo-spin infinite 20s linear',
   }),
+
+  signupLink: {
+    display: 'flex',
+    placeContent: 'center',
+    placeItems: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
+    marginBottom: '0px !important',
+    transition: theme.transitions.create(['all'], {
+      duration: theme.transitions.duration.shorter,
+      easing: theme.transitions.easing.sharp,
+    }),
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
+    '&:link': {
+      textDecoration: 'none',
+    },
+  },
 
   '@keyframes App-logo-spin': {
     '0%': { transform: 'rotate(0deg)' },
@@ -180,16 +199,24 @@ const SpinningAppLogo = props => {
   const classes = useStyles(false);
   return (
     <a href="/" className={classes.appLogoContainer}>
-      <img
+      <img alt='logo'
         src='/resources/images/logo-min.png'
-        alt='logo'
         className={classes.appLogo}
       />
     </a>
   );
 };
 
-const SignupForm = ({ excludeEmailField, loginForm, ...props }) => {
+const SignupLink = props => {
+  const classes = useStyles();
+  return (
+    <a href="/signup" className={classes.signupLink} {...props}>
+      <Typography>Don't have an account? Signup</Typography>
+    </a>
+  );
+};
+
+const SignupForm = ({ excludeEmailField, setErrorStyling, loginForm, ...props }) => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [badCreds, setBadCreds] = useState(false);
@@ -203,12 +230,18 @@ const SignupForm = ({ excludeEmailField, loginForm, ...props }) => {
     sendSignupData(sendData)
   };
 
+  const turnOffErrorStyling = () => {
+    setBadCreds(false);
+    setErrorStyling(false);
+  };
+
   const submitLogin = () => {
     login(userName, password)
       .then(() => document.location.href = "/")
       .catch(e => {
         console.log(e);
         setBadCreds(true);
+        setErrorStyling(true);
       });
   };
 
@@ -220,7 +253,7 @@ const SignupForm = ({ excludeEmailField, loginForm, ...props }) => {
         label='Username'
         margin='normal'
         variant='outlined'
-        onChange={e => { setUserName(e.target.value); setBadCreds(false); }}
+        onChange={e => { setUserName(e.target.value); turnOffErrorStyling(); }}
         helperText={badCreds ? "Incorrect username or password" : null}
       />
       <TextField
@@ -229,13 +262,14 @@ const SignupForm = ({ excludeEmailField, loginForm, ...props }) => {
         margin='normal'
         type='password'
         variant='outlined'
-        onChange={e => { setPassword(e.target.value); setBadCreds(false); }}
+        onChange={e => { setPassword(e.target.value); turnOffErrorStyling(); }}
       />
-      <EmailField excludeEmailField={excludeEmailField} setEmail={e => { setEmail(e); setBadCreds(false); }} />
+      <EmailField excludeEmailField={excludeEmailField} setEmail={e => { setEmail(e); turnOffErrorStyling(); }} />
       <Button color='secondary' variant='contained' onClick={loginForm ? submitLogin : submitSignup}>
         {loginForm ? "Login" : "Sign Up"}
       </Button>
       <Button color='default' variant='outlined'>Back</Button>
+      {loginForm ? <SignupLink /> : null}
     </Fragment>
   );
 };
@@ -253,7 +287,7 @@ const Root = ({ children, mobile, ...props }) => {
 };
 
 const DesktopSignup = props => {
-  const classes = useStyles(false);
+  const classes = useStyles();
   return (
     <Root {...props}>
       <div className={classes.signupForm} {...props}>
@@ -278,7 +312,7 @@ const DesktopSignup = props => {
 };
 
 const MobileSignup = props => {
-  const classes = useStyles(false);
+  const classes = useStyles();
   return (
     <Root mobile {...props}>
       <div className={classes.signupForm} {...props}>
@@ -305,7 +339,8 @@ const Signup = props =>
     : <MobileSignup {...props} />;
 
 const DesktopLogin = props => {
-  const classes = useStyles(true);
+  const [errorStyling, setErrorStyling] = useState(false);
+  const classes = useStyles(true, errorStyling);
   return (
     <Root {...props}>
       <img alt="brand"
@@ -322,7 +357,7 @@ const DesktopLogin = props => {
               className={classes.nameLogo}
             />
           </a>
-          <SignupForm excludeEmailField loginForm />
+          <SignupForm excludeEmailField loginForm setErrorStyling={setErrorStyling} />
         </div>
       </div>
     </Root>
@@ -330,7 +365,8 @@ const DesktopLogin = props => {
 };
 
 const MobileLogin = props => {
-  const classes = useStyles(true);
+  const [errorStyling, setErrorStyling] = useState(false);
+  const classes = useStyles(true, errorStyling);
   return (
     <Root mobile {...props}>
       <div className={classes.signupForm} {...props}>
@@ -344,7 +380,7 @@ const MobileLogin = props => {
               className={classes.nameLogo}
             />
           </a>
-          <SignupForm excludeEmailField loginForm />
+          <SignupForm excludeEmailField loginForm setErrorStyling={setErrorStyling} />
         </div>
       </div>
     </Root>
