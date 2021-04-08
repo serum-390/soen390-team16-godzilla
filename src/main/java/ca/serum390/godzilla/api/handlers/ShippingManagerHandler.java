@@ -115,27 +115,6 @@ public class ShippingManagerHandler {
         return noContent().build();
     }
 
-
-//    private boolean validateOrderID(ServerRequest req) {
-//        Optional<String> orderID = req.queryParam("orderID");
-//        // get the sales order object
-//        if (orderID.isPresent()) {
-//            salesOrder = ordersRepository.findById(Integer.parseInt(orderID.get())).block();
-//            if (salesOrder != null) {
-//                logger.info("orderID is valid");
-//                return true;
-//            } else {
-//                logger.info("orderID is invalid");
-//                message += "\n orderID is invalid";
-//                return false;
-//            }
-//        } else {
-//            logger.info("orderID is not entered");
-//            message += "\n orderID is not entered";
-//        }
-//        return false;
-//    }
-
     private boolean validateShippingDate(ServerRequest req, Order salesOrder) {
         Optional<String> shippingDateReq = req.queryParam("shippingDate");
         // shipping Date setup
