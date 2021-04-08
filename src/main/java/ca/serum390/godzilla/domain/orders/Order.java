@@ -21,6 +21,7 @@ public class Order {
     // Status values
     public static final String READY = "ready";
     public static final String NEW = "new";
+    public static final String PACKAGING_PROCESS= "packaging process";
     public static final String PRODUCTION_PROCESS = "production process";
     public static final String SHIPPING_PROCESS = "shipping process";
     public static final String PACKAGED = "packaged";
