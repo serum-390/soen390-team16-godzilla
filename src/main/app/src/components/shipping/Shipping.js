@@ -22,12 +22,11 @@ const useStyles = makeStyles(theme => ({
 
 const addShippingItem = async data => {
   try {
-    const api = `/api/shipping-manager/validate/?orderID=` + data.orderID + '&shippingDate=' + data.shippingDate +
+    const api = '/api/shipping-manager/validate/?orderID=' + data.orderID + '&shippingDate=' + data.shippingDate +
       '&method=' + data.shippingMethod;
     const inserted = await axios.post(api);
     console.log(`STATUS CODE: ${inserted.status}`);
     console.log(`DATA: ${inserted.data || "Nothing"}`);
-    alert(`${inserted.data || "Success"}`);
   } catch (err) {
     console.log(err);
     return err;
@@ -120,8 +119,8 @@ const LoadedView = ({classes, shipping}) => {
   return (
     <div>
       <h1 style={{textAlign: "center"}}>Shipping</h1>
-      <div style={{height: 720, width: '75%', display: 'table', margin:'0 auto'}}>
-        <div style={{ display: 'table-row', float: 'right'}}>
+      <div style={{height: 720, width: '75%', display: 'table', margin: '0 auto'}}>
+        <div style={{display: 'table-row', float: 'right'}}>
           <ShippingForm
             initialButton='schedule shipping'
             dialogTitle='Shipping Information '

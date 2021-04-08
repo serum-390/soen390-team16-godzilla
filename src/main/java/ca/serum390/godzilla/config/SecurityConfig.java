@@ -8,6 +8,8 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationFailureHandler;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 
 import ca.serum390.godzilla.service.UserDetailsService;
 
@@ -20,16 +22,26 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                     .authorizeExchange()
-                    .pathMatchers("/api/docs/**",
-                                  "/api/healthcheck",
-                                  "/favicon.ico",
-                                  "/api/signup/**",
-                                  "/signup/**")
+                    .pathMatchers(
+                        "/api/docs/**",
+                        "/api/healthcheck",
+                        "/favicon.ico",
+                        "/api/signup/**",
+                        "/signup/**",
+                        "/login/**",
+                        "/resources/**",
+                        "/static/css/**",
+                        "/static/js/**")
                     .permitAll()
                 .anyExchange()
                 .authenticated().and()
-                .formLogin().and()
-                .httpBasic().and()
+                .formLogin()
+                    .loginPage("/login")
+                    .authenticationSuccessHandler(new RedirectServerAuthenticationSuccessHandler("/"))
+                    .authenticationFailureHandler(new RedirectServerAuthenticationFailureHandler("/login?error"))
+                .and()
+                .httpBasic()
+                .and()
                 .build();
     }
 

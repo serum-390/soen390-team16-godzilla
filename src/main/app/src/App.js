@@ -2,13 +2,12 @@ import { useMediaQuery, useTheme } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { Route, Switch } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+import { Signup, Login } from './components/Authentication';
 import NavBar from './components/NavBar';
 import NavBarMobile from './components/NavBarMobile';
-import SignUp from './components/SignUp';
 import { ThemeContext, useThisTheme } from './styles/themes';
 
-function App() {
-
+const App = () => {
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('sm'));
   const [customTheme, darkMode, setDarkMode] = useThisTheme();
@@ -25,17 +24,15 @@ function App() {
       </ThemeProvider>
     </ThemeContext.Provider>
   );
-}
+};
 
-function AppRouter() {
-  return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/signup" component={SignUp} />
-        <Route path="/" component={App} />
-      </Switch>
-    </BrowserRouter>
-  )
-}
+const AppRouter = () =>
+  <BrowserRouter>
+    <Switch>
+      <Route path="/signup" component={Signup} />
+      <Route path="/login" component={Login} />
+      <Route path="/" component={App} />
+    </Switch>
+  </BrowserRouter>;
 
 export default AppRouter;

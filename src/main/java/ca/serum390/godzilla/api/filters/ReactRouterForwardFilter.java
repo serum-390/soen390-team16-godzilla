@@ -1,5 +1,7 @@
 package ca.serum390.godzilla.api.filters;
 
+import static org.springframework.http.HttpMethod.POST;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -27,13 +29,20 @@ public class ReactRouterForwardFilter implements WebFilter {
      * @return
      */
     private boolean matchesReactRouterRoute(ServerWebExchange exchange) {
-        String path = exchange.getRequest().getURI().getPath();
-        return !path.startsWith("/api/") 
+        var path = exchange.getRequest().getURI().getPath();
+        var method = exchange.getRequest().getMethod();
+        return method == null
+            ? !path.startsWith("/api/")
                 && !path.startsWith("/resources/")
-                && !path.startsWith("/static/")
-                && !path.endsWith(".js") 
-                && !path.endsWith(".css") 
-                && !path.endsWith(".svg");
+                && !path.endsWith(".js")
+                && !path.endsWith(".css")
+                && !path.endsWith(".svg")
+            : !path.startsWith("/api/")
+                && !path.startsWith("/resources/")
+                && !path.endsWith(".js")
+                && !path.endsWith(".css")
+                && !path.endsWith(".svg")
+                && !(method.equals(POST) && path.startsWith("/login"));
     }
 
     /**

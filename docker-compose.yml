@@ -5,7 +5,7 @@ services:
     ports:
       - 5432:5432
     networks:
-      - network
+      - main
     environment:
       POSTGRES_DB: godzilla
       POSTGRES_USER: admin
@@ -23,11 +23,12 @@ services:
     ports:
       - 3500:3500
     networks:
-      - network
+      - main
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.org
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_LISTEN_PORT: 3500
 
 networks:
-  network:
+  main:
+    name: godzilla_network

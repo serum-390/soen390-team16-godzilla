@@ -13,13 +13,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GodzillaUserRouter {
 
-    GodzillaUserHandler godzillaUserHandler;
+    // GodzillaUserHandler godzillaUserHandler;
 
-    @Bean
-    public RouterFunction<ServerResponse> godzillaUserRoute() {
-        return RouterFunctions.route()
-                .path("/signup/", builder -> builder
-                    .POST("/",godzillaUserHandler::create))
-                .build();
-    }
+    // @Bean
+    // public RouterFunction<ServerResponse> godzillaUserRoute() {
+    //     return RouterFunctions.route()
+    //             .path("/signup/", builder -> builder
+    //                 .POST("/",godzillaUserHandler::create))
+    //             .build();
+    // }
 }

@@ -41,7 +41,6 @@ public class ApiRouter implements WebFluxConfigurer {
     RouterFunction<ServerResponse> packagedRoute;
     RouterFunction<ServerResponse> shippingRoute;
     RouterFunction<ServerResponse> shippingManagerRoute;
-    RouterFunction<ServerResponse> godzillaUserRoute;
 
 
     /**
@@ -51,27 +50,25 @@ public class ApiRouter implements WebFluxConfigurer {
      */
     @Bean
     public RouterFunction<ServerResponse> route() {
-      
         return RouterFunctions.route()
-  .path("/api", apiBuilder -> apiBuilder
-        .GET("/docs", this::docs)
-        .GET("/healthcheck", this::healthCheck)
-        .GET("/products", productionHandler::demoProducts)
-        .GET("/materials", productionHandler::demoMaterials)
-        .add(usersRoute)
-        .add(goodsRoute)
-        .add(orderRoute)
-        .add(shippingRoute)
-        .add(inventoryRoute)
-        .add(salesContactRoute)
-        .add(vendorContactRoute)
-        .add(plannedProductRoute)
-        .add(packagedRoute)
-        .add(shippingManagerRoute)
-        .add(productionManagerRoute).build())
-  
-              .build();
-
+                .path("/api", apiBuilder -> apiBuilder
+                    .GET("/docs", this::docs)
+                    .GET("/healthcheck", this::healthCheck)
+                    .GET("/products", productionHandler::demoProducts)
+                    .GET("/materials", productionHandler::demoMaterials)
+                    .add(usersRoute)
+                    .add(goodsRoute)
+                    .add(orderRoute)
+                    .add(shippingRoute)
+                    .add(inventoryRoute)
+                    .add(salesContactRoute)
+                    .add(vendorContactRoute)
+                    .add(plannedProductRoute)
+                    .add(packagedRoute)
+                    .add(shippingManagerRoute)
+                    .add(productionManagerRoute)
+                    .build())
+                .build();
     }
 
     /**
@@ -85,9 +82,13 @@ public class ApiRouter implements WebFluxConfigurer {
         registry.addResourceHandler("/resources/**").setCacheControl(cc).addResourceLocations("/public",
                 "classpath:/static/", "classpath:/static/resources/");
 
-        registry.addResourceHandler("/api/docs/**").setCacheControl(cc).addResourceLocations("classpath:/static/docs/");
+        registry.addResourceHandler("/api/docs/**")
+                .setCacheControl(cc)
+                .addResourceLocations("classpath:/static/docs/");
 
-        registry.addResourceHandler("/static/**").setCacheControl(cc).addResourceLocations("classpath:/static/static/");
+        registry.addResourceHandler("/static/**")
+                .setCacheControl(cc)
+                .addResourceLocations("classpath:/static/static/");
     }
 
     private Mono<ServerResponse> healthCheck(ServerRequest request) {
