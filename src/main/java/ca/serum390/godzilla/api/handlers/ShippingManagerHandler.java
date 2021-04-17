@@ -108,9 +108,11 @@ public class ShippingManagerHandler {
         shippingRepository
                 .findById(shippingID)
                 .subscribe(shipping -> {
-                    shippingRepository.updateStatus(shippingID, Shipping.CANCELED).subscribe(item ->
-                            logger.info("shipping item " + shippingID + " is cancelled"));
-                    ordersRepository.updateStatus(shipping.getOrderID(), Order.PACKAGED).subscribe();
+                    if (shipping.getStatus().equals(Shipping.SCHEDULED)) {
+                        shippingRepository.updateStatus(shippingID, Shipping.CANCELED).subscribe(item ->
+                                logger.info("shipping item " + shippingID + " is cancelled"));
+                        ordersRepository.updateStatus(shipping.getOrderID(), Order.PACKAGED).subscribe();
+                    }
                 });
         return noContent().build();
     }
