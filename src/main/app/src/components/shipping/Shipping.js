@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const addShippingItem = async data => {
+const addShippingItem = async (data, reload) => {
   try {
     const api = '/api/shipping-manager/validate/?orderID=' + data.orderID + '&shippingDate=' + data.shippingDate +
       '&method=' + data.shippingMethod;
@@ -31,10 +31,11 @@ const addShippingItem = async data => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
 
-const cancelShipping = async id => {
+const cancelShipping = async (id, reload) => {
   try {
     const api = `/api/shipping-manager/cancel/${id}`;
     const canceled = await axios.post(api);
@@ -44,6 +45,7 @@ const cancelShipping = async id => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
 
@@ -78,10 +80,10 @@ const getShippingItems = async () => {
   return json;
 };
 
-const FilledShippingView = ({shippingItems, classes}) => {
+const FilledShippingView = (props) => {
   let items = [];
 
-  shippingItems.map(item => (
+  props.shippingItems.map(item => (
     items.push({
       id: item.id,
       OrderID: item.orderID,
@@ -90,7 +92,7 @@ const FilledShippingView = ({shippingItems, classes}) => {
       ShippingDate: item.shippingDate,
       ShippingMethod: item.shippingMethod,
       ShippingPrice: item.shippingPrice,
-      cancel: () => cancelShipping(item.id)
+      cancel: () => cancelShipping(item.id, props.reload)
     })));
 
   return (
@@ -115,7 +117,7 @@ const Spinner = () => {
   );
 };
 
-const LoadedView = ({classes, shipping}) => {
+const LoadedView = (props) => {
   return (
     <div>
       <h1 style={{textAlign: "center"}}>Shipping</h1>
@@ -126,13 +128,14 @@ const LoadedView = ({classes, shipping}) => {
             dialogTitle='Shipping Information '
             dialogContentText='Please enter shipping information:'
             submitButton='schedule'
-            onSubmit={(data) => addShippingItem(data)}
+            onSubmit={(data) => addShippingItem(data, props.reload)}
           />
         </div>
         <div style={{height: '100%', width: '100%', display: 'table-row'}}>
           <FilledShippingView
-            shippingItems={shipping}
-            classes={classes}
+            shippingItems={props.shipping}
+            classes={props.classes}
+            reload={props.reload}
           />
         </div>
       </div>
@@ -159,25 +162,30 @@ const SpinBeforeLoading = ({
     : <Fragment>{props.children}</Fragment>;
 };
 
-const Shipping = () => {
+function Shipping() {
 
   const classes = useStyles();
   const [shipping, setShipping] = useState([]);
-  const [loading, setDoneLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const waitForGetRequest = async () => {
     getShippingItems().then(shippingItem => setShipping(shippingItem));
-    setDoneLoading(false);
+    setLoading(false);
+  }
+
+  function reload() {
+    setLoading(true);
   }
 
   return (
     (loading) ?
       <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-        <LoadedView classes={classes} shipping={shipping}/>
+        <LoadedView classes={classes} shipping={shipping} reload={reload}/>
       </SpinBeforeLoading> :
-      <LoadedView classes={classes} shipping={shipping}/>
+      <LoadedView classes={classes} shipping={shipping} reload={reload}/>
   );
 };
+
 
 export {Shipping, FilledShippingView, Spinner, SpinBeforeLoading};
 export default Shipping;
