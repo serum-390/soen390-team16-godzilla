@@ -10,7 +10,7 @@ import {DataGrid} from "@material-ui/data-grid";
 import CustomToolbar from "../components/tables/CustomToolbar";
 
 export default function OrderItemListForm(props) {
-  const orderItems = props.orderItems;
+  const [orderItems, setOrderItems] = React.useState((typeof props.orderItems !== 'undefined') ? props.orderItems : {});
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
@@ -31,6 +31,7 @@ export default function OrderItemListForm(props) {
 
   const addItem = () => {
     orderItems["" + id] = quantity;
+    console.log(orderItems);
   };
 
   const deleteItem = (itemID) => {
@@ -65,7 +66,6 @@ export default function OrderItemListForm(props) {
         itemQuantity: value,
         delete: () => deleteItem(key)
       })));
-
     return (
       <DataGrid
         style={{height: 600, width: 300, display: 'table-row'}}

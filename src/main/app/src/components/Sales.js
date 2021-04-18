@@ -7,7 +7,6 @@ import CustomerForm from "../Forms/CustomerForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-import OrderItemListForm from "../Forms/OrderItemListForm";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -167,21 +166,6 @@ const salesColumns = [
   {field: 'orderType', headerName: 'Order Type', width: 90},
   {field: 'status', headerName: 'Status', width: 110},
   {
-    field: 'items', headerName: 'Items', width: 130,
-    renderCell: params => (
-      <div style={{margin: 'auto'}}>
-        <OrderItemListForm
-          initialButton='Items'
-          dialogTitle={'Items'}
-          dialogContentText={''}
-          submitButton='Submit'
-          onSubmit={params.value.submit}
-          orderItems={params.value.orderItems}
-        />
-      </div>
-    ),
-  },
-  {
     field: 'modify',
     headerName: 'Modify',
     width: 130,
@@ -225,20 +209,7 @@ const FilledSalesView = (props) => {
       deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
       orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
       status: updatedSales.status === "" ? sales.status : updatedSales.status,
-      items: sales.items
-    }, props.reload);
-    return sales;
-  };
-
-  let updateItems = (sales, updatedItems) => {
-    updateSales({
-      id: sales.id,
-      createdDate: sales.createdDate,
-      dueDate: sales.dueDate,
-      deliveryLocation: sales.deliveryLocation,
-      orderType: sales.orderType,
-      status: sales.status,
-      items: updatedItems
+      items: updatedSales.items
     }, props.reload);
     return sales;
   };
@@ -250,10 +221,6 @@ const FilledSalesView = (props) => {
       deliveryLocation: sales.deliveryLocation,
       orderType: sales.orderType,
       status: sales.status,
-      items: {
-        submit: (updatedItems) => updateItems(sales, updatedItems),
-        orderItems: sales.items
-      },
       modify: {
         submit: (updatedSales) => updateRow(sales, updatedSales),
         order: sales
@@ -338,8 +305,7 @@ const LoadedSalesView = ({classes, order, salesContacts, reload}) => {
               dialogTitle='New Sales Order '
               dialogContentText='Please enter the following information below to add a new sales order: '
               submitButton='Submit'
-              onSubmit={(data) =>insertSales(data, reload)}
-              order=''
+              onSubmit={(data) => insertSales(data, reload)}
             />
           </div>
         </div>

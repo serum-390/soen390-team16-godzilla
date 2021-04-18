@@ -16,6 +16,7 @@ export default function NewSalesOrderForm(props) {
   const [dueDate, setDueDate] = React.useState("");
   const [deliveryLocation, setDeliveryLocation] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [items, setItems] = React.useState({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,7 +33,7 @@ export default function NewSalesOrderForm(props) {
       deliveryLocation: deliveryLocation,
       orderType: 'sale',
       status: status,
-      items: {}
+      items: items
     };
     props.onSubmit(data);
     setOpen(false);
@@ -41,7 +42,7 @@ export default function NewSalesOrderForm(props) {
 
   return (
     <div>
-      <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
+      <Button variant="contained" color="primary" style={{float: 'right'}} onClick={handleClickOpen}>
         {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -57,7 +58,7 @@ export default function NewSalesOrderForm(props) {
             id="createdDate"
             label="Created Date"
             type="date"
-            defaultValue={sales.createdDate}
+            defaultValue={(typeof props.order !== 'undefined') ? sales.createdDate : ''}
             onChange={(event) => setCreatedDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -70,7 +71,7 @@ export default function NewSalesOrderForm(props) {
             id="dueDate"
             label="Due Date"
             type="date"
-            defaultValue={sales.dueDate}
+            defaultValue={(typeof props.order !== 'undefined') ? sales.dueDate : ''}
             onChange={(event) => setDueDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -83,7 +84,7 @@ export default function NewSalesOrderForm(props) {
             id="deliveryLocation"
             label="Delivery Location"
             type="string"
-            defaultValue={sales.deliveryLocation}
+            defaultValue={(typeof props.order !== 'undefined') ? sales.deliveryLocation : ''}
             onChange={(event) => setDeliveryLocation(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -96,18 +97,23 @@ export default function NewSalesOrderForm(props) {
             id="status"
             label="Status"
             type="String"
-            defaultValue={sales.status}
+            defaultValue={(typeof props.order !== 'undefined') ? sales.status : ''}
             onChange={(event) => setStatus(event.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
             fullWidth
           />
-
-          {/*<div style={{ height: 300, width: '100%' }}>*/}
-          {/*  <h3>Bill Of Material</h3>*/}
-          {/*  <DataGrid rows={rows} columns={columns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>*/}
-          {/*</div>*/}
+          <div style={{margin: 'auto'}}>
+            <OrderItemListForm
+              initialButton='Add Items'
+              dialogTitle={'Items'}
+              dialogContentText={''}
+              submitButton='Submit'
+              onSubmit={(itemList) => setItems(itemList)}
+              orderItems={(typeof props.order !== 'undefined') ? sales.items : undefined}
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} color="primary">
