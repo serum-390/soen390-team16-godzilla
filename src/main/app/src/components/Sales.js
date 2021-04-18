@@ -175,7 +175,8 @@ const salesColumns = [
           dialogTitle={'Items'}
           dialogContentText={''}
           submitButton='Submit'
-          onSubmit={params.value}
+          onSubmit={params.value.submit}
+          orderItems={params.value.orderItems}
         />
       </div>
     ),
@@ -191,7 +192,8 @@ const salesColumns = [
           dialogTitle={'Order Information'}
           dialogContentText={'Please enter the information you would like to modify'}
           submitButton='Submit'
-          onSubmit={params.value}
+          onSubmit={params.value.submit}
+          order={params.value.order}
         />
       </div>
     ),
@@ -215,18 +217,29 @@ const salesColumns = [
 const FilledSalesView = (props) => {
   let orders = [];
 
-  let updateRow = (sales, updatedSales, toUpdate) => {
-    if (toUpdate) {
-      updateSales({
-        id: sales.id,
-        createdDate: updatedSales.createdDate === "" ? sales.createdDate : updatedSales.createdDate,
-        dueDate: updatedSales.dueDate === "" ? sales.dueDate : updatedSales.dueDate,
-        deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
-        orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
-        status: updatedSales.status === "" ? sales.status : updatedSales.status,
-        items: sales.items
-      }, props.reload);
-    }
+  let updateRow = (sales, updatedSales) => {
+    updateSales({
+      id: sales.id,
+      createdDate: updatedSales.createdDate === "" ? sales.createdDate : updatedSales.createdDate,
+      dueDate: updatedSales.dueDate === "" ? sales.dueDate : updatedSales.dueDate,
+      deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
+      orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
+      status: updatedSales.status === "" ? sales.status : updatedSales.status,
+      items: sales.items
+    }, props.reload);
+    return sales;
+  };
+
+  let updateItems = (sales, updatedItems) => {
+    updateSales({
+      id: sales.id,
+      createdDate: sales.createdDate,
+      dueDate: sales.dueDate,
+      deliveryLocation: sales.deliveryLocation,
+      orderType: sales.orderType,
+      status: sales.status,
+      items: updatedItems
+    }, props.reload);
     return sales;
   };
   props.salesOrders.map(sales => (
@@ -237,8 +250,14 @@ const FilledSalesView = (props) => {
       deliveryLocation: sales.deliveryLocation,
       orderType: sales.orderType,
       status: sales.status,
-      items: (updatedSales, toUpdate) => updateRow(sales, updatedSales, toUpdate),
-      modify: (updatedSales, toUpdate) => updateRow(sales, updatedSales, toUpdate),
+      items: {
+        submit: (updatedItems) => updateItems(sales, updatedItems),
+        orderItems: sales.items
+      },
+      modify: {
+        submit: (updatedSales) => updateRow(sales, updatedSales),
+        order: sales
+      },
       delete: () => deleteSales(sales.id, props.reload)
     })));
 
@@ -319,7 +338,8 @@ const LoadedSalesView = ({classes, order, salesContacts, reload}) => {
               dialogTitle='New Sales Order '
               dialogContentText='Please enter the following information below to add a new sales order: '
               submitButton='Submit'
-              onSubmit={(data, insert) => (insert) ? insertSales(data, reload) : ''}
+              onSubmit={(data) =>insertSales(data, reload)}
+              order=''
             />
           </div>
         </div>

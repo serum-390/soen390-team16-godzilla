@@ -10,11 +10,10 @@ import {DataGrid} from "@material-ui/data-grid";
 import CustomToolbar from "../components/tables/CustomToolbar";
 
 export default function OrderItemListForm(props) {
-  const order = props.onSubmit(null, false);
+  const orderItems = props.orderItems;
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
-  let items = order.items;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,20 +25,16 @@ export default function OrderItemListForm(props) {
   };
 
   const handleSubmit = () => {
-    let data = order;
-    data.items = items;
-    console.log("YOOHO");
-    console.log(items);
-    props.onSubmit(data, true);
+    props.onSubmit(orderItems);
     setOpen(false);
   };
 
   const addItem = () => {
-    items["" + id] = quantity;
+    orderItems["" + id] = quantity;
   };
 
   const deleteItem = (itemID) => {
-    delete items["" + itemID];
+    delete orderItems["" + itemID];
   };
 
 
@@ -60,7 +55,7 @@ export default function OrderItemListForm(props) {
     },
   ];
 
-  const FilledItemView = ({orderItems}) => {
+  const FilledItemView = () => {
     let itemsList = [];
     let i = 0;
     Object.entries(orderItems).forEach(([key, value]) => (
@@ -120,9 +115,7 @@ export default function OrderItemListForm(props) {
 
           <Button variant="contained" color="primary" onClick={addItem}> Add Item </Button>
           <div style={{height: 400, width: '100%'}}>
-            <FilledItemView
-              orderItems={order.items}
-            />
+            <FilledItemView/>
           </div>
 
         </DialogContent>

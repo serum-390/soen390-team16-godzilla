@@ -6,23 +6,23 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CustomToolbar from '../components/tables/CustomToolbar';
-import { DataGrid } from '@material-ui/data-grid';
+import OrderItemListForm from "./OrderItemListForm";
 
 
 export default function NewSalesOrderForm(props) {
-  const sales = props.onSubmit(null, false);
-
+  const sales = props.order;
   const [open, setOpen] = React.useState(false);
   const [createdDate, setCreatedDate] = React.useState("");
   const [dueDate, setDueDate] = React.useState("");
   const [deliveryLocation, setDeliveryLocation] = React.useState("");
-  const [orderType, setOrderType] = React.useState("");
   const [status, setStatus] = React.useState("");
 
-
-  const handleClickOpen = () => { setOpen(true); };
-  const handleClose = () => { setOpen(false); };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleSubmit = () => {
     let data = {
@@ -30,16 +30,14 @@ export default function NewSalesOrderForm(props) {
       createdDate: createdDate,
       dueDate: dueDate,
       deliveryLocation: deliveryLocation,
-      orderType: orderType,
+      orderType: 'sale',
       status: status,
       items: {}
     };
-    props.onSubmit(data, true);
+    props.onSubmit(data);
     setOpen(false);
 
   };
-
-
 
   return (
     <div>
@@ -95,19 +93,6 @@ export default function NewSalesOrderForm(props) {
           <TextField
             autoFocus
             margin="dense"
-            id="orderType"
-            label="Order Type"
-            type="string"
-            defaultValue={sales.orderType}
-            onChange={(event) => setOrderType(event.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
             id="status"
             label="Status"
             type="String"
@@ -130,7 +115,7 @@ export default function NewSalesOrderForm(props) {
           </Button>
           <Button onClick={handleClose} color="primary">
             Cancel
-        </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
