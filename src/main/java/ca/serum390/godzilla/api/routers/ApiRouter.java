@@ -19,7 +19,6 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ca.serum390.godzilla.api.handlers.ProductionHandler;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -29,8 +28,6 @@ public class ApiRouter implements WebFluxConfigurer {
 
     public static final String ALL_GOOD_IN_THE_HOOD = "All good in the hood\n";
 
-    ProductionHandler productionHandler;
-    RouterFunction<ServerResponse> goodsRoute;
     RouterFunction<ServerResponse> usersRoute;
     RouterFunction<ServerResponse> orderRoute;
     RouterFunction<ServerResponse> inventoryRoute;
@@ -54,10 +51,7 @@ public class ApiRouter implements WebFluxConfigurer {
                 .path("/api", apiBuilder -> apiBuilder
                     .GET("/docs", this::docs)
                     .GET("/healthcheck", this::healthCheck)
-                    .GET("/products", productionHandler::demoProducts)
-                    .GET("/materials", productionHandler::demoMaterials)
                     .add(usersRoute)
-                    .add(goodsRoute)
                     .add(orderRoute)
                     .add(shippingRoute)
                     .add(inventoryRoute)
