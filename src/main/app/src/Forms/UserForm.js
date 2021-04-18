@@ -36,6 +36,7 @@ export default function UserForm(props) {
             label="User Name"
             type="string"
             defaultValue={props.userName}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -45,6 +46,7 @@ export default function UserForm(props) {
             label="Password"
             type="string"
             defaultValue={props.userPassword}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
          <TextField
@@ -54,6 +56,7 @@ export default function UserForm(props) {
             label="Role"
             type="string"
             defaultValue={props.userRole}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
 

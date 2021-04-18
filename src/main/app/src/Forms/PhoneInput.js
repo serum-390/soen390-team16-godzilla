@@ -43,6 +43,7 @@ function PhoneInput() {
                 onChange={handleChange}
                 name="textmask"
                 inputComponent={TextMaskCustom}
+                onKeyDown={(e) => e.stopPropagation()}
             />
         </div >
     );
