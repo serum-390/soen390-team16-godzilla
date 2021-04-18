@@ -1,12 +1,13 @@
-import { DataGrid } from "@material-ui/data-grid";
+import {DataGrid} from "@material-ui/data-grid";
 import CustomToolbar from './tables/CustomToolbar';
-import { useState } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { SpinBeforeLoading } from "./inventory/Inventory";
+import React, {useState} from 'react';
+import {makeStyles} from '@material-ui/core';
+import {SpinBeforeLoading} from "./inventory/Inventory";
 import CustomerForm from "../Forms/CustomerForm";
 import NewSalesOrderForm from "../Forms/NewSalesOrderForm";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
+import OrderItemListForm from "../Forms/OrderItemListForm";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,17 +21,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const contactColumn = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'companyName', headerName: 'Company Name', width: 130 },
-  { field: 'contactName', headerName: 'Customer', width: 130 },
-  { field: 'address', headerName: 'Address', width: 130 },
-  { field: 'contact', headerName: 'Contact #', width: 130 },
+  {field: 'id', headerName: 'ID', width: 70},
+  {field: 'companyName', headerName: 'Company Name', width: 130},
+  {field: 'contactName', headerName: 'Customer', width: 130},
+  {field: 'address', headerName: 'Address', width: 130},
+  {field: 'contact', headerName: 'Contact #', width: 130},
   {
     field: 'modify',
     headerName: 'Modify',
     width: 100,
     renderCell: params => (
-      <div style={{ margin: 'auto' }}>
+      <div style={{margin: 'auto'}}>
         {
           <CustomerForm
             onSubmit={params.value}
@@ -52,8 +53,8 @@ const contactColumn = [
     headerName: 'Delete',
     width: 120,
     renderCell: params => (
-      <div style={{ margin: 'auto' }}>
-        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
+      <div style={{margin: 'auto'}}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
           Delete
         </Button>
       </div>
@@ -92,7 +93,7 @@ const insertContact = async (data, reload) => {
     console.log(err);
     return err;
   }
-  
+
   reload();
 };
 
@@ -118,7 +119,7 @@ const getSales = async () => {
   return json;
 };
 
-const updateSales = async data => {
+const updateSales = async (data, reload) => {
   try {
     const api = `/api/orders/${data.id}`;
     const updated = await axios.put(api, data);
@@ -128,9 +129,10 @@ const updateSales = async data => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
-const insertSales = async data => {
+const insertSales = async (data, reload) => {
   try {
     const api = `/api/orders/`;
     const inserted = await axios.post(api, data);
@@ -140,10 +142,11 @@ const insertSales = async data => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
 
-const deleteSales = async id => {
+const deleteSales = async (id, reload) => {
   try {
     const api = `/api/orders/${id}`;
     const inserted = await axios.delete(api);
@@ -153,21 +156,36 @@ const deleteSales = async id => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
 const salesColumns = [
-  { field: 'id', headerName: 'Order #', width: 110 },
-  { field: 'createdDate', headerName: 'Created Date', width: 130 },
-  { field: 'dueDate', headerName: 'Due Date', width: 110 },
-  { field: 'deliveryLocation', headerName: 'Delivery Location', width: 130 },
-  { field: 'orderType', headerName: 'Order Type', width: 90 },
-  { field: 'status', headerName: 'Status', width: 110 },
+  {field: 'id', headerName: 'Order #', width: 110},
+  {field: 'createdDate', headerName: 'Created Date', width: 130},
+  {field: 'dueDate', headerName: 'Due Date', width: 110},
+  {field: 'deliveryLocation', headerName: 'Delivery Location', width: 130},
+  {field: 'orderType', headerName: 'Order Type', width: 90},
+  {field: 'status', headerName: 'Status', width: 110},
+  {
+    field: 'items', headerName: 'Items', width: 130,
+    renderCell: params => (
+      <div style={{margin: 'auto'}}>
+        <OrderItemListForm
+          initialButton='Items'
+          dialogTitle={'Items'}
+          dialogContentText={''}
+          submitButton='Submit'
+          onSubmit={params.value}
+        />
+      </div>
+    ),
+  },
   {
     field: 'modify',
     headerName: 'Modify',
     width: 130,
     renderCell: params => (
-      <div style={{ margin: 'auto' }}>
+      <div style={{margin: 'auto'}}>
         <NewSalesOrderForm
           initialButton='EDIT'
           dialogTitle={'Order Information'}
@@ -184,8 +202,8 @@ const salesColumns = [
     headerName: 'Delete',
     width: 130,
     renderCell: params => (
-      <div style={{ margin: 'auto' }}>
-        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
+      <div style={{margin: 'auto'}}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
           Delete
         </Button>
       </div>
@@ -194,7 +212,7 @@ const salesColumns = [
 ];
 
 
-const FilledSalesView = ({ salesOrders, classes }) => {
+const FilledSalesView = (props) => {
   let orders = [];
 
   let updateRow = (sales, updatedSales, toUpdate) => {
@@ -207,11 +225,11 @@ const FilledSalesView = ({ salesOrders, classes }) => {
         orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
         status: updatedSales.status === "" ? sales.status : updatedSales.status,
         items: sales.items
-      })
+      }, props.reload);
     }
     return sales;
   };
-  salesOrders.map(sales => (
+  props.salesOrders.map(sales => (
     orders.push({
       id: sales.id,
       createdDate: sales.createdDate,
@@ -219,8 +237,9 @@ const FilledSalesView = ({ salesOrders, classes }) => {
       deliveryLocation: sales.deliveryLocation,
       orderType: sales.orderType,
       status: sales.status,
+      items: (updatedSales, toUpdate) => updateRow(sales, updatedSales, toUpdate),
       modify: (updatedSales, toUpdate) => updateRow(sales, updatedSales, toUpdate),
-      delete: () => deleteSales(sales.id)
+      delete: () => deleteSales(sales.id, props.reload)
     })));
 
   return (
@@ -228,7 +247,7 @@ const FilledSalesView = ({ salesOrders, classes }) => {
       rows={orders}
       columns={salesColumns}
       pageSize={9}
-      components={{ Toolbar: CustomToolbar}}
+      components={{Toolbar: CustomToolbar}}
     />
   );
 };
@@ -260,58 +279,59 @@ const FilledContactView = (props) => {
     })));
 
   return (
-    <DataGrid rows={contacts} columns={contactColumn} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
+    <DataGrid rows={contacts} columns={contactColumn} pageSize={9} components={{Toolbar: CustomToolbar}}/>
   );
 };
 
-const LoadedSalesView = ({ classes, order, salesContacts, reload}) => {
+const LoadedSalesView = ({classes, order, salesContacts, reload}) => {
   return (
-  <div style={{ height: 600, width: '100%' }}>
-      <h1 style={{ textAlign: "center" }}>Sales Department</h1>
-      <div style={{ height: 720, width: '45%', float: 'left', display: 'table'}}>
+    <div style={{height: 600, width: '100%'}}>
+      <h1 style={{textAlign: "center"}}>Sales Department</h1>
+      <div style={{height: 720, width: '45%', float: 'left', display: 'table'}}>
 
-      <div style={{width: '100%', display: 'table-row' }}>
-        <h2 style={{ float: 'left'}}>Customers</h2>
-        <div style={{ float: 'right'}}>
+        <div style={{width: '100%', display: 'table-row'}}>
+          <h2 style={{float: 'left'}}>Customers</h2>
+          <div style={{float: 'right'}}>
             <CustomerForm
-            onSubmit={(data, insert) => (insert) ? insertContact(data, reload) : ''}
-            initialButton='Add New Customer'
-            dialogTitle='Add New Customer '
-            dialogContentText='Please enter the following information below to add a new customer: '
-            submitButton='Save' />
+              onSubmit={(data, insert) => (insert) ? insertContact(data, reload) : ''}
+              initialButton='Add New Customer'
+              dialogTitle='Add New Customer '
+              dialogContentText='Please enter the following information below to add a new customer: '
+              submitButton='Save'/>
+          </div>
         </div>
-      </div>
-      <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
-        <FilledContactView
+        <div style={{height: '100%', width: '100%', display: 'table-row'}}>
+          <FilledContactView
             salesContacts={salesContacts}
             classes={classes}
             reload={reload}
-        />
-       </div>
+          />
+        </div>
 
       </div>
 
-      <div style={{ height: 720, width: '50%', float: 'right', display: 'table' }}>
-        <div style={{width: '100%', display: 'table-row' }}>
-          <h2 style={{ float: 'left' }}>Sales Orders</h2>
-          <div style={{ float: 'right'}}>
+      <div style={{height: 720, width: '50%', float: 'right', display: 'table'}}>
+        <div style={{width: '100%', display: 'table-row'}}>
+          <h2 style={{float: 'left'}}>Sales Orders</h2>
+          <div style={{float: 'right'}}>
             <NewSalesOrderForm
               initialButton='Add New Sales Order'
               dialogTitle='New Sales Order '
               dialogContentText='Please enter the following information below to add a new sales order: '
               submitButton='Submit'
-              onSubmit={(data, insert) => (insert) ? insertSales(data) : ''}
+              onSubmit={(data, insert) => (insert) ? insertSales(data, reload) : ''}
             />
           </div>
         </div>
-        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+        <div style={{height: '100%', width: '100%', display: 'table-row'}}>
           <FilledSalesView
             salesOrders={order}
             classes={classes}
+            reload={reload}
           />
         </div>
       </div>
-  </div>
+    </div>
 
 
   );
@@ -322,33 +342,33 @@ const Sales = () => {
   const classes = useStyles();
   const [salesContacts, setContact] = useState([]);
   const [order, setSales] = useState([]);
-  const [loading, setDoneLoading] = useState(true); 
-  
+  const [loading, setDoneLoading] = useState(true);
+
 
   const waitForGetRequest = async () => {
-    getContact().then(ven => setContact(ven)); 
+    getContact().then(ven => setContact(ven));
     getSales().then(sales => setSales(sales));
     setDoneLoading(false);
   }
 
-  function reload(){
+  function reload() {
     setDoneLoading(true);
   }
 
   return (
     (loading) ?
-    <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
+      <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
 
-      <LoadedSalesView classes={classes} order={order} salesContacts={salesContacts} reload={reload}/> 
-    </SpinBeforeLoading> :
-    <div>
-      
-      <LoadedSalesView classes={classes}  order={order}  salesContacts={salesContacts} reload={reload} />
-    </div>
-   
+        <LoadedSalesView classes={classes} order={order} salesContacts={salesContacts} reload={reload}/>
+      </SpinBeforeLoading> :
+      <div>
+
+        <LoadedSalesView classes={classes} order={order} salesContacts={salesContacts} reload={reload}/>
+      </div>
+
   );
 }
-export { Sales, FilledSalesView,FilledContactView, SpinBeforeLoading };
+export {Sales, FilledSalesView, FilledContactView, SpinBeforeLoading};
 export default Sales;
 
 
