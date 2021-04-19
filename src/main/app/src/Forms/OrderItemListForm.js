@@ -30,12 +30,16 @@ export default function OrderItemListForm(props) {
   };
 
   const addItem = () => {
-    orderItems["" + id] = quantity;
+    let arr = {...orderItems};
+    arr["" + id] = quantity;
     console.log(orderItems);
+    setOrderItems(arr);
   };
 
   const deleteItem = (itemID) => {
-    delete orderItems["" + itemID];
+    let arr = {...orderItems};
+    delete arr["" + itemID];
+    setOrderItems(arr);
   };
 
 
