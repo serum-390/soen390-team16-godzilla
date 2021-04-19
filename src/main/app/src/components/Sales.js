@@ -163,7 +163,6 @@ const salesColumns = [
   {field: 'createdDate', headerName: 'Created Date', width: 130},
   {field: 'dueDate', headerName: 'Due Date', width: 110},
   {field: 'deliveryLocation', headerName: 'Delivery Location', width: 130},
-  {field: 'orderType', headerName: 'Order Type', width: 90},
   {field: 'status', headerName: 'Status', width: 110},
   {
     field: 'modify',
@@ -207,7 +206,7 @@ const FilledSalesView = (props) => {
       createdDate: updatedSales.createdDate === "" ? sales.createdDate : updatedSales.createdDate,
       dueDate: updatedSales.dueDate === "" ? sales.dueDate : updatedSales.dueDate,
       deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
-      orderType: updatedSales.orderType === "" ? sales.orderType : updatedSales.orderType,
+      orderType: 'sale',
       status: updatedSales.status === "" ? sales.status : updatedSales.status,
       items: updatedSales.items
     }, props.reload);
@@ -219,7 +218,6 @@ const FilledSalesView = (props) => {
       createdDate: sales.createdDate,
       dueDate: sales.dueDate,
       deliveryLocation: sales.deliveryLocation,
-      orderType: sales.orderType,
       status: sales.status,
       modify: {
         submit: (updatedSales) => updateRow(sales, updatedSales),

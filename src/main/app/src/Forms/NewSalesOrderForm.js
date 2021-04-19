@@ -7,15 +7,18 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import OrderItemListForm from "./OrderItemListForm";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 
 export default function NewSalesOrderForm(props) {
-  const sales = props.order;
+  const order = props.order;
   const [open, setOpen] = React.useState(false);
   const [createdDate, setCreatedDate] = React.useState("");
   const [dueDate, setDueDate] = React.useState("");
   const [deliveryLocation, setDeliveryLocation] = React.useState("");
-  const [status, setStatus] = React.useState("");
+  const [status, setStatus] = React.useState((typeof order !== "undefined")? order.status:"");
   const [items, setItems] = React.useState({});
 
   const handleClickOpen = () => {
@@ -58,7 +61,7 @@ export default function NewSalesOrderForm(props) {
             id="createdDate"
             label="Created Date"
             type="date"
-            defaultValue={(typeof props.order !== 'undefined') ? sales.createdDate : ''}
+            defaultValue={(typeof props.order !== 'undefined') ? order.createdDate : ''}
             onChange={(event) => setCreatedDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -71,7 +74,7 @@ export default function NewSalesOrderForm(props) {
             id="dueDate"
             label="Due Date"
             type="date"
-            defaultValue={(typeof props.order !== 'undefined') ? sales.dueDate : ''}
+            defaultValue={(typeof props.order !== 'undefined') ? order.dueDate : ''}
             onChange={(event) => setDueDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -84,26 +87,25 @@ export default function NewSalesOrderForm(props) {
             id="deliveryLocation"
             label="Delivery Location"
             type="string"
-            defaultValue={(typeof props.order !== 'undefined') ? sales.deliveryLocation : ''}
+            defaultValue={(typeof props.order !== 'undefined') ? order.deliveryLocation : ''}
             onChange={(event) => setDeliveryLocation(event.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
             fullWidth
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="status"
-            label="Status"
-            type="String"
-            defaultValue={(typeof props.order !== 'undefined') ? sales.status : ''}
-            onChange={(event) => setStatus(event.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
-          />
+          <InputLabel id="label" shrink={true}>Status</InputLabel>
+          <Select labelId="label" id="select" value={status}
+                  onChange={(event) => setStatus(event.target.value)}>
+            <MenuItem value="new">new</MenuItem>
+            <MenuItem value="ready">ready</MenuItem>
+            <MenuItem value="production process">production process</MenuItem>
+            <MenuItem value="shipping process">shipping process</MenuItem>
+            <MenuItem value="packaged">packaged</MenuItem>
+            <MenuItem value="shipped">shipped</MenuItem>
+            <MenuItem value="delivered">delivered</MenuItem>
+          </Select>
+
           <div style={{margin: 'auto'}}>
             <OrderItemListForm
               initialButton='Add Items'
@@ -111,7 +113,7 @@ export default function NewSalesOrderForm(props) {
               dialogContentText={''}
               submitButton='Submit'
               onSubmit={(itemList) => setItems(itemList)}
-              orderItems={(typeof props.order !== 'undefined') ? sales.items : undefined}
+              orderItems={(typeof props.order !== 'undefined') ? order.items : undefined}
             />
           </div>
         </DialogContent>
