@@ -9,8 +9,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {DataGrid} from "@material-ui/data-grid";
 import CustomToolbar from "../components/tables/CustomToolbar";
 
-export default function OrderItemListForm(props) {
-  const [orderItems, setOrderItems] = React.useState((typeof props.orderItems !== 'undefined' && props.orderItems != null) ? props.orderItems : {});
+export default function BillOfMaterialForm(props) {
+  const [bom, setBOM] = React.useState((typeof props.billOfMaterial !== 'undefined' && props.billOfMaterial != null) ? props.billOfMaterial : {});
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
@@ -25,21 +25,20 @@ export default function OrderItemListForm(props) {
   };
 
   const handleSubmit = () => {
-    props.onSubmit(orderItems);
+    props.onSubmit(bom);
     setOpen(false);
   };
 
   const addItem = () => {
-    let arr = {...orderItems};
+    let arr = {...bom};
     arr["" + id] = quantity;
-    console.log(orderItems);
-    setOrderItems(arr);
+    setBOM(arr);
   };
 
   const deleteItem = (itemID) => {
-    let arr = {...orderItems};
+    let arr = {...bom};
     delete arr["" + itemID];
-    setOrderItems(arr);
+    setBOM(arr);
   };
 
 
@@ -63,7 +62,7 @@ export default function OrderItemListForm(props) {
   const FilledItemView = () => {
     let itemsList = [];
     let i = 0;
-    Object.entries(orderItems).forEach(([key, value]) => (
+    Object.entries(bom).forEach(([key, value]) => (
       itemsList.push({
         id: i++,
         itemID: key,

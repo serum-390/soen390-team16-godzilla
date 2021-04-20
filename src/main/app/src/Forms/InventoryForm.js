@@ -6,11 +6,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { DataGrid } from '@material-ui/data-grid';
-import CustomToolbar from '../components/tables/CustomToolbar';
+import BillOfMaterialForm from "./BillOfMaterialForm";
 
 export default function InventoryForm(props) {
-  const item = props.onSubmit(null, false);
+  const [item, setItem] = React.useState(props.item);
   const [open, setOpen] = React.useState(false);
   const [location, setLocation] = React.useState("");
   const [itemName, setItemName] = React.useState("");
@@ -18,6 +17,7 @@ export default function InventoryForm(props) {
   const [buyPrice, setBuyPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const [goodType, setGoodType] = React.useState("");
+  const [bom, setBOM] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,9 +36,9 @@ export default function InventoryForm(props) {
       sellPrice: sellPrice,
       buyPrice: buyPrice,
       location: location,
-      billOfMaterial: {}
+      billOfMaterial: bom
     };
-    props.onSubmit(data, true);
+    props.onSubmit(data);
     setOpen(false);
   };
 
@@ -61,7 +61,7 @@ export default function InventoryForm(props) {
             id="itemName"
             label="Item Name"
             type="string"
-            defaultValue={item.itemName}
+            defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.itemName : ''}
             onChange={(event) => setItemName(event.target.value)}
             fullWidth
           />
@@ -71,7 +71,7 @@ export default function InventoryForm(props) {
             id="location"
             label="Location"
             type="string"
-            defaultValue={item.location}
+            defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.location : ''}
             onChange={(event) => setLocation(event.target.value)}
             fullWidth
           />
@@ -81,7 +81,7 @@ export default function InventoryForm(props) {
             id="quantity"
             label="Quantity"
             type="number"
-            defaultValue={item.quantity}
+            defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.quantity : ''}
             onChange={(event) => setQuantity(event.target.value)}
             fullWidth
           />
@@ -92,7 +92,7 @@ export default function InventoryForm(props) {
             label="Sell Price"
             type="number"
             step={0.5}
-            defaultValue={item.sellPrice}
+            defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.sellPrice : ''}
             onChange={(event) => setSellPrice(event.target.value)}
             fullWidth
           />
@@ -103,7 +103,7 @@ export default function InventoryForm(props) {
             label="Buy Price"
             type="number"
             step={0.5}
-            defaultValue={item.buyPrice}
+            defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.buyPrice : ''}
             onChange={(event) => setBuyPrice(event.target.value)}
             fullWidth
           />
@@ -115,15 +115,20 @@ export default function InventoryForm(props) {
             onChange={(event) => setGoodType(event.target.value)}
             fullWidth
             type="number"
-            defaultValue={item.goodType}
+            defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.goodType : ''}
             InputProps={{inputProps: {min: 1, max: 6}}}
           />
 
-
-        <div style={{ height: 300, width: '100%' }}>
-          <h3>Bill Of Material</h3>
-          <DataGrid rows={rows} columns={columns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
-        </div>
+          <div style={{margin: 'auto'}}>
+            <BillOfMaterialForm
+              initialButton='BOM'
+              dialogTitle={'Bill of Material'}
+              dialogContentText={''}
+              submitButton='Submit'
+              onSubmit={(itemList) => setBOM(itemList)}
+              billOfMaterial={(typeof props.item !== "undefined" && props.item != null) ? item.billOfMaterial : {}}
+            />
+          </div>
 
 
         </DialogContent>
@@ -139,17 +144,3 @@ export default function InventoryForm(props) {
     </div>
   );
 }
-
-
-const rows = [
-  { id: 1, col1: 'Frame Speed A', col2: '2', col3: '$0' },
-  { id: 2, col1: 'Frame Speed B', col2: '3', col3: '$0'  },
-  { id: 3, col1: 'Frame Speed C', col2: '3', col3: '$0' },
-];
-
-const columns = [
-  { field: 'col1', headerName: 'Name', width: 150 },
-  { field: 'col2', headerName: 'Quality', width: 150 },
-  { field: 'col3', headerName: 'Price', width: 150 },
-];
-

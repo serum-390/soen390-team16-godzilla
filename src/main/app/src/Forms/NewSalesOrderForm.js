@@ -13,13 +13,13 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 
 export default function NewSalesOrderForm(props) {
-  const order = props.order;
+  const [order, setOrder] = React.useState(props.order);
   const [open, setOpen] = React.useState(false);
   const [createdDate, setCreatedDate] = React.useState("");
   const [dueDate, setDueDate] = React.useState("");
-  const [deliveryLocation, setDeliveryLocation] = React.useState("");
-  const [status, setStatus] = React.useState((typeof order !== "undefined")? order.status:"");
-  const [items, setItems] = React.useState({});
+  const [deliveryLocation, setDeliveryLocation] = React.useState( "");
+  const [status, setStatus] = React.useState( "");
+  const [items, setItems] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -61,7 +61,7 @@ export default function NewSalesOrderForm(props) {
             id="createdDate"
             label="Created Date"
             type="date"
-            defaultValue={(typeof props.order !== 'undefined') ? order.createdDate : ''}
+            defaultValue={(typeof props.order !== 'undefined' && props.order != null) ? props.order.createdDate : ''}
             onChange={(event) => setCreatedDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -74,7 +74,7 @@ export default function NewSalesOrderForm(props) {
             id="dueDate"
             label="Due Date"
             type="date"
-            defaultValue={(typeof props.order !== 'undefined') ? order.dueDate : ''}
+            defaultValue={(typeof props.order !== 'undefined' && props.order != null) ? props.order.dueDate : ''}
             onChange={(event) => setDueDate(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -87,7 +87,7 @@ export default function NewSalesOrderForm(props) {
             id="deliveryLocation"
             label="Delivery Location"
             type="string"
-            defaultValue={(typeof props.order !== 'undefined') ? order.deliveryLocation : ''}
+            defaultValue={(typeof props.order !== 'undefined' && props.order != null) ? props.order.deliveryLocation : ''}
             onChange={(event) => setDeliveryLocation(event.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -95,7 +95,7 @@ export default function NewSalesOrderForm(props) {
             fullWidth
           />
           <InputLabel id="label" shrink={true}>Status</InputLabel>
-          <Select labelId="label" id="select" value={status}
+          <Select labelId="label" id="select" value={(typeof props.order !== 'undefined' && props.order != null) ? props.order.status : ''}
                   onChange={(event) => setStatus(event.target.value)}>
             <MenuItem value="new">new</MenuItem>
             <MenuItem value="ready">ready</MenuItem>
@@ -113,7 +113,7 @@ export default function NewSalesOrderForm(props) {
               dialogContentText={''}
               submitButton='Submit'
               onSubmit={(itemList) => setItems(itemList)}
-              orderItems={(typeof props.order !== 'undefined') ? order.items : undefined}
+              orderItems={(typeof props.order !== 'undefined' && props.order != null) ? props.order.items : {}}
             />
           </div>
         </DialogContent>

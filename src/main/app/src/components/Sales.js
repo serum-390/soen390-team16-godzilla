@@ -132,16 +132,25 @@ const updateSales = async (data, reload) => {
 };
 
 const insertSales = async (data, reload) => {
-  try {
-    const api = `/api/orders/`;
-    const inserted = await axios.post(api, data);
-    console.log(`STATUS CODE: ${inserted.status}`);
-    console.log(`DATA: ${inserted.data || "Nothing"}`);
-  } catch (err) {
-    console.log(err);
-    return err;
+  if (data.createdDate !== "" && data.dueDate !== "" && data.deliveryLocation !== "" && data.orderType !== ""
+    && data.status !== "") {
+
+    if (data.items === "") {
+      data.items = {};
+    }
+    try {
+      const api = `/api/orders/`;
+      const inserted = await axios.post(api, data);
+      console.log(`STATUS CODE: ${inserted.status}`);
+      console.log(`DATA: ${inserted.data || "Nothing"}`);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+    reload();
+  } else {
+    console.log("Please complete all the missing fields in the order form")
   }
-  reload();
 };
 
 
@@ -208,7 +217,7 @@ const FilledSalesView = (props) => {
       deliveryLocation: updatedSales.deliveryLocation === "" ? sales.deliveryLocation : updatedSales.deliveryLocation,
       orderType: 'sale',
       status: updatedSales.status === "" ? sales.status : updatedSales.status,
-      items: updatedSales.items
+      items: updatedSales.items === "" ? sales.items : updatedSales.items,
     }, props.reload);
     return sales;
   };
@@ -342,11 +351,9 @@ const Sales = () => {
   return (
     (loading) ?
       <SpinBeforeLoading minLoadingTime={500} awaiting={waitForGetRequest}>
-
         <LoadedSalesView classes={classes} order={order} salesContacts={salesContacts} reload={reload}/>
       </SpinBeforeLoading> :
       <div>
-
         <LoadedSalesView classes={classes} order={order} salesContacts={salesContacts} reload={reload}/>
       </div>
 
