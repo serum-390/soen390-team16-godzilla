@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import BillOfMaterialForm from "./BillOfMaterialForm";
 
 export default function InventoryForm(props) {
-  const [item, setItem] = React.useState(props.item);
+  const [item] = React.useState(props.item);
   const [open, setOpen] = React.useState(false);
   const [location, setLocation] = React.useState("");
   const [itemName, setItemName] = React.useState("");

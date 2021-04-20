@@ -13,7 +13,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 
 export default function NewSalesOrderForm(props) {
-  const [order, setOrder] = React.useState(props.order);
   const [open, setOpen] = React.useState(false);
   const [createdDate, setCreatedDate] = React.useState("");
   const [dueDate, setDueDate] = React.useState("");
