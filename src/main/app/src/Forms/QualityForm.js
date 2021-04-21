@@ -74,6 +74,7 @@ export default function QualityForm(props) {
             max={3}
             valueLabelDisplay="auto"
             marks={marks}
+            onKeyDown={(e) => e.stopPropagation()}
           />
         </DialogContent>
         <DialogActions>
