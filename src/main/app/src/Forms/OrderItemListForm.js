@@ -32,7 +32,6 @@ export default function OrderItemListForm(props) {
   const addItem = () => {
     let arr = {...orderItems};
     arr["" + id] = quantity;
-    console.log(orderItems);
     setOrderItems(arr);
   };
 
