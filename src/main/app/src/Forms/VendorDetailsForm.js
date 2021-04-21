@@ -55,6 +55,7 @@ function ProvinceOptions({province, setProvince, defaultValue}) {
           value={province}
           defaultValue={defaultValue}
           onChange={handleChange}
+          onKeyDown={(e) => e.stopPropagation()}
         >
           <MenuItem value="">
             <em>None</em>
@@ -104,6 +105,7 @@ function PhoneNumberInput({contact, setContact}) {
           name="textmask"
           id="formatted-text-mask-input"
           inputComponent={TextMaskCustom}
+          onKeyDown={(e) => e.stopPropagation()}
         />
       </FormControl>
     </div>
@@ -122,6 +124,7 @@ function TextMaskCustom(props) {
       mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
       placeholderChar={'\u2000'}
       showMask
+      onKeyDown={(e) => e.stopPropagation()}
     />
   );
 }
@@ -182,6 +185,7 @@ export default function PurchaseOrderForm(props) {
             type="string"
             defaultValue={vendor.companyName}
             onChange={(event) => setCompanyName(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -192,6 +196,7 @@ export default function PurchaseOrderForm(props) {
             type="string"
             defaultValue={vendor.contactName}
             onChange={(event) => setContactName(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -202,6 +207,7 @@ export default function PurchaseOrderForm(props) {
             type="string"
             defaultValue={props.splitAddress}
             onChange={(event) => setAddress(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <Grid container spacing={2}>
@@ -214,6 +220,7 @@ export default function PurchaseOrderForm(props) {
                 type="text"
                 defaultValue={props.splitCity}
                 onChange={(event) => setCity(event.target.value)} 
+                onKeyDown={(e) => e.stopPropagation()}
               />
             </Grid>
             <Grid item md={3}>
@@ -226,6 +233,7 @@ export default function PurchaseOrderForm(props) {
                 type="text" 
                 defaultValue={props.splitPostal}
                 onChange={(event) => setPostal(event.target.value)} 
+                onKeyDown={(e) => e.stopPropagation()}
               />
             </Grid>
             <Grid item md={3}>

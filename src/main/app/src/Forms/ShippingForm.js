@@ -54,6 +54,7 @@ export default function ShippingForm(props) {
             type="date"
             defaultValue= "2021-01-01"
             onChange={(event) => setShippingDate(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}
@@ -67,6 +68,7 @@ export default function ShippingForm(props) {
             type="number"
             defaultValue={1}
             onChange={(event) => setOrderID(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}
@@ -76,7 +78,8 @@ export default function ShippingForm(props) {
 
           <InputLabel id="label" shrink={true}>Shipping Method</InputLabel>
           <Select labelId="label" id="select" value={shippingMethod}
-                  onChange={(event) => setShippingMethod(event.target.value)}>
+              onKeyDown={(e) => e.stopPropagation()}
+              onChange={(event) => setShippingMethod(event.target.value)}>
             <MenuItem value="air">Air</MenuItem>
             <MenuItem value="car">Car</MenuItem>
             <MenuItem value="ferry">Ferry</MenuItem>
