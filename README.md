@@ -37,6 +37,8 @@
 
 **Contributing**: <https://github.com/Serum-390/godzilla/wiki/Contributors>
 
+**Docker Image**: <https://github.com/orgs/serum-390/packages/container/package/godzilla>
+
 <!-- **Source Code**: <https://github.com/serum-390/soen390-team16-godzilla> -->
 
 ---
