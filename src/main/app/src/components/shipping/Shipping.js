@@ -126,7 +126,7 @@ const LoadedView = (props) => {
           <ShippingForm
             initialButton='schedule shipping'
             dialogTitle='Shipping Information '
-            dialogContentText='Please enter shipping information:'
+            dialogContentText='Please enter shipping information: [Note! a valid shipping date should be entered. A valid shipping date is before the order due date and after the current date]'
             submitButton='schedule'
             onSubmit={(data) => addShippingItem(data, props.reload)}
           />
