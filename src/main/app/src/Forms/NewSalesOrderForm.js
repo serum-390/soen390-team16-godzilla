@@ -16,7 +16,7 @@ export default function NewSalesOrderForm(props) {
   const [open, setOpen] = React.useState(false);
   const [createdDate, setCreatedDate] = React.useState("");
   const [dueDate, setDueDate] = React.useState("");
-  const [deliveryLocation, setDeliveryLocation] = React.useState( "");
+  const [deliveryLocation, setDeliveryLocation] = React.useState("");
   const [status, setStatus] = React.useState( "");
   const [items, setItems] = React.useState("");
 
@@ -94,7 +94,7 @@ export default function NewSalesOrderForm(props) {
             fullWidth
           />
           <InputLabel id="label" shrink={true}>Status</InputLabel>
-          <Select labelId="label" id="select" value={(typeof props.order !== 'undefined' && props.order != null) ? props.order.status : ''}
+          <Select labelId="label" id="select" value={status}
                   onChange={(event) => setStatus(event.target.value)}>
             <MenuItem value="new">new</MenuItem>
             <MenuItem value="ready">ready</MenuItem>

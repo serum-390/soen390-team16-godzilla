@@ -149,7 +149,7 @@ const insertSales = async (data, reload) => {
     }
     reload();
   } else {
-    console.log("Please complete all the missing fields in the order form")
+    alert("Please complete all the missing fields in the order form");
   }
 };
 

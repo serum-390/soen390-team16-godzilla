@@ -51,7 +51,7 @@ const insertItem = async (data, reload) => {
     }
     reload();
   } else {
-    console.log("Please complete all the missing fields in the item form")
+    alert("Please complete all the missing fields in the item form");
   }
 
 };
