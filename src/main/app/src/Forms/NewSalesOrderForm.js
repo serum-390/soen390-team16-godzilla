@@ -61,6 +61,7 @@ export default function NewSalesOrderForm(props) {
             type="date"
             defaultValue={sales.createdDate}
             onChange={(event) => setCreatedDate(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}
@@ -74,6 +75,7 @@ export default function NewSalesOrderForm(props) {
             type="date"
             defaultValue={sales.dueDate}
             onChange={(event) => setDueDate(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}
@@ -87,6 +89,7 @@ export default function NewSalesOrderForm(props) {
             type="string"
             defaultValue={sales.deliveryLocation}
             onChange={(event) => setDeliveryLocation(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}
@@ -100,6 +103,7 @@ export default function NewSalesOrderForm(props) {
             type="string"
             defaultValue={sales.orderType}
             onChange={(event) => setOrderType(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}
@@ -113,6 +117,7 @@ export default function NewSalesOrderForm(props) {
             type="String"
             defaultValue={sales.status}
             onChange={(event) => setStatus(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
               shrink: true,
             }}

@@ -167,6 +167,7 @@ export default function NewPurchaseOrderForm(props) {
               type="date"
               defaultValue={today}
               onChange={(event) => setCreatedDate(event.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
               fullWidth
             />
             <TextField
@@ -177,6 +178,7 @@ export default function NewPurchaseOrderForm(props) {
               type="date"
               defaultValue={tomorrow}
               onChange={(event) => setDueDate(event.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
               fullWidth
             />
             <TextField
@@ -187,6 +189,7 @@ export default function NewPurchaseOrderForm(props) {
               type="string"
               defaultValue="Montreal"
               onChange={(event) => setDeliveryLocation(event.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
               fullWidth
             />
             <FormControl variant="outlined" >
@@ -225,6 +228,7 @@ export default function NewPurchaseOrderForm(props) {
               type="number"
               defaultValue="0"
               variant="outlined"
+              onKeyDown={(e) => e.stopPropagation()}
             />
           </div>
 
