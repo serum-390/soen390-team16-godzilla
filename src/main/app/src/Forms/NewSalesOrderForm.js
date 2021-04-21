@@ -6,23 +6,26 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CustomToolbar from '../components/tables/CustomToolbar';
-import { DataGrid } from '@material-ui/data-grid';
+import OrderItemListForm from "./OrderItemListForm";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 
 export default function NewSalesOrderForm(props) {
-  const sales = props.onSubmit(null, false);
-
   const [open, setOpen] = React.useState(false);
   const [createdDate, setCreatedDate] = React.useState("");
   const [dueDate, setDueDate] = React.useState("");
   const [deliveryLocation, setDeliveryLocation] = React.useState("");
-  const [orderType, setOrderType] = React.useState("");
-  const [status, setStatus] = React.useState("");
+  const [status, setStatus] = React.useState( "");
+  const [items, setItems] = React.useState("");
 
-
-  const handleClickOpen = () => { setOpen(true); };
-  const handleClose = () => { setOpen(false); };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleSubmit = () => {
     let data = {
@@ -30,20 +33,18 @@ export default function NewSalesOrderForm(props) {
       createdDate: createdDate,
       dueDate: dueDate,
       deliveryLocation: deliveryLocation,
-      orderType: orderType,
+      orderType: 'sale',
       status: status,
-      items: {}
+      items: items
     };
-    props.onSubmit(data, true);
+    props.onSubmit(data);
     setOpen(false);
 
   };
 
-
-
   return (
     <div>
-      <Button variant="contained" color="primary" style={{ float: 'right' }} onClick={handleClickOpen}>
+      <Button variant="contained" color="primary" style={{float: 'right'}} onClick={handleClickOpen}>
         {props.initialButton}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -59,7 +60,7 @@ export default function NewSalesOrderForm(props) {
             id="createdDate"
             label="Created Date"
             type="date"
-            defaultValue={sales.createdDate}
+            defaultValue={(typeof props.order !== 'undefined' && props.order != null) ? props.order.createdDate : ''}
             onChange={(event) => setCreatedDate(event.target.value)}
             onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
@@ -73,7 +74,7 @@ export default function NewSalesOrderForm(props) {
             id="dueDate"
             label="Due Date"
             type="date"
-            defaultValue={sales.dueDate}
+            defaultValue={(typeof props.order !== 'undefined' && props.order != null) ? props.order.dueDate : ''}
             onChange={(event) => setDueDate(event.target.value)}
             onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
@@ -87,7 +88,7 @@ export default function NewSalesOrderForm(props) {
             id="deliveryLocation"
             label="Delivery Location"
             type="string"
-            defaultValue={sales.deliveryLocation}
+            defaultValue={(typeof props.order !== 'undefined' && props.order != null) ? props.order.deliveryLocation : ''}
             onChange={(event) => setDeliveryLocation(event.target.value)}
             onKeyDown={(e) => e.stopPropagation()}
             InputLabelProps={{
@@ -95,38 +96,27 @@ export default function NewSalesOrderForm(props) {
             }}
             fullWidth
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="orderType"
-            label="Order Type"
-            type="string"
-            defaultValue={sales.orderType}
-            onChange={(event) => setOrderType(event.target.value)}
-            onKeyDown={(e) => e.stopPropagation()}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="status"
-            label="Status"
-            type="String"
-            defaultValue={sales.status}
-            onChange={(event) => setStatus(event.target.value)}
-            onKeyDown={(e) => e.stopPropagation()}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
-          />
+          <InputLabel id="label" shrink={true}>Status</InputLabel>
+          <Select labelId="label" id="select" value={status}
+                  onChange={(event) => setStatus(event.target.value)}>
+            <MenuItem value="new">new</MenuItem>
+            <MenuItem value="ready">ready</MenuItem>
+            <MenuItem value="production process">production process</MenuItem>
+            <MenuItem value="shipping process">shipping process</MenuItem>
+            <MenuItem value="packaged">packaged</MenuItem>
+            <MenuItem value="shipped">shipped</MenuItem>
+            <MenuItem value="delivered">delivered</MenuItem>
+          </Select>
 
-          <div style={{ height: 300, width: '100%' }}>
-            <h3>Bill Of Material</h3>
-            <DataGrid rows={rows} columns={columns} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
+          <div style={{margin: 'auto'}}>
+            <OrderItemListForm
+              initialButton='Add Items'
+              dialogTitle={'Items'}
+              dialogContentText={''}
+              submitButton='Submit'
+              onSubmit={(itemList) => setItems(itemList)}
+              orderItems={(typeof props.order !== 'undefined' && props.order != null) ? props.order.items : {}}
+            />
           </div>
         </DialogContent>
         <DialogActions>
@@ -135,22 +125,10 @@ export default function NewSalesOrderForm(props) {
           </Button>
           <Button onClick={handleClose} color="primary">
             Cancel
-        </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
 
-
-const rows = [
-  { id: 1, col1: 'Frame Speed A', col2: '2', col3: '$0' },
-  { id: 2, col1: 'Frame Speed B', col2: '3', col3: '$0'  },
-  { id: 3, col1: 'Frame Speed C', col2: '3', col3: '$0' },
-];
-
-const columns = [
-  { field: 'col1', headerName: 'Name', width: 150 },
-  { field: 'col2', headerName: 'Quality', width: 150 },
-  { field: 'col3', headerName: 'Price', width: 150 },
-];

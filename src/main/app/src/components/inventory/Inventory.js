@@ -1,9 +1,9 @@
-import { Box, makeStyles } from '@material-ui/core';
-import React, { Fragment, useEffect, useState } from 'react';
+import {Box, makeStyles} from '@material-ui/core';
+import React, {Fragment, useEffect, useState} from 'react';
 import AppLogo from '../../misc/logo.svg';
 import '../../misc/React-Spinner.css';
-import { spinnyBoi } from '../About';
-import { DataGrid } from "@material-ui/data-grid";
+import {spinnyBoi} from '../About';
+import {DataGrid} from "@material-ui/data-grid";
 import CustomToolbar from '../tables/CustomToolbar';
 import InventoryForm from "../../Forms/InventoryForm";
 import QualityForm from "../../Forms/QualityForm";
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const updateItem = async data => {
+const updateItem = async (data, reload) => {
   try {
     const api = `/api/inventory/${data.id}`;
     const updated = await axios.put(api, data);
@@ -31,22 +31,33 @@ const updateItem = async data => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
-const insertItem = async data => {
-  try {
-    const api = `/api/inventory/`;
-    const inserted = await axios.post(api, data);
-    console.log(`STATUS CODE: ${inserted.status}`);
-    console.log(`DATA: ${inserted.data || "Nothing"}`);
-  } catch (err) {
-    console.log(err);
-    return err;
+const insertItem = async (data, reload) => {
+  if (data.itemName !== "" && data.buyPrice !== "" && data.sellPrice !== "" && data.goodType !== ""
+    && data.quantity !== "" && data.location !== "") {
+    if (data.billOfMaterial === "") {
+      data.billOfMaterial = {};
+    }
+    try {
+      const api = `/api/inventory/`;
+      const inserted = await axios.post(api, data);
+      console.log(`STATUS CODE: ${inserted.status}`);
+      console.log(`DATA: ${inserted.data || "Nothing"}`);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+    reload();
+  } else {
+    alert("Please complete all the missing fields in the item form");
   }
+
 };
 
 
-const deleteItem = async id => {
+const deleteItem = async (id, reload) => {
   try {
     const api = `/api/inventory/${id}`;
     const inserted = await axios.delete(api);
@@ -56,30 +67,32 @@ const deleteItem = async id => {
     console.log(err);
     return err;
   }
+  reload();
 };
 
 
 const inventoryCols = [
-  { field: 'id', headerName: 'Item', width: 100 },
-  { field: 'ItemName', headerName: 'Item Name', width: 130 },
-  { field: 'GoodType', headerName: 'Type', width: 100 },
-  { field: 'Quantity', headerName: 'Quantity', width: 130 },
-  { field: 'SellPrice', headerName: 'Sell Price', width: 130 },
-  { field: 'BuyPrice', headerName: 'Buy Price', width: 130 },
-  { field: 'Location', headerName: 'Location', width: 130 },
+  {field: 'id', headerName: 'Item', width: 100},
+  {field: 'ItemName', headerName: 'Item Name', width: 130},
+  {field: 'GoodType', headerName: 'Type', width: 100},
+  {field: 'Quantity', headerName: 'Quantity', width: 130},
+  {field: 'SellPrice', headerName: 'Sell Price', width: 130},
+  {field: 'BuyPrice', headerName: 'Buy Price', width: 130},
+  {field: 'Location', headerName: 'Location', width: 130},
   {
     field: 'modify',
     headerName: 'Modify',
     width: 100,
     renderCell: params => (
-      <div style={{ margin: 'auto' }}>
+      <div style={{margin: 'auto'}}>
         {
           <InventoryForm
             initialButton='Edit'
             dialogTitle='Inventory Information '
             dialogContentText='Please enter any information you would like to modify: '
             submitButton='Update'
-            onSubmit={params.value}
+            onSubmit={params.value.submit}
+            item={params.value.item}
           />
         }
       </div>
@@ -90,28 +103,29 @@ const inventoryCols = [
     headerName: 'Delete',
     width: 130,
     renderCell: params => (
-      <div style={{ margin: 'auto' }}>
-        <Button variant="contained" onClick={params.value} color="primary" style={{ float: 'right' }}>
+      <div style={{margin: 'auto'}}>
+        <Button variant="contained" onClick={params.value} color="primary" style={{float: 'right'}}>
           Delete
         </Button>
       </div>
     ),
   },
-  { field: 'Quality', headerName: 'Quality', width: 150,
-  renderCell: params => (
-    <div style={{ margin: 'auto' }}>
-    {
-      <QualityForm
-        initialButton='Quality Management'
-        dialogTitle='Quality Management'
-        submitButton='Save'
-        onSubmit={params.value}
-      />
-    }
-  </div>
-  ),
-},
-  
+  {
+    field: 'Quality', headerName: 'Quality', width: 150,
+    renderCell: params => (
+      <div style={{margin: 'auto'}}>
+        {
+          <QualityForm
+            initialButton='Quality Management'
+            dialogTitle='Quality Management'
+            submitButton='Save'
+            onSubmit={params.value}
+          />
+        }
+      </div>
+    ),
+  },
+
 
 ];
 
@@ -123,25 +137,23 @@ const getInventory = async () => {
   return json;
 };
 
-const FilledInventoryView = ({ inventoryItems, classes }) => {
+const FilledInventoryView = (props) => {
   let items = [];
 
-  let updateRow = (item, updatedItem, toUpdate) => {
-    if (toUpdate) {
-      updateItem({
-        id: item.id,
-        itemName: updatedItem.itemName === "" ? item.itemName : updatedItem.itemName,
-        goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
-        quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
-        sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
-        buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
-        location: updatedItem.location === "" ? item.location : updatedItem.location,
-        billOfMaterial: item.billOfMaterial
-      })
-    }
+  let updateRow = (item, updatedItem) => {
+    updateItem({
+      id: item.id,
+      itemName: updatedItem.itemName === "" ? item.itemName : updatedItem.itemName,
+      goodType: updatedItem.goodType === "" ? item.goodType : updatedItem.goodType,
+      quantity: updatedItem.quantity === "" ? item.quantity : updatedItem.quantity,
+      sellPrice: updatedItem.sellPrice === "" ? item.sellPrice : updatedItem.sellPrice,
+      buyPrice: updatedItem.buyPrice === "" ? item.buyPrice : updatedItem.buyPrice,
+      location: updatedItem.location === "" ? item.location : updatedItem.location,
+      billOfMaterial: updatedItem.billOfMaterial === "" ? item.billOfMaterial : updatedItem.billOfMaterial
+    }, props.reload);
     return item;
   };
-  inventoryItems.map(item => (
+  props.inventoryItems.map(item => (
     items.push({
       id: item.id,
       ItemName: item.itemName,
@@ -150,12 +162,15 @@ const FilledInventoryView = ({ inventoryItems, classes }) => {
       SellPrice: item.sellPrice,
       BuyPrice: item.buyPrice,
       Location: item.location,
-      modify: (updatedItem, toUpdate) => updateRow(item, updatedItem, toUpdate),
-      delete: () => deleteItem(item.id)
+      modify: {
+        submit: (updatedItem) => updateRow(item, updatedItem),
+        item: item
+      },
+      delete: () => deleteItem(item.id, props.reload)
     })));
 
   return (
-    <DataGrid rows={items} columns={inventoryCols} pageSize={9} components={{ Toolbar: CustomToolbar}}/>
+    <DataGrid rows={items} columns={inventoryCols} pageSize={9} components={{Toolbar: CustomToolbar}}/>
   );
 };
 
@@ -170,30 +185,31 @@ const Spinner = () => {
         alignItems: 'center',
       }}
     >
-      <img src={AppLogo} alt='React Logo' className='App-logo' />
+      <img src={AppLogo} alt='React Logo' className='App-logo'/>
       <h1>Loading...</h1>
     </Box>
   );
 };
 
-const LoadedView = ({ classes, inventory }) => {
+const LoadedView = ({classes, inventory, reload}) => {
   return (
     <div>
-      <h1 style={{ textAlign: "center" }}>Inventory</h1>
-      <div style={{ height: 720, width: '78%', display: 'table',  margin:'0 auto'}}>
-        <div style={{ display: 'table-row', float: 'right'}}>
+      <h1 style={{textAlign: "center"}}>Inventory</h1>
+      <div style={{height: 720, width: '78%', display: 'table', margin: '0 auto'}}>
+        <div style={{display: 'table-row', float: 'right'}}>
           <InventoryForm
             initialButton='Insert'
             dialogTitle='Inventory Information '
             dialogContentText='Please enter information of the new item:'
             submitButton='Insert'
-            onSubmit={(data, insert) => (insert) ? insertItem(data) : ''}
+            onSubmit={(data) => insertItem(data, reload)}
           />
         </div>
-        <div style={{ height: '100%', width: '100%', display: 'table-row' }}>
+        <div style={{height: '100%', width: '100%', display: 'table-row'}}>
           <FilledInventoryView
             inventoryItems={inventory}
             classes={classes}
+            reload={reload}
           />
         </div>
       </div>
@@ -202,11 +218,11 @@ const LoadedView = ({ classes, inventory }) => {
 };
 
 const SpinBeforeLoading = ({
-  awaiting = async () => {
-  },
-  minLoadingTime = 0,
-  ...props
-}) => {
+                             awaiting = async () => {
+                             },
+                             minLoadingTime = 0,
+                             ...props
+                           }) => {
 
   const [loading, setLoading] = useState(true);
   const [loadingMin, setLoadingMin] = useState(true);
@@ -231,14 +247,18 @@ const Inventory = () => {
     setDoneLoading(false);
   }
 
+  function reload() {
+    setDoneLoading(true);
+  }
+
   return (
     (loading) ?
-    <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
-      <LoadedView classes={classes} inventory={inventory} />
-    </SpinBeforeLoading> :
-    <LoadedView classes={classes} inventory={inventory} />
+      <SpinBeforeLoading minLoadingTime={0} awaiting={waitForGetRequest}>
+        <LoadedView classes={classes} inventory={inventory} reload={reload}/>
+      </SpinBeforeLoading> :
+      <LoadedView classes={classes} inventory={inventory} reload={reload}/>
   );
 };
 
-export { Inventory, FilledInventoryView, Spinner, SpinBeforeLoading };
+export {Inventory, FilledInventoryView, Spinner, SpinBeforeLoading};
 export default Inventory;
