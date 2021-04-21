@@ -63,6 +63,7 @@ export default function InventoryForm(props) {
             type="string"
             defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.itemName : ''}
             onChange={(event) => setItemName(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -73,6 +74,7 @@ export default function InventoryForm(props) {
             type="string"
             defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.location : ''}
             onChange={(event) => setLocation(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -83,6 +85,7 @@ export default function InventoryForm(props) {
             type="number"
             defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.quantity : ''}
             onChange={(event) => setQuantity(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -94,6 +97,7 @@ export default function InventoryForm(props) {
             step={0.5}
             defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.sellPrice : ''}
             onChange={(event) => setSellPrice(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -105,6 +109,7 @@ export default function InventoryForm(props) {
             step={0.5}
             defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.buyPrice : ''}
             onChange={(event) => setBuyPrice(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -113,6 +118,7 @@ export default function InventoryForm(props) {
             id="goodType"
             label="Good Type"
             onChange={(event) => setGoodType(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
             type="number"
             defaultValue={(typeof props.item !== "undefined" && props.item != null) ? item.goodType : ''}

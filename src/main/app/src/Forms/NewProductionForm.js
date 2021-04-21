@@ -69,6 +69,7 @@ export default function NewProductionForm(props) {
             label="Order #"
             type="string"
             onChange={(event) => setOrderID(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
           <TextField
@@ -78,6 +79,7 @@ export default function NewProductionForm(props) {
             label="Production Date"
             type="date"
             onChange={(event) => setProductionDate(event.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             fullWidth
           />
         </DialogContent>
